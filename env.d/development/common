@@ -63,14 +63,15 @@ OIDC_RS_ALLOWED_AUDIENCES=""
 
 # Frontend
 FRONTEND_THEME=default
-FRONTEND_MORE_LINK=https://docs.numerique.gouv.fr/docs/fa0aba15-e119-4185-b466-a4b37ad95950/
-FRONTEND_FEEDBACK_BUTTON_SHOW=True
+FRONTEND_MORE_LINK=""
+FRONTEND_FEEDBACK_BUTTON_SHOW=False
 FRONTEND_FEEDBACK_BUTTON_IDLE=False
 FRONTEND_FEEDBACK_ITEMS={"form":{"url": "https://tally.so/r/w2YaWL"}, "tchap":{"url": "https://tchap.gouv.fr/#/room/#fichiers:agent.dinum.tchap.gouv.fr"}, "visio":{"url": "https://cal.com/robin-lecomte-eyul9w/fichiers"}}
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_ENABLED=False
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_API_URL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_CHANNEL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_PATH=
+FRONTEND_HIDE_GAUFRE=True
 
 # WOPI
 WOPI_CLIENTS="collabora,onlyoffice"

@@ -1,7 +1,6 @@
 import {
   DropdownMenu,
   Header as KitHeader,
-  LaGaufre,
 } from "@gouvfr-lasuite/ui-kit";
 import { Button } from "@openfun/cunningham-react";
 import logo from "@/assets/logo.svg";
@@ -53,7 +52,6 @@ export const HeaderRight = () => {
         </DropdownMenu>
       )}
       <LanguagePicker />
-      {/*<LaGaufre />*/}
       <ExplorerSearchButton />
     </>
   );

@@ -4,7 +4,6 @@ import Head from "next/head";
 import { useTranslation } from "next-i18next";
 import {
   Hero,
-  ProConnectButton,
   Footer,
   MainLayout,
   HomeGutter,
@@ -68,7 +67,6 @@ export default function HomePage() {
           banner={banner.src}
           title={t("home.title")}
           subtitle={t("home.subtitle")}
-          // mainButton={<ProConnectButton onClick={login} />}
           mainButton={<Button onClick={login}>{t("home.loginMessage")}</Button>}
         />
       </HomeGutter>

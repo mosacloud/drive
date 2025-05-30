@@ -631,6 +631,8 @@
 	--c--contextuals--border--palette--gray--primary: var(--c--globals--colors--gray-500);
 	--c--contextuals--border--palette--gray--secondary: var(--c--globals--colors--gray-350);
 	--c--contextuals--border--palette--gray--tertiary: var(--c--globals--colors--gray-150);
+	--c--theme--colors--primary-800: #0443f2;
+	--c--theme--colors--primary-text: #0443f2;
 	--c--components--modal--width-small: 342px;
 	--c--components--tooltip--padding: 4px 8px;
 	--c--components--tooltip--background-color: var(--c--contextuals--background--semantic--neutral--tertiary);

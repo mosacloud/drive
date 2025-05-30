@@ -127,7 +127,7 @@ const HomePageContent = () => {
                 </Button>
               </div>
 
-              <div>
+            {config?.FRONTEND_MORE_LINK && <div>
                 <Button
                   variant="bordered"
                   fullWidth
@@ -136,7 +136,7 @@ const HomePageContent = () => {
                 >
                   {t("home.more")}
                 </Button>
-              </div>
+            </div>}
             </div>
           }
         />

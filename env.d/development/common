@@ -20,10 +20,6 @@ DJANGO_EMAIL_BRAND_NAME="La Suite Numérique"
 DJANGO_EMAIL_HOST="mailcatcher"
 DJANGO_EMAIL_LOGO_IMG="http://localhost:3000/assets/logo-suite-numerique.png"
 DJANGO_EMAIL_PORT=1025
-DJANGO_EMAIL_URL_APP="http://localhost:3000"
-
-# User reconciliation
-USER_RECONCILIATION_FORM_URL="http://localhost:3000"
 
 # Media
 STORAGES_STATICFILES_BACKEND=django.contrib.staticfiles.storage.StaticFilesStorage
@@ -66,15 +62,16 @@ OIDC_RS_AUDIENCE_CLAIM="client_id"  # The claim used to identify the audience
 OIDC_RS_ALLOWED_AUDIENCES=""
 
 # Frontend
-FRONTEND_THEME=dsfr-light
-FRONTEND_MORE_LINK=https://docs.numerique.gouv.fr/docs/fa0aba15-e119-4185-b466-a4b37ad95950/
-FRONTEND_FEEDBACK_BUTTON_SHOW=True
+FRONTEND_THEME=default
+FRONTEND_MORE_LINK=""
+FRONTEND_FEEDBACK_BUTTON_SHOW=False
 FRONTEND_FEEDBACK_BUTTON_IDLE=False
 FRONTEND_FEEDBACK_ITEMS={"form":{"url": "https://tally.so/r/w2YaWL"}, "tchap":{"url": "https://tchap.gouv.fr/#/room/#fichiers:agent.dinum.tchap.gouv.fr"}, "visio":{"url": "https://cal.com/robin-lecomte-eyul9w/fichiers"}}
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_ENABLED=False
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_API_URL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_CHANNEL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_PATH=
+FRONTEND_HIDE_GAUFRE=True
 
 # WOPI
 WOPI_CLIENTS="collabora,onlyoffice"
@@ -84,10 +81,6 @@ WOPI_SRC_BASE_URL=http://app-dev:8000
 # Disable rename for Collabora by default because it does not post messages when renaming a file.
 # So the frontend cannot reflect renaming operations.
 WOPI_COLLABORA_OPTIONS={"SupportsRename": False}
-# Background conversion of legacy Office files (.doc, .xls, .ppt) is forced
-# server-side via the OnlyOffice /converter endpoint.
-WOPI_ONLYOFFICE_OPTIONS={"ForceConvertExtensions": ["doc", "xls", "ppt"], "ConvertServiceUrl": "http://onlyoffice/converter"}
-WOPI_ONLYOFFICE_CONVERT_JWT_SECRET=ThisIsNotASecretKeyDev
 
 # Indexer
 # SEARCH_INDEXER_CLASS="core.services.search_indexers.SearchIndexer"

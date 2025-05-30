@@ -17,7 +17,8 @@
       },
       "home": {
         "title": "Easy storage and sharing",
-        "subtitle": "Store and share your files easily in a cloud collaborative space."
+        "subtitle": "Store and share your files easily in a cloud collaborative space.",
+        "loginMessage": "Start storing files"
       },
       "authentication": {
         "error": {
@@ -260,7 +261,8 @@
       },
       "home": {
         "title": "Stockage et partage faciles",
-        "subtitle": "Stockez et partagez vos fichiers simplement dans un espace cloud collaboratif synchronisé."
+        "subtitle": "Stockez et partagez vos fichiers simplement dans un espace cloud collaboratif synchronisé.",
+        "loginMessage": "Commencez à stocker vos fichiers"
       },
       "authentication": {
         "error": {

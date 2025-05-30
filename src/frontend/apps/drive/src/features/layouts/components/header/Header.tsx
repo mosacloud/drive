@@ -53,7 +53,7 @@ export const HeaderRight = () => {
         </DropdownMenu>
       )}
       <LanguagePicker />
-      <LaGaufre />
+      {/*<LaGaufre />*/}
       <ExplorerSearchButton />
     </>
   );

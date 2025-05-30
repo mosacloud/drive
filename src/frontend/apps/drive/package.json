@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "build-theme": "cunningham -g css,scss -o src/styles && mv src/styles/cunningham-tokens.scss src/styles/cunningham-tokens-sass.scss"
+    "lint": "next lint"
   },
   "dependencies": {
     "@gouvfr-lasuite/ui-kit": "0.5.0",

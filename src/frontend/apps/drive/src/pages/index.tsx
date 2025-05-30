@@ -1,3 +1,4 @@
+import { Button } from '@openfun/cunningham-react';
 import { GlobalLayout } from "@/features/layouts/components/global/GlobalLayout";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
@@ -67,7 +68,8 @@ export default function HomePage() {
           banner={banner.src}
           title={t("home.title")}
           subtitle={t("home.subtitle")}
-          mainButton={<ProConnectButton onClick={login} />}
+          // mainButton={<ProConnectButton onClick={login} />}
+          mainButton={<Button onClick={login}>{t("home.loginMessage")}</Button>}
         />
       </HomeGutter>
       <Footer />

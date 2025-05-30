@@ -89,7 +89,7 @@ export default function HomePage() {
                 </Button>
               </div>
 
-              <div>
+            {config?.FRONTEND_MORE_LINK && <div>
                 <Button
                   variant="bordered"
                   fullWidth
@@ -98,7 +98,7 @@ export default function HomePage() {
                 >
                   {t("home.more")}
                 </Button>
-              </div>
+            </div>}
             </div>
           }
         />

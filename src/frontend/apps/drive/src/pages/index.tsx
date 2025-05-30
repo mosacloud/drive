@@ -94,7 +94,7 @@ export default function HomePage() {
                 </Button>
               </div>
 
-              <div>
+            {config?.FRONTEND_MORE_LINK && <div>
                 <Button
                   color="secondary"
                   icon={<Icon name="info" type={IconType.OUTLINED} />}
@@ -104,7 +104,7 @@ export default function HomePage() {
                 >
                   {t("home.more")}
                 </Button>
-              </div>
+            </div>}
             </div>
           }
         />

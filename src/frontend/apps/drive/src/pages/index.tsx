@@ -134,7 +134,7 @@ const HomePageContent = () => {
           }
         />
       </HomeGutter>
-      <Footer {...footerCustommization} />
+      {false && <Footer {...footerCustommization} />}
     </HomePageLayout>
   );
 }

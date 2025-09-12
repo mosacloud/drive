@@ -53,7 +53,7 @@
         "success": "Copied to clipboard",
         "error": "Failed to copy to clipboard"
       },
-      "app_title": "Drive",
+      "app_title": "Mosa Drive",
       "app_description": "Files management",
       "welcome": "Welcome",
       "logout": "Logout",
@@ -66,8 +66,8 @@
       },
       "home": {
         "title": "Easy storage and sharing",
-        "subtitle": "You access to an alpha version of the service, tested internally. It has a limited scope, little storage, may contain bugs, and does not yet integrate an antivirus. Your feedback is essential to help us improve.",
-        "main_button": "Participate to the alpha",
+        "subtitle": "Access a beta version of the service. If you want to know more about it, don't hesitate to contact us.",
+        "main_button": "Start storing files",
         "more": "Learn more"
       },
       "feedback": {
@@ -452,7 +452,7 @@
         "success": "Copié dans le presse-papiers",
         "error": "Échec de la copie dans le presse-papiers"
       },
-      "app_title": "Fichiers",
+      "app_title": "Mosa Drive",
       "app_description": "Gestion de fichiers",
       "welcome": "Bienvenue",
       "logout": "Déconnexion",
@@ -465,8 +465,8 @@
       },
       "home": {
         "title": "Stocker et partager facilement",
-        "subtitle": "Vous accédez à une version alpha du service, testée en interne. Elle propose un périmètre limité, peu de stockage, peut contenir des bugs, et n’intègre pas encore d’antivirus. Vos retours sont essentiels pour nous aider à l’améliorer.",
-        "main_button": "Participer à l'alpha",
+        "subtitle": "Accédez à une version bêta du service. Si vous souhaitez en savoir plus, n'hésitez pas à nous contacter.",
+        "main_button": "Commencer à stocker des fichiers",
         "more": "En savoir plus"
       },
       "feedback": {

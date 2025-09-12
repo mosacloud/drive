@@ -108,7 +108,7 @@ export default function HomePage() {
           }
         />
       </HomeGutter>
-      <Footer {...footerCustommization} />
+      {false && <Footer {...footerCustommization} />}
     </>
   );
 }

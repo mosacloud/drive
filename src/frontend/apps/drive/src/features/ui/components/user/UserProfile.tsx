@@ -12,7 +12,7 @@ import {
   LanguagePickerUserMenu,
   LANGUAGES,
 } from "@/features/layouts/components/header/Header";
-import { AnonymousCTA } from "../anonymous-cta/AnonymousCTA";
+import { LoginButton } from "@/features/auth/components/LoginButton";
 import { useTranslation } from "react-i18next";
 import { useClipboard } from "@/hooks/useCopyToClipboard";
 
@@ -30,7 +30,7 @@ export const UserProfile = () => {
       ) : (
         <>
           <AnonymousDropdownMenu />
-          <AnonymousCTA />
+          <LoginButton />
         </>
       )}
     </div>

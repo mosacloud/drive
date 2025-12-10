@@ -16,7 +16,10 @@ export const UserProfile = () => {
           actions={<LanguagePickerUserMenu />}
         />
       ) : (
-        <LoginButton />
+          <>
+              <LoginButton />
+              <LanguagePickerUserMenu />
+          </>
       )}
     </>
   );

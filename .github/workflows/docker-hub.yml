@@ -32,7 +32,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: lasuite/drive-backend
+          images: mosacloud/drive-backend
       - name: Login to DockerHub
         if: env.SHOULD_PUSH == 'true'
         uses: docker/login-action@v3
@@ -43,7 +43,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: "--target backend-production -f Dockerfile"
-          docker-image-name: "docker.io/lasuite/drive-backend:${{ github.sha }}"
+          docker-image-name: "docker.io/mosacloud/drive-backend:${{ github.sha }}"
       - name: Build and push
         if: env.SHOULD_PUSH == 'true'
         uses: docker/build-push-action@v6
@@ -71,7 +71,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: lasuite/drive-frontend
+          images: mosacloud/drive-frontend
       - name: Login to DockerHub
         if: env.SHOULD_PUSH == 'true'
         uses: docker/login-action@v3
@@ -82,7 +82,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: "-f src/frontend/Dockerfile --target frontend-production"
-          docker-image-name: "docker.io/lasuite/drive-frontend:${{ github.sha }}"
+          docker-image-name: "docker.io/mosacloud/drive-frontend:${{ github.sha }}"
       - name: Build and push
         if: env.SHOULD_PUSH == 'true'
         uses: docker/build-push-action@v6
@@ -95,17 +95,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  notify-argocd:
-    needs:
-      - build-and-push-frontend
-      - build-and-push-backend
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: numerique-gouv/action-argocd-webhook-notification@main
-        id: notify
-        with:
-          deployment_repo_path: "${{ secrets.DEPLOYMENT_REPO_URL }}"
-          argocd_webhook_secret: "${{ secrets.ARGOCD_PREPROD_WEBHOOK_SECRET }}"
-          argocd_url: "${{ vars.ARGOCD_PREPROD_WEBHOOK_URL }}"

@@ -33,7 +33,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: lasuite/drive-backend
+          images: mosacloud/drive-backend
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -46,7 +46,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: '--target backend-production -f Dockerfile'
-          docker-image-name: 'docker.io/lasuite/drive-backend:${{ github.sha }}'
+          docker-image-name: 'docker.io/mosacloud/drive-backend:${{ github.sha }}'
       -
         name: Build and push
         uses: docker/build-push-action@v6
@@ -76,7 +76,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: lasuite/drive-frontend
+          images: mosacloud/drive-frontend
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -89,7 +89,7 @@ jobs:
         uses: numerique-gouv/action-trivy-cache@main
         with:
           docker-build-args: '-f src/frontend/Dockerfile --target frontend-production'
-          docker-image-name: 'docker.io/lasuite/drive-frontend:${{ github.sha }}'
+          docker-image-name: 'docker.io/mosacloud/drive-frontend:${{ github.sha }}'
       -
         name: Build and push
         uses: docker/build-push-action@v6

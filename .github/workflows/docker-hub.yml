@@ -29,11 +29,22 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
+        name: Get version from pyproject.toml
+        id: version
+        run: |
+          VERSION=$(grep -m1 'version' src/backend/pyproject.toml | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: mosacloud/drive-backend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'
@@ -72,11 +83,22 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       -
+        name: Get version from package.json
+        id: version
+        run: |
+          VERSION=$(jq -r .version src/frontend/apps/drive/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: mosacloud/drive-frontend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.version.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
       -
         name: Login to DockerHub
         if: github.event_name != 'pull_request'

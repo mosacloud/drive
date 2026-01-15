@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next";
-import { useAuth } from "@/features/auth/Auth";
+import { Auth, useAuth } from "@/features/auth/Auth";
 import { useEffect } from "react";
 import {
   addToast,
@@ -10,6 +10,14 @@ import { SESSION_STORAGE_REDIRECT_AFTER_LOGIN_URL } from "@/features/api/fetchAp
 import { MosaLoginPage } from "@/features/home/components/MosaLoginPage";
 
 export default function HomePage() {
+  return (
+    <Auth>
+      <HomePageInner />
+    </Auth>
+  );
+}
+
+function HomePageInner() {
   const { t } = useTranslation();
   const { user } = useAuth();
 

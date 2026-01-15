@@ -1,26 +1,24 @@
-import { GlobalLayout } from "@/features/layouts/components/global/GlobalLayout";
-import Head from "next/head";
 import { useTranslation } from "next-i18next";
-import { Hero, Footer, MainLayout, HomeGutter } from "@gouvfr-lasuite/ui-kit";
-import { login, useAuth } from "@/features/auth/Auth";
+import { Auth, useAuth } from "@/features/auth/Auth";
 import { useEffect, useState } from "react";
-import logoGouv from "@/assets/logo-gouv.svg";
-import banner from "@/assets/home/banner.png";
-import { HeaderRight } from "@/features/layouts/components/header/Header";
 import {
   addToast,
   Toaster,
   ToasterItem,
 } from "@/features/ui/components/toaster/Toaster";
-import { Button } from "@gouvfr-lasuite/cunningham-react";
-import { useConfig } from "@/features/config/ConfigProvider";
-import { LeftPanelMobile } from "@/features/layouts/components/left-panel/LeftPanelMobile";
 import { SESSION_STORAGE_REDIRECT_AFTER_LOGIN_URL } from "@/features/api/fetchApi";
-import { useThemeCustomization } from "@/hooks/useThemeCustomization";
-import { Feedback } from "@/features/feedback/Feedback";
-
+import { MosaLoginPage } from "@/features/home/components/MosaLoginPage";
+import { useConfig } from "@/features/config/ConfigProvider";
 
 export default function HomePage() {
+  return (
+    <Auth>
+      <HomePageInner />
+    </Auth>
+  );
+}
+
+function HomePageInner() {
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -59,7 +57,7 @@ export default function HomePage() {
         </ToasterItem>
       );
     }
-  }, []);
+  }, [t]);
 
   if (user) {
     return null;
@@ -71,18 +69,16 @@ export default function HomePage() {
 /**
  * If the FRONTEND_EXTERNAL_HOME_URL is set, we redirect to it.
  * Otherwise, we display the home page.
- * 
+ *
  * Redirection to FRONTEND_EXTERNAL_HOME_URL is done in this component
  * to avoid conflicts with the useEffect and redirection logic in the HomePage component.
- * 
+ *
  * HomePage: if there is a user, redirect to the explorer.
  * HomePageContent: if the FRONTEND_EXTERNAL_HOME_URL is set, we redirect to it.
  *                  Otherwise, we display the home page.
  */
 const HomePageContent = () => {
-  const { t } = useTranslation();
   const { config } = useConfig();
-  const footerCustommization = useThemeCustomization("footer");
   const [redirectFailed, setRedirectFailed] = useState(false)
 
   useEffect(() => {
@@ -111,81 +107,9 @@ const HomePageContent = () => {
   }
 
   return (
-    <HomePageLayout>
-      <Head>
-        <title>{t("app_title")}</title>
-        <meta name="description" content={t("app_description")} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-
-      <HomeGutter>
-        <Hero
-          logo={<div className="drive__logo-icon" />}
-          banner={banner.src}
-          title={t("home.title")}
-          subtitle={t("home.subtitle")}
-          mainButton={
-            <div className="c__hero__buttons">
-              <div>
-                <Button onClick={() => login()} fullWidth>
-                  {t("home.main_button")}
-                </Button>
-              </div>
-
-            {config?.FRONTEND_MORE_LINK && <div>
-                <Button
-                  variant="bordered"
-                  fullWidth
-                  href={config?.FRONTEND_MORE_LINK}
-                  target="_blank"
-                >
-                  {t("home.more")}
-                </Button>
-            </div>}
-            </div>
-          }
-        />
-      </HomeGutter>
-      {false && <Footer {...footerCustommization} />}
-    </HomePageLayout>
-  );
-}
-
-
-const HomePageLayout = ({children}: {children: React.ReactNode}) => {
-  return (
-    <MainLayout
-      enableResize
-      hideLeftPanelOnDesktop={true}
-      leftPanelContent={<LeftPanelMobile />}
-      icon={
-        <div className="drive__header__left">
-          <img src={logoGouv.src} alt="" />
-          <div className="drive__header__logo" />
-          <Feedback />
-        </div>
-      }
-      rightHeaderContent={<HeaderRight />}
-    >
-      {children}
+    <>
+      <MosaLoginPage />
       <Toaster />
-    </MainLayout>
+    </>
   );
 }
-
-/**
- * Only context stuff, containing Auth, etc ...
- * Do not include any interface related component here as if there is
- * an external home url defined, we do not want blinking effects happening
- * before redirection.
- */
-HomePage.getLayout = function getLayout(page: React.ReactElement) {
-  return (
-    <div className="drive__home drive__home--feedback">
-      <GlobalLayout>
-        {page}
-      </GlobalLayout>
-    </div>
-  );
-};

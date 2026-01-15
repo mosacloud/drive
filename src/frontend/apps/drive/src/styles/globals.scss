@@ -26,6 +26,7 @@
 @use "./../features/layouts/components/left-panel/LeftPanelMobile.scss";
 @use "./../pages/index.scss" as *;
 @use "./../pages/sdk/index.scss" as *;
+@use "./../features/home/components/MosaLoginPage/MosaLoginPage.scss";
 body {
   margin: 0;
 }

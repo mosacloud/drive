@@ -93,9 +93,21 @@
       },
       "home": {
         "title": "Easy storage and sharing",
-        "subtitle": "A modern, high-performance drive built for French public teams. Sovereign hosting in France, strong security, and seamless sync with all LaSuite apps. On par with the market’s best—without the data trade-offs.",
+        "subtitle": "A modern, high-performance drive built for French public teams. Sovereign hosting in France, strong security, and seamless sync with all LaSuite apps. On par with the market's best—without the data trade-offs.",
         "main_button": "Sign in",
         "more": "Learn more"
+      },
+      "mosa": {
+        "login": {
+          "page_title": "Sign in to Drive - mosa.cloud",
+          "tagline": "Your open source workspace",
+          "welcome_to": "Welcome to",
+          "product_description": "Secure file storage",
+          "sign_in_button": "Sign in with your account",
+          "no_account": "Don't have an account?",
+          "contact_us": "Contact us",
+          "built_in_eu": "Built in the EU"
+        }
       },
       "feedback": {
         "button": "Give feedback",
@@ -567,6 +579,18 @@
         "subtitle": "Un stockage performant et sécurisé pour les équipes publiques françaises. Hébergement en France, sécurité renforcée, et synchronisation fluide avec toutes les applications LaSuite. A la hauteur des meilleurs du marché, sans les compromis de données.",
         "main_button": "Se connecter",
         "more": "En savoir plus"
+      },
+      "mosa": {
+        "login": {
+          "page_title": "Connexion à Drive - mosa.cloud",
+          "tagline": "Votre espace de travail open source",
+          "welcome_to": "Bienvenue sur",
+          "product_description": "Stockage de fichiers sécurisé",
+          "sign_in_button": "Se connecter avec votre compte",
+          "no_account": "Vous n'avez pas de compte ?",
+          "contact_us": "Contactez-nous",
+          "built_in_eu": "Développé dans l'UE"
+        }
       },
       "feedback": {
         "button": "Faire un retour",
@@ -1048,6 +1072,18 @@
         "subtitle": "Een modern, hoogwaardig platform voor bestandenopslag ontworpen voor Franse publieke teams. Soevereine hosting in Frankrijk, sterke beveiliging en naadloze synchronisatie met alle LaSuite-apps. Even goed als de beste op de markt — zonder concessies op het gebied van data.",
         "main_button": "Inloggen",
         "more": "Meer informatie"
+      },
+      "mosa": {
+        "login": {
+          "page_title": "Inloggen bij Drive - mosa.cloud",
+          "tagline": "Uw open source werkruimte",
+          "welcome_to": "Welkom bij",
+          "product_description": "Veilige bestandsopslag",
+          "sign_in_button": "Inloggen met uw account",
+          "no_account": "Heeft u geen account?",
+          "contact_us": "Neem contact met ons op",
+          "built_in_eu": "Gemaakt in de EU"
+        }
       },
       "feedback": {
         "button": "Geef feedback",

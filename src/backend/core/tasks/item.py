@@ -34,10 +34,7 @@ def process_item_deletion(item_id):
         logger.error("To process an item deletion, it must be hard deleted first.")
         return
 
-    if (
-        item.type == ItemTypeChoices.FILE
-        and item.upload_state == ItemUploadStateChoices.READY
-    ):
+    if item.type == ItemTypeChoices.FILE:
         logger.info("Deleting file %s", item.file_key)
         default_storage.delete(item.file_key)
 
@@ -51,6 +48,11 @@ def process_item_deletion(item_id):
 @app.task
 def rename_file(item_id, new_title):
     """Rename the file of an item. Update the filename and then rename the file on storage."""
+
+    if not new_title:
+        logger.error("New title is empty, skipping rename file")
+        return
+
     try:
         item = Item.objects.get(id=item_id)
     except Item.DoesNotExist:

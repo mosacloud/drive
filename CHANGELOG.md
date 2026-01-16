@@ -8,6 +8,38 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [v0.11.1] - 2026-01-13
+
+### Fixed
+
+- 📌(backend) pin celery to version<5.6.0
+- 🐛(backend) make extension checking case insensitive
+
+## [v0.11.0] - 2026-01-12
+
+### Added
+
+- ✨(backend) add async indexation of items on save (or access save)
+- ✨(backend) add throttle mechanism to limit indexation job
+- 🌐(front) set html lang attribute on language change
+- ✨(front) add download and preview events
+- ✨(backend) add an allowed file extension list
+
+### Changed
+
+- ✨(api) modify items/search endpoint to use indexed items in Find
+- 🐛(email) avoid trying to send emails if no provider is configured
+- ♻️(backend) improve mimetype detection
+- ♻️(backend) remove N+1 query patterns on items children view
+
+### Fixed
+
+- 🐛(scalingo) fix deploy scalingo with yarn
+- 🐛(front) fix responsive gaufre
+- 🐛(docker-hub) fix mistake in docker user
+- 🐛(backend) stop renaming file when no title is provided
+- 🐛(front) fix delete item label
+
 ## [v0.10.1] - 2025-12-05
 
 ### Security
@@ -21,6 +53,7 @@ and this project adheres to
 - ✨(backend) add more info on the item detail in the admin
 - ✨(backend) add an admin action to trigger new file analysis
 - ✨(backend) add a command to update file_hash in malware_detection_info
+- ✨(backend) enable full customization of external api
 
 ### Fixed
 
@@ -211,17 +244,19 @@ and this project adheres to
 - 🌐(front) add english translation for rename modal
 - 🐛(global) fix wrong Content-Type on specific s3 implementations
 
-[unreleased]: https://github.com/suitenumerique/drive/compare/v0.10.1...main
-[0.10.1]: https://github.com/suitenumerique/drive/releases/v0.10.1
-[0.10.0]: https://github.com/suitenumerique/drive/releases/v0.10.0
-[0.9.0]: https://github.com/suitenumerique/drive/releases/v0.9.0
-[0.8.1]: https://github.com/suitenumerique/drive/releases/v0.8.1
-[0.8.0]: https://github.com/suitenumerique/drive/releases/v0.8.0
-[0.7.0]: https://github.com/suitenumerique/drive/releases/v0.7.0
-[0.6.0]: https://github.com/suitenumerique/drive/releases/v0.6.0
-[0.5.0]: https://github.com/suitenumerique/drive/releases/v0.5.0
-[0.4.0]: https://github.com/suitenumerique/drive/releases/v0.4.0
-[0.3.0]: https://github.com/suitenumerique/drive/releases/v0.3.0
-[0.2.0]: https://github.com/suitenumerique/drive/releases/v0.2.0
-[0.1.1]: https://github.com/suitenumerique/drive/releases/v0.1.1
-[0.1.0]: https://github.com/suitenumerique/drive/releases/v0.1.0
+[unreleased]: https://github.com/suitenumerique/drive/compare/v0.11.1...main
+[v0.11.1]: https://github.com/suitenumerique/drive/releases/v0.11.1
+[v0.11.0]: https://github.com/suitenumerique/drive/releases/v0.11.0
+[v0.10.1]: https://github.com/suitenumerique/drive/releases/v0.10.1
+[v0.10.0]: https://github.com/suitenumerique/drive/releases/v0.10.0
+[v0.9.0]: https://github.com/suitenumerique/drive/releases/v0.9.0
+[v0.8.1]: https://github.com/suitenumerique/drive/releases/v0.8.1
+[v0.8.0]: https://github.com/suitenumerique/drive/releases/v0.8.0
+[v0.7.0]: https://github.com/suitenumerique/drive/releases/v0.7.0
+[v0.6.0]: https://github.com/suitenumerique/drive/releases/v0.6.0
+[v0.5.0]: https://github.com/suitenumerique/drive/releases/v0.5.0
+[v0.4.0]: https://github.com/suitenumerique/drive/releases/v0.4.0
+[v0.3.0]: https://github.com/suitenumerique/drive/releases/v0.3.0
+[v0.2.0]: https://github.com/suitenumerique/drive/releases/v0.2.0
+[v0.1.1]: https://github.com/suitenumerique/drive/releases/v0.1.1
+[v0.1.0]: https://github.com/suitenumerique/drive/releases/v0.1.0

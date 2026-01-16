@@ -16,10 +16,11 @@ from django.core.files.storage import default_storage
 from django.db import models as db
 from django.db import transaction
 from django.db.models.expressions import RawSQL
+from django.db.models.functions import Coalesce
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 
-import magic
 import posthog
 import rest_framework as drf
 from corsheaders.middleware import (
@@ -27,6 +28,7 @@ from corsheaders.middleware import (
     ACCESS_CONTROL_ALLOW_ORIGIN,
 )
 from lasuite.malware_detection import malware_detection
+from lasuite.oidc_login.decorators import refresh_oidc_access_token
 from rest_framework import filters, status, viewsets
 from rest_framework import response as drf_response
 from rest_framework.permissions import AllowAny
@@ -36,6 +38,10 @@ from rest_framework_api_key.permissions import HasAPIKey
 from core import enums, models
 from core.entitlements import get_entitlements_backend
 from core.services.sdk_relay import SDKRelayManager
+from core.services.search_indexers import (
+    get_file_indexer,
+    get_visited_items_ids_of,
+)
 from core.tasks.item import process_item_deletion, rename_file
 from wopi.services import access as access_service
 from wopi.utils import compute_wopi_launch_url, get_wopi_client_config
@@ -224,7 +230,6 @@ class UserViewSet(
         methods=["get"],
         url_name="me",
         url_path="me",
-        permission_classes=[permissions.IsAuthenticated],
     )
     def get_me(self, request):
         """
@@ -535,16 +540,15 @@ class ItemViewSet(
         queryset = self.annotate_user_roles(queryset)
         return queryset
 
-    def get_response_for_queryset(self, queryset):
+    def get_response_for_queryset(self, queryset, context=None):
         """Return paginated response for the queryset if requested."""
-
+        context = context or self.get_serializer_context()
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            result = self.get_paginated_response(serializer.data)
-            return result
+            serializer = self.get_serializer(page, many=True, context=context)
+            return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True, context=context)
         return drf.response.Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
@@ -590,8 +594,9 @@ class ItemViewSet(
         """Override to check if a file is renamed in order to rename file on storage."""
         instance = serializer.instance
         if instance.type == models.ItemTypeChoices.FILE:
-            if instance.title != serializer.validated_data.get("title"):
-                rename_file.delay(instance.id, serializer.validated_data.get("title"))
+            title = serializer.validated_data.get("title")
+            if title and instance.title != title:
+                rename_file.delay(instance.id, title)
         serializer.save()
 
     @drf.decorators.action(detail=True, methods=["delete"], url_path="hard-delete")
@@ -677,16 +682,13 @@ class ItemViewSet(
         entitlements_backend = get_entitlements_backend()
         can_upload = entitlements_backend.can_upload(self.request.user)
         if not can_upload["result"]:
-            item.soft_delete()
-            item.hard_delete()
-            process_item_deletion.delay(item.id)
+            self._complete_item_deletion(item)
             raise drf.exceptions.PermissionDenied(
                 detail=can_upload.get(
                     "message", "You do not have permission to upload files."
                 )
             )
 
-        mime_detector = magic.Magic(mime=True)
         s3_client = default_storage.connection.meta.client
 
         head_response = s3_client.head_object(
@@ -706,7 +708,23 @@ class ItemViewSet(
                 Bucket=default_storage.bucket_name, Key=item.file_key
             )["Body"].read()
 
-        mimetype = mime_detector.from_buffer(file_head)
+        # Use improved MIME type detection combining magic bytes and file extension
+        mimetype = utils.detect_mimetype(file_head, filename=item.filename)
+
+        if (
+            settings.RESTRICT_UPLOAD_FILE_TYPE
+            and mimetype not in settings.FILE_MIMETYPE_ALLOWED
+        ):
+            self._complete_item_deletion(item)
+            logger.info(
+                "upload_ended: mimetype not allowed %s for filename %s",
+                mimetype,
+                item.filename,
+            )
+            raise drf.exceptions.ValidationError(
+                detail="The file type is not allowed.",
+                code="file_type_not_allowed",
+            )
 
         item.upload_state = models.ItemUploadStateChoices.ANALYZING
         item.mimetype = mimetype
@@ -731,6 +749,12 @@ class ItemViewSet(
             )
 
         return drf_response.Response(serializer.data, status=status.HTTP_200_OK)
+
+    def _complete_item_deletion(self, item):
+        """Completely delete an item."""
+        item.soft_delete()
+        item.hard_delete()
+        process_item_deletion.delay(item.id)
 
     @drf.decorators.action(
         detail=False,
@@ -903,7 +927,9 @@ class ItemViewSet(
             )
 
         # GET: List children
-        queryset = item.children().filter(deleted_at__isnull=True)
+        queryset = (
+            item.children().select_related("creator").filter(deleted_at__isnull=True)
+        )
         queryset = self._filter_suspicious_items(queryset, request.user)
         queryset = self.filter_queryset(queryset)
         filterset = ItemFilter(request.GET, queryset=queryset)
@@ -911,11 +937,29 @@ class ItemViewSet(
             raise drf.exceptions.ValidationError(filterset.errors)
         queryset = filterset.qs
 
-        # Apply ordering only now that everyting is filtered and annotated
+        # Apply ordering only now that everything is filtered and annotated
         queryset = filters.OrderingFilter().filter_queryset(
             self.request, queryset, self
         )
-        return self.get_response_for_queryset(queryset)
+
+        # Pre-compute number of accesses
+        item_nb_accesses = item.nb_accesses
+        queryset = queryset.annotate(
+            _nb_accesses=db.Value(item_nb_accesses)
+            + Coalesce(db.Count("accesses", distinct=True), 0),
+        )
+
+        # Pass ancestors' links paths mapping to the serializer as a context variable
+        # in order to allow saving time while computing abilities on the instance
+        paths_links_mapping = item.compute_ancestors_links_paths_mapping()
+
+        return self.get_response_for_queryset(
+            queryset,
+            context={
+                "request": request,
+                "paths_links_mapping": paths_links_mapping,
+            },
+        )
 
     @drf.decorators.action(detail=True, methods=["get"])
     def tree(self, request, pk=None):
@@ -1040,6 +1084,44 @@ class ItemViewSet(
         serializer = self.get_serializer(breadcrumb, many=True)
         return drf.response.Response(serializer.data, status=drf.status.HTTP_200_OK)
 
+    # pylint: disable-next=too-many-arguments,too-many-positional-arguments
+    @method_decorator(refresh_oidc_access_token)
+    def _indexed_search(self, request, queryset, indexer, text):
+        """
+        Returns a DRF response containding the results the fulltext search of Find
+        sorted by score.
+        """
+        user = request.user
+        token = request.session.get("oidc_access_token")
+
+        # Retrieve the documents ids from Find. No pagination here the queryset is
+        # already filtered
+        result_ids = [
+            r["_id"]
+            for r in indexer.search(
+                text=text, token=token, visited=get_visited_items_ids_of(queryset, user)
+            )
+        ]
+
+        queryset = queryset.filter(pk__in=result_ids)
+        queryset = self.annotate_user_roles(queryset)
+        queryset = self.annotate_is_favorite(queryset)
+
+        files_by_uuid = {str(d.pk): d for d in queryset}
+        ordered_files = [files_by_uuid[id] for id in result_ids if id in files_by_uuid]
+
+        page = self.paginate_queryset(ordered_files)
+
+        if page is not None:
+            items = self._compute_parents(page)
+            serializer = self.get_serializer(items, many=True)
+            result = self.get_paginated_response(serializer.data)
+            return result
+
+        items = self._compute_parents(ordered_files)
+        serializer = self.get_serializer(items, many=True)
+        return drf.response.Response(serializer.data)
+
     @drf.decorators.action(
         detail=False,
         methods=["get"],
@@ -1048,10 +1130,17 @@ class ItemViewSet(
     )
     def search(self, request, *args, **kwargs):
         """
-        Search for items using filterset.
-        """
+        Returns a DRF response containing the filtered, annotated and ordered items.
 
+        Applies filtering based on request parameter 'q' from `SearchItemFilter`.
+        Depending of the configuration it can be:
+         - A fulltext search through the opensearch indexation app "find" if the backend is
+           enabled (see SEARCH_INDEXER_CLASS) and the feature flag INDEXED_SEARCH_ENABLED is True
+         - A filtering by the model fields 'title' & 'type'.
+        """
         queryset = self.queryset
+        indexer = get_file_indexer()
+
         filterset = SearchItemFilter(
             request.GET, queryset=queryset, request=self.request
         )
@@ -1060,6 +1149,7 @@ class ItemViewSet(
             raise drf.exceptions.ValidationError(filterset.errors)
 
         workspace = filterset.form.cleaned_data.get("workspace")
+
         # First look for all top level items user has access to
         user = request.user
         item_access_queryset = models.ItemAccess.objects.select_related("item").filter(
@@ -1083,7 +1173,21 @@ class ItemViewSet(
             path_list |= db.Q(path__descendants=top_level_item)
 
         queryset = queryset.filter(path_list)
+
+        # use indexed search ONLY when the feature flag is enabled
+        if indexer and settings.FEATURES_INDEXED_SEARCH is True:
+            # When the indexer is configured pop "title" from queryset search and use
+            # fulltext results instead.
+            return self._indexed_search(
+                request,
+                queryset,
+                indexer,
+                text=filterset.form.cleaned_data.pop("title"),
+            )
+
+        # Without the indexer, the "title" filtering is kept
         queryset = filterset.filter_queryset(queryset)
+
         queryset = self.annotate_user_roles(queryset)
         queryset = self.annotate_is_favorite(queryset)
 

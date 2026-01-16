@@ -605,6 +605,26 @@ class Item(TreeModel, BaseModel):
 
         return super().save(*args, **kwargs)
 
+    def compute_ancestors_links_paths_mapping(self):
+        """
+        Compute the ancestors links for the current document up to the highest readable ancestor.
+        """
+        ancestors = (
+            (self.ancestors() | self._meta.model.objects.filter(pk=self.pk))
+            .filter(ancestors_deleted_at__isnull=True)
+            .order_by("path")
+        )
+        ancestors_links = []
+        paths_links_mapping = {}
+
+        for ancestor in ancestors:
+            ancestors_links.append(
+                {"link_reach": ancestor.link_reach, "link_role": ancestor.link_role}
+            )
+            paths_links_mapping[str(ancestor.path)] = ancestors_links.copy()
+
+        return paths_links_mapping
+
     def delete(self, using=None, keep_parents=False):
         if self.main_workspace:
             raise RuntimeError("The main workspace cannot be deleted.")
@@ -677,16 +697,19 @@ class Item(TreeModel, BaseModel):
     @property
     def nb_accesses(self):
         """Calculate the number of accesses."""
-        cache_key = self.get_nb_accesses_cache_key()
-        nb_accesses = cache.get(cache_key)
+        try:
+            return self._nb_accesses
+        except AttributeError:
+            cache_key = self.get_nb_accesses_cache_key()
+            nb_accesses = cache.get(cache_key)
 
-        if nb_accesses is None:
-            nb_accesses = ItemAccess.objects.filter(
-                item__path__ancestors=self.path,
-            ).count()
-            cache.set(cache_key, nb_accesses)
+            if nb_accesses is None:
+                nb_accesses = ItemAccess.objects.filter(
+                    item__path__ancestors=self.path,
+                ).count()
+                cache.set(cache_key, nb_accesses)
 
-        return nb_accesses
+            return nb_accesses
 
     @property
     def is_root(self):
@@ -802,6 +825,11 @@ class Item(TreeModel, BaseModel):
 
     def send_email(self, subject, emails, context=None, language=None):
         """Generate and send email from a template."""
+
+        if not settings.EMAIL_HOST:
+            logger.debug("EMAIL_HOST host is not set, skipping email sending")
+            return
+
         context = context or {}
         domain = Site.objects.get_current().domain
         language = language or get_language()

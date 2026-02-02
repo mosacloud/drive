@@ -15,6 +15,7 @@ and this project adheres to
 ### Fixed
 
 - ✨(frontend) sync backend user language to browser on load
+- 🐛(backend) fix WOPI PutFile to check stored file size
 
 ## [v0.13.0] - 2026-02-18
 

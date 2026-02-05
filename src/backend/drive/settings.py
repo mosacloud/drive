@@ -1577,6 +1577,7 @@ class Base(Configuration):
         if cls.WOPI_CLIENTS:
             for wopi_client in cls.WOPI_CLIENTS:
                 wopi_client_upper = wopi_client.upper()
+
                 cls.WOPI_CLIENTS_CONFIGURATION[wopi_client] = {
                     "discovery_url": values.Value(
                         None,
@@ -1586,6 +1587,11 @@ class Base(Configuration):
                     ),
                     "mimetypes": {},
                     "extensions": {},
+                    "options": values.DictValue(
+                        {},
+                        environ_name=f"WOPI_{wopi_client_upper}_OPTIONS",
+                        environ_prefix=None,
+                    ),
                 }
 
 

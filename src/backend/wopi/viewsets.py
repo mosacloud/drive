@@ -4,6 +4,7 @@ import logging
 import uuid
 from os.path import splitext
 
+from django.conf import settings
 from django.core.exceptions import RequestDataTooBig
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -20,6 +21,7 @@ from core.models import Item
 from wopi.authentication import WopiAccessTokenAuthentication
 from wopi.permissions import AccessTokenPermission
 from wopi.services.lock import LockService
+from wopi.utils import get_wopi_client_config
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +66,12 @@ class WopiViewSet(viewsets.ViewSet):
         abilities = item.get_abilities(request.user)
 
         head_object = get_item_file_head_object(item)
+        wopi_client = get_wopi_client_config(item, request.user)
+        client_options = {}
+        if wopi_client:
+            client_name = wopi_client.get("client", "")
+            client_config = settings.WOPI_CLIENTS_CONFIGURATION.get(client_name, {})
+            client_options = client_config.get("options", {})
 
         properties = {
             "BaseFileName": item.filename,
@@ -81,7 +89,7 @@ class WopiViewSet(viewsets.ViewSet):
             "UserCanAttend": False,
             "UserCanNotWriteRelative": True,
             "ReadOnly": not abilities["update"],
-            "SupportsRename": True,
+            "SupportsRename": client_options.get("SupportsRename", True),
             "SupportsUpdate": True,
             "SupportsDeleteFile": True,
             "SupportsCobalt": False,
@@ -93,6 +101,7 @@ class WopiViewSet(viewsets.ViewSet):
             "SupportsUserInfo": False,
             "DownloadUrl": f"/media/{item.file_key}",
         }
+
         return Response(properties, status=200)
 
     @action(detail=True, methods=["get", "post"], url_path="contents")

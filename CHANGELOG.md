@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- ✨(frontend) sync backend user language to browser on load
+
 ## [v0.13.0] - 2026-02-18
 
 ### Added

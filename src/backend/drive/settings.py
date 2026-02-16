@@ -725,6 +725,7 @@ class Base(Configuration):
             "application/x-xz",
             "application/xml",
             "application/yaml",
+            "application/zed",
             "application/zip",
             "audio/aac",
             "audio/basic",

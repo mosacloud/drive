@@ -765,6 +765,7 @@ class Base(Configuration):
             "text/vtt",
             "text/x-c",
             "text/x-python",
+            "text/x-tex",
             "text/x-vcard",
             "video/3gpp",
             "video/3gpp2",

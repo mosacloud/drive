@@ -35,6 +35,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/features/auth/Auth";
 import { removeFileExtension } from "@/features/explorer/utils/mimeTypes";
+import posthog from "posthog-js";
 
 type WorkspaceShareModalProps = {
   isOpen: boolean;
@@ -451,6 +452,15 @@ export const ItemShareModal = ({
                   `${window.location.origin}/explorer/items/${itemId}`,
                 );
               }
+              posthog.capture("click_copy_link", {
+                item_id: itemId,
+                item_title: item?.title,
+                item_size: item?.size,
+                item_mimetype: item?.mimetype,
+                item_type: item?.type,
+                item_link_reach: item?.computed_link_reach ?? item?.link_reach,
+                item_link_role: item?.computed_link_role ?? item?.link_role,
+              });
             }}
             onOk={() => {
               onClose();
@@ -507,6 +517,9 @@ const RedirectionToParentItem = ({
   const router = useRouter();
 
   const handleRedirectToParentItem = () => {
+    posthog.capture("click_redirect_to_parent_item", {
+      item_id: itemId,
+    });
     router.push(`/explorer/items/${itemId}`).then(() => {
       afterRedirect?.();
     });

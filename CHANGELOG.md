@@ -37,6 +37,9 @@ and this project adheres to
 - ✨(global) add release notes
 - ✨(front) show root page in breadcrumbs when navigating
 - ✨(front) filter recent items to only show files
+- 📈(backend) add posthog tracking to item actions
+- 📈(front) add posthog tracking to share modal
+- ✅(front) add e2e tests for posthog share events
 
 ### Changed
 

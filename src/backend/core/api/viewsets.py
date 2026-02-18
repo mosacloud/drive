@@ -24,7 +24,6 @@ from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
-import posthog
 import rest_framework as drf
 from botocore.exceptions import ClientError
 from corsheaders.middleware import (
@@ -53,6 +52,7 @@ from core.services.search_indexers import (
     get_visited_items_ids_of,
 )
 from core.tasks.item import process_item_deletion, rename_file
+from core.utils.analytics import posthog_capture
 from wopi.services import access as access_service
 from wopi.utils import compute_wopi_launch_url, get_wopi_client_config
 
@@ -785,17 +785,16 @@ class ItemViewSet(
 
         serializer = self.get_serializer(item)
 
-        if settings.POSTHOG_KEY:
-            posthog.capture(
-                "item_uploaded",
-                distinct_id=request.user.email,
-                properties={
-                    "id": item.id,
-                    "title": item.title,
-                    "size": item.size,
-                    "mimetype": item.mimetype,
-                },
-            )
+        posthog_capture(
+            "item_uploaded",
+            request.user,
+            {
+                "id": item.id,
+                "title": item.title,
+                "size": item.size,
+                "mimetype": item.mimetype,
+            },
+        )
 
         return drf_response.Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -923,6 +922,7 @@ class ItemViewSet(
             )
 
         if message:
+            posthog_capture("item_move_missing_permission", user, {}, item=item)
             raise drf.exceptions.ValidationError(
                 {"target_item_id": message}, code="item_move_missing_permission"
             )
@@ -958,6 +958,8 @@ class ItemViewSet(
 
         if update_fields:
             item.save(update_fields=update_fields)
+
+        posthog_capture("item_moved", user, {}, item=item)
 
         return drf.response.Response(
             {"message": "item moved successfully."}, status=status.HTTP_200_OK
@@ -1410,6 +1412,9 @@ class ItemViewSet(
                     {"detail": "item already marked as favorite"},
                     status=drf.status.HTTP_200_OK,
                 )
+
+            posthog_capture("item_favorited", user, {}, item=item)
+
             # At this point the annotation is_favorite is already made by the
             # queryset.annotate_is_favorite(user) and its value is False.
             # If we want a fresh data we have to make a new queryset, apply the annotation
@@ -1429,6 +1434,7 @@ class ItemViewSet(
             # If we want a fresh data we have to make a new queryset, apply the annotation
             # and get the item again.
             # To avoid all of this we directly set item.is_favorite to False.
+            posthog_capture("item_unfavorited", user, {}, item=item)
             item.is_favorite = False
             serializer = self.get_serializer(item)
             return drf.response.Response(serializer.data, status=drf.status.HTTP_200_OK)
@@ -1747,6 +1753,7 @@ class ItemAccessViewSet(
         """
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
+        old_role = instance.role
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         role = serializer.validated_data.get("role")
@@ -1774,6 +1781,18 @@ class ItemAccessViewSet(
         access = serializer.save()
 
         self._syncronize_descendants_accesses(access)
+
+        if access.role != old_role:
+            posthog_capture(
+                "item_access_updated",
+                request.user,
+                {
+                    "id": access.id,
+                    "role": access.role,
+                    "old_role": old_role,
+                },
+                item=access.item,
+            )
 
         return drf.response.Response(serializer.data)
 
@@ -1830,6 +1849,32 @@ class ItemAccessViewSet(
                 self.request.user,
                 self.request.user.language or settings.LANGUAGE_CODE,
             )
+
+        posthog_capture(
+            "item_access_created",
+            self.request.user,
+            {
+                "id": access.id,
+                "role": access.role,
+            },
+            item=access.item,
+        )
+
+    def perform_destroy(self, instance):
+        """Delete the item access and capture the event."""
+        access_id = instance.id
+        item = instance.item
+        role = instance.role
+        super().perform_destroy(instance)
+        posthog_capture(
+            "item_access_deleted",
+            self.request.user,
+            {
+                "id": access_id,
+                "role": role,
+            },
+            item=item,
+        )
 
     def _syncronize_descendants_accesses(self, access):
         """
@@ -1946,6 +1991,48 @@ class InvitationViewset(
             invitation.role,
             self.request.user,
             self.request.user.language or settings.LANGUAGE_CODE,
+        )
+
+        posthog_capture(
+            "item_invitation_created",
+            self.request.user,
+            {
+                "id": invitation.id,
+                "role": invitation.role,
+            },
+            item=invitation.item,
+        )
+
+    def perform_update(self, serializer):
+        """Update the invitation and capture the event."""
+        old_role = serializer.instance.role
+        super().perform_update(serializer)
+        if serializer.instance.role != old_role:
+            posthog_capture(
+                "item_invitation_updated",
+                self.request.user,
+                {
+                    "id": serializer.instance.id,
+                    "role": serializer.instance.role,
+                    "old_role": old_role,
+                },
+                item=serializer.instance.item,
+            )
+
+    def perform_destroy(self, instance):
+        """Delete the invitation and capture the event."""
+        invitation_id = instance.id
+        item = instance.item
+        role = instance.role
+        super().perform_destroy(instance)
+        posthog_capture(
+            "item_invitation_deleted",
+            self.request.user,
+            {
+                "id": invitation_id,
+                "role": role,
+            },
+            item=item,
         )
 
 

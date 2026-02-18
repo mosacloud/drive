@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { login } from "./utils-common";
 
-const CURRENT_VERSION = "0.11.1";
+const CURRENT_VERSION = "0.13.0";
 
 test.describe("Release Note", () => {
   test.beforeEach(async ({ page }) => {
@@ -45,9 +45,7 @@ test.describe("Release Note", () => {
       await expect(
         page.getByRole("button", { name: "Open user menu" }),
       ).toBeVisible();
-      await expect(
-        page.getByText("Updates to Drive"),
-      ).not.toBeVisible();
+      await expect(page.getByText("Updates to Drive")).not.toBeVisible();
     });
   });
 
@@ -104,9 +102,7 @@ test.describe("Release Note", () => {
       await expect(
         page.getByRole("button", { name: "Open user menu" }),
       ).toBeVisible();
-      await expect(
-        page.getByText("Updates to Drive"),
-      ).not.toBeVisible();
+      await expect(page.getByText("Updates to Drive")).not.toBeVisible();
     });
   });
 });

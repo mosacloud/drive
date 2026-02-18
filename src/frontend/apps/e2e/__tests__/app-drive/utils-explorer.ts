@@ -12,7 +12,11 @@ export const expectExplorerBreadcrumbs = async (
 
   // Check the order of breadcrumbs
   if (expected.length >= 1) {
-    const breadcrumbButtons = breadcrumbs.getByRole("button");
+    // Select the buttons but not the last one that is the share button if it exists.
+    const breadcrumbButtons = breadcrumbs.locator(
+      'button:not([data-testid="share-button"]), [role="button"]:not([data-testid="share-button"])',
+    );
+
     await expect(breadcrumbButtons).toHaveCount(expected.length);
 
     // Check each breadcrumb appears in the correct order

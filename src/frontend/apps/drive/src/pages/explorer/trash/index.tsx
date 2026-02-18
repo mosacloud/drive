@@ -23,8 +23,8 @@ import { ItemFilters } from "@/features/drivers/Driver";
 import { useState } from "react";
 import { HardDeleteConfirmationModal } from "@/features/explorer/components/modals/HardDeleteConfirmationModal";
 import { messageModalTrashNavigate } from "@/features/explorer/components/trash/utils";
-import { setFromRoute } from "@/features/explorer/utils/utils";
 import { DefaultRoute } from "@/utils/defaultRoutes";
+import { useDefaultRoute } from "@/hooks/useDefaultRoute";
 export default function TrashPage() {
   const { t } = useTranslation();
   const [filters, setFilters] = useState<ItemFilters>({});
@@ -39,7 +39,7 @@ export default function TrashPage() {
 
   const modals = useModals();
 
-  setFromRoute(DefaultRoute.TRASH);
+  useDefaultRoute(DefaultRoute.TRASH);
 
   return (
     <AppExplorer

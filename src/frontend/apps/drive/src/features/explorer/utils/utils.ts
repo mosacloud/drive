@@ -10,7 +10,15 @@ import i18n from "@/features/i18n/initI18n";
 import { FilePreviewType } from "@/features/ui/preview/files-preview/FilesPreview";
 import { DefaultRoute } from "@/utils/defaultRoutes";
 
+/**
+ * When passing through my-files, favorites, shared with me, etc. we set a fromRoute key in the session storage.
+ * So we can keep track of the original default route the user passed by.
+ */
 export const SESSION_STORAGE_KEY_FROM_ROUTE = "fromRoute";
+
+/**
+ * When the user navigates by clicking on folders, we set a manualNavigationItemId key in the session storage.
+ */
 export const SESSION_STORAGE_KEY_MANUAL_NAVIGATION_ITEM_ID =
   "manualNavigationItemId";
 

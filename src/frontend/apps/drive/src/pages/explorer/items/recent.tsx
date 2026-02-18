@@ -3,9 +3,8 @@ import { ItemFilters } from "@/features/drivers/Driver";
 import { useMemo, useState } from "react";
 import { useInfiniteRecentItems } from "@/features/explorer/hooks/useInfiniteItems";
 import { AppExplorer } from "@/features/explorer/components/app-view/AppExplorer";
-import { setFromRoute } from "@/features/explorer/utils/utils";
 import { DefaultRoute } from "@/utils/defaultRoutes";
-import { useEffect } from "react";
+import { useDefaultRoute } from "@/hooks/useDefaultRoute";
 import { ItemType } from "@/features/drivers/types";
 export default function RecentPage() {
   const [filters, setFilters] = useState<ItemFilters>({
@@ -20,9 +19,7 @@ export default function RecentPage() {
     return data?.pages.flatMap((page) => page.children) ?? [];
   }, [data]);
 
-  useEffect(() => {
-    setFromRoute(DefaultRoute.RECENT);
-  }, []);
+  useDefaultRoute(DefaultRoute.RECENT);
 
   return (
     <AppExplorer

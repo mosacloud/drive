@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- 👷(docker) add arm64 platform support for image builds
+
 ### Fixed
 
 - ✨(frontend) sync backend user language to browser on load

@@ -18,6 +18,9 @@ and this project adheres to
 - ✨(frontend) sync backend user language to browser on load
 - 🐛(backend) fix WOPI PutFile to check stored file size
 
+### Changed
+
+- ✨(backend) allow root item creation on the external API by default
 
 ## [v0.13.0] - 2026-02-18
 
@@ -321,4 +324,5 @@ and this project adheres to
 [v0.2.0]: https://github.com/suitenumerique/drive/releases/v0.2.0
 [v0.1.1]: https://github.com/suitenumerique/drive/releases/v0.1.1
 [v0.1.0]: https://github.com/suitenumerique/drive/releases/v0.1.0
+
 ## [v0.11.1] - 2026-01-13

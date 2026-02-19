@@ -1293,7 +1293,7 @@ class Base(Configuration):
         default={
             "items": {
                 "enabled": True,
-                "actions": ["list", "retrieve", "children", "upload_ended"],
+                "actions": ["create", "list", "retrieve", "children", "upload_ended"],
             },
             "item_access": {
                 "enabled": False,

@@ -1,22 +1,39 @@
-import { DropdownMenu, useDropdownMenu } from "@gouvfr-lasuite/ui-kit";
+import {
+  DropdownMenu,
+  IconSize,
+  useDropdownMenu,
+} from "@gouvfr-lasuite/ui-kit";
 import { useGlobalExplorer } from "@/features/explorer/components/GlobalExplorerContext";
 import createFolderSvg from "@/assets/icons/create_folder.svg";
 import { Button } from "@gouvfr-lasuite/cunningham-react";
 import { useTranslation } from "react-i18next";
 import { ExplorerSearchButton } from "@/features/explorer/components/app-view/ExplorerSearchButton";
+import { ItemIcon } from "../icons/ItemIcon";
+import { Item, ItemType } from "@/features/drivers/types";
+import { ExplorerCreateFileType } from "../modals/ExplorerCreateFileModal";
 
 type ExplorerTreeActionsProps = {
   openCreateFolderModal: () => void;
+  openCreateFileModal: (type: ExplorerCreateFileType) => void;
 };
 
 export const ExplorerTreeActions = ({
   openCreateFolderModal,
+  openCreateFileModal,
 }: ExplorerTreeActionsProps) => {
   const { t } = useTranslation();
   const { treeIsInitialized, item } = useGlobalExplorer();
 
   const createMenu = useDropdownMenu();
-  const showMenu = item ? item?.abilities?.children_create : true;
+  const canCreateChildren = item ? item?.abilities?.children_create : true;
+
+  const renderFileIcon = (item: Partial<Item>) => {
+    return (
+      <div>
+        <ItemIcon item={item as Item} size={IconSize.MEDIUM} type="mini" />
+      </div>
+    );
+  };
 
   if (!treeIsInitialized) {
     return null;
@@ -29,9 +46,46 @@ export const ExplorerTreeActions = ({
             {
               icon: <img src={createFolderSvg.src} alt="" />,
               label: t("explorer.tree.create.folder"),
-              value: "info",
-              isHidden: !showMenu,
+              value: "create-folder",
+              isHidden: !canCreateChildren,
               callback: openCreateFolderModal,
+            },
+            {
+              icon: renderFileIcon({
+                type: ItemType.FILE,
+                filename: "doc.odt",
+                mimetype:
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              }),
+              label: t("explorer.tree.create.file.doc"),
+              value: "create-doc",
+              isHidden: !canCreateChildren,
+              callback: () => openCreateFileModal(ExplorerCreateFileType.DOC),
+            },
+            {
+              icon: renderFileIcon({
+                type: ItemType.FILE,
+                filename: "powerpoint.odp",
+                mimetype:
+                  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+              }),
+              label: t("explorer.tree.create.file.powerpoint"),
+              value: "create-slides",
+              isHidden: !canCreateChildren,
+              callback: () =>
+                openCreateFileModal(ExplorerCreateFileType.POWERPOINT),
+            },
+            {
+              icon: renderFileIcon({
+                type: ItemType.FILE,
+                filename: "calc.ods",
+                mimetype:
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              }),
+              label: t("explorer.tree.create.file.calc"),
+              value: "create-calc",
+              isHidden: !canCreateChildren,
+              callback: () => openCreateFileModal(ExplorerCreateFileType.CALC),
             },
           ]}
           {...createMenu}

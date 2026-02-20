@@ -257,7 +257,12 @@
           "create": {
             "label": "New",
             "folder": "New folder",
-            "workspace": "New workspace"
+            "workspace": "New workspace",
+            "file": {
+              "doc": "New text document",
+              "powerpoint": "New slides",
+              "calc": "New spreadsheet"
+            }
           },
           "import": {
             "label": "Import",
@@ -378,6 +383,18 @@
               "title": "Create folder",
               "label": "Folder name",
               "placeholder": "Enter folder name",
+              "cancel": "Cancel",
+              "submit": "Create"
+            }
+          },
+          "createFile": {
+            "modal": {
+              "title": "Create file",
+              "title_doc": "Create text document",
+              "title_powerpoint": "Create slides",
+              "title_calc": "Create spreadsheet",
+              "label": "File name",
+              "placeholder": "Enter file name",
               "cancel": "Cancel",
               "submit": "Create"
             }
@@ -766,6 +783,11 @@
           "create": {
             "label": "Nouveau",
             "folder": "Nouveau dossier",
+            "file": {
+              "doc": "Nouveau document texte",
+              "powerpoint": "Nouvelles diapositives",
+              "calc": "Nouveau tableau de calcul"
+            },
             "workspace": "Nouvel espace"
           },
           "workspace": {
@@ -876,6 +898,18 @@
               "title": "Créer un dossier",
               "label": "Nom du dossier",
               "placeholder": "Entrez le nom du dossier",
+              "cancel": "Annuler",
+              "submit": "Créer"
+            }
+          },
+          "createFile": {
+            "modal": {
+              "title": "Créer un fichier",
+              "title_doc": "Créer un document texte",
+              "title_powerpoint": "Créer des diapositives",
+              "title_calc": "Créer un tableau de calcul",
+              "label": "Nom du fichier",
+              "placeholder": "Entrez le nom du fichier",
               "cancel": "Annuler",
               "submit": "Créer"
             }
@@ -1255,6 +1289,11 @@
           "create": {
             "label": "Nieuwe",
             "folder": "Nieuwe map",
+            "file": {
+              "doc": "Nieuw tekstdocument",
+              "powerpoint": "Nieuwe presentatie",
+              "calc": "Nieuwe spreadsheet"
+            },
             "workspace": "Nieuwe werkruimte"
           },
           "import": {
@@ -1378,6 +1417,18 @@
               "placeholder": "Voer mapnaam in",
               "cancel": "Annuleren",
               "submit": "Bewerken"
+            }
+          },
+          "createFile": {
+            "modal": {
+              "title": "Bestand maken",
+              "title_doc": "Tekstdocument maken",
+              "title_powerpoint": "Presentatie maken",
+              "title_calc": "Spreadsheet maken",
+              "label": "Bestandsnaam",
+              "placeholder": "Voer bestandsnaam in",
+              "cancel": "Annuleren",
+              "submit": "Maken"
             }
           },
           "upload": {

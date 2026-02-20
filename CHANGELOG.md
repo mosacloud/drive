@@ -11,11 +11,13 @@ and this project adheres to
 ### Added
 
 - 👷(docker) add arm64 platform support for image builds
+- ✨(global) add create file from template feature
 
 ### Fixed
 
 - ✨(frontend) sync backend user language to browser on load
 - 🐛(backend) fix WOPI PutFile to check stored file size
+
 
 ## [v0.13.0] - 2026-02-18
 

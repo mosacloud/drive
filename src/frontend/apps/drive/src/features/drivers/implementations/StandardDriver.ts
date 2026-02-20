@@ -394,6 +394,33 @@ export class StandardDriver extends Driver {
     return item;
   }
 
+  async createFileFromTemplate(data: {
+    parentId?: string;
+    extension: string;
+    title: string;
+  }): Promise<Item> {
+    const url = data.parentId ? `items/${data.parentId}/children/` : `items/`;
+
+    const response = await fetchAPI(
+      url,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          type: "file",
+          extension: data.extension,
+          title: data.title,
+        }),
+      },
+      {
+        // When entitlements are falsy, the backend returns a 403 error.
+        // We don't want to redirect to the login page in this case, instead
+        // we want to show an error.
+        redirectOn40x: false,
+      },
+    );
+    return jsonToItem(await response.json());
+  }
+
   async deleteItems(ids: string[]): Promise<void> {
     for (const id of ids) {
       await fetchAPI(`items/${id}/`, {

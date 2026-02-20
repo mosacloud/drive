@@ -1950,6 +1950,8 @@ class ConfigView(drf.views.APIView):
             "FRONTEND_SILENT_LOGIN_ENABLED",
             "FRONTEND_EXTERNAL_HOME_URL",
             "FRONTEND_RELEASE_NOTE_ENABLED",
+            "FRONTEND_CSS_URL",
+            "FRONTEND_JS_URL",
             "MEDIA_BASE_URL",
             "POSTHOG_KEY",
             "POSTHOG_HOST",

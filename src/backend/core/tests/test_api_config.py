@@ -31,6 +31,8 @@ pytestmark = pytest.mark.django_db
     FRONTEND_HIDE_GAUFRE=True,
     FRONTEND_SILENT_LOGIN_ENABLED=True,
     FRONTEND_RELEASE_NOTE_ENABLED=True,
+    FRONTEND_CSS_URL="http://testcss/",
+    FRONTEND_JS_URL="http://testjs/",
     MEDIA_BASE_URL="http://testserver/",
     POSTHOG_KEY="132456",
     POSTHOG_HOST="https://eu.i.posthog-test.com",
@@ -65,6 +67,8 @@ def test_api_config(is_authenticated):
         "FRONTEND_SILENT_LOGIN_ENABLED": True,
         "FRONTEND_EXTERNAL_HOME_URL": "https://test.com",
         "FRONTEND_RELEASE_NOTE_ENABLED": True,
+        "FRONTEND_CSS_URL": "http://testcss/",
+        "FRONTEND_JS_URL": "http://testjs/",
         "LANGUAGES": [
             ["en-us", "English"],
             ["fr-fr", "French"],

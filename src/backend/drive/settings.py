@@ -1076,6 +1076,12 @@ class Base(Configuration):
     FRONTEND_RELEASE_NOTE_ENABLED = values.BooleanValue(
         default=True, environ_name="FRONTEND_RELEASE_NOTE_ENABLED", environ_prefix=None
     )
+    FRONTEND_CSS_URL = values.Value(
+        None, environ_name="FRONTEND_CSS_URL", environ_prefix=None
+    )
+    FRONTEND_JS_URL = values.Value(
+        None, environ_name="FRONTEND_JS_URL", environ_prefix=None
+    )
     THEME_CUSTOMIZATION_FILE_PATH = values.Value(
         os.path.join(BASE_DIR, "drive/configuration/theme/default.json"),
         environ_name="THEME_CUSTOMIZATION_FILE_PATH",

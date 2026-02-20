@@ -12,6 +12,7 @@ and this project adheres to
 
 - 👷(docker) add arm64 platform support for image builds
 - ✨(global) add create file from template feature
+- ✨(global) add FRONTEND_CSS_URL and FRONTEND_JS_URL settings
 
 ### Fixed
 

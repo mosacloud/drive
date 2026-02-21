@@ -15,6 +15,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getEntitlements } from "@/utils/entitlements";
 import { useCanCreateChildren } from "@/features/items/utils";
 import { getMyFilesQueryKey } from "@/utils/defaultRoutes";
+import { useConfig } from "@/features/config/ConfigProvider";
+import { formatSize } from "@/features/explorer/utils/utils";
 
 type FileUpload = FileWithPath & {
   parentId?: string;
@@ -197,6 +199,7 @@ const pathNicefy = (path: string) => {
 
 export const useUploadZone = ({ item }: { item: Item }) => {
   const { t } = useTranslation();
+  const { config } = useConfig();
 
   const createFile = useMutationCreateFile();
 
@@ -341,6 +344,34 @@ export const useUploadZone = ({ item }: { item: Item }) => {
       const upload = filesToUpload(acceptedFiles);
       await handleHierarchy(upload);
 
+      // Filter out files that exceed the maximum upload size.
+      // maxSize is undefined when DATA_UPLOAD_MAX_MEMORY_SIZE is not configured,
+      // meaning no size limit is enforced. Note: a value of 0 would also disable
+      // the check (falsy), which is acceptable since 0 is not a valid file size limit.
+      const maxSize = config.DATA_UPLOAD_MAX_MEMORY_SIZE;
+      const validFiles =
+        maxSize !== undefined && maxSize !== null
+          ? upload.files.filter((file) => file.size <= maxSize)
+          : upload.files;
+      const tooLargeFiles =
+        maxSize !== undefined && maxSize !== null
+          ? upload.files.filter((file) => file.size > maxSize)
+          : [];
+      if (maxSize !== undefined && maxSize !== null) {
+        for (const file of tooLargeFiles) {
+          addToast(
+            <ToasterItem type="error">
+              <span>
+                {t("explorer.actions.upload.file_too_large", {
+                  name: file.name,
+                  maxSize: formatSize(maxSize),
+                })}
+              </span>
+            </ToasterItem>,
+          );
+        }
+      }
+
       // Do not run "setUploadingState({});" because if a uploading is still in progress, it will be overwritten.
 
       // First, add all the files to the uploading state in order to display them in the toast.
@@ -348,7 +379,7 @@ export const useUploadZone = ({ item }: { item: Item }) => {
         step: UploadingStep.UPLOAD_FILES,
         filesMeta: {},
       };
-      for (const file of upload.files) {
+      for (const file of validFiles) {
         newUploadingState.filesMeta[pathNicefy(file.path!)] = {
           file,
           progress: 0,
@@ -359,7 +390,7 @@ export const useUploadZone = ({ item }: { item: Item }) => {
       // Then, upload all the files sequentially. We are not uploading them in parallel because the backend
       // does not support it, it causes concurrency issues.
       const promises = [];
-      for (const file of upload.files) {
+      for (const file of validFiles) {
         // We do not using "createFile.mutateAsync" because it causes unhandled errors.
         // Instead, we use a promise that we can await to run all the uploads sequentially.
         // Using "createFile.mutate" makes the error handled by the mutation hook itself.

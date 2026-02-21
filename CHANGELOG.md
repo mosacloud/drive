@@ -16,6 +16,7 @@ and this project adheres to
 - ✨(backend) add a download action returning the media url
 - ✨(frontend) add right click feature
 - ✨(backend) allow customization of wopi parameters
+- ✨(backend) expose DATA_UPLOAD_MAX_MEMORY_SIZE in the config endpoint
 
 ### Fixed
 

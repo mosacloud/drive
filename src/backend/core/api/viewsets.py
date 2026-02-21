@@ -2050,6 +2050,7 @@ class ConfigView(drf.views.APIView):
         """
         array_settings = [
             "CRISP_WEBSITE_ID",
+            "DATA_UPLOAD_MAX_MEMORY_SIZE",
             "ENVIRONMENT",
             "FRONTEND_THEME",
             "FRONTEND_MORE_LINK",

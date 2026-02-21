@@ -714,6 +714,18 @@ class ItemViewSet(
         )
         file_size = head_response["ContentLength"]
 
+        if file_size > settings.DATA_UPLOAD_MAX_MEMORY_SIZE:
+            self._complete_item_deletion(item)
+            logger.info(
+                "upload_ended: file size (%s) for file %s higher than the allowed max size",
+                file_size,
+                item.file_key,
+            )
+            raise drf.exceptions.ValidationError(
+                detail="The file size is higher than the allowed max size.",
+                code="file_size_exceeded",
+            )
+
         if file_size > 2048:
             range_response = s3_client.get_object(
                 Bucket=default_storage.bucket_name,

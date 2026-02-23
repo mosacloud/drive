@@ -14,6 +14,7 @@ and this project adheres to
 - ✨(global) add create file from template feature
 - ✨(global) add FRONTEND_CSS_URL and FRONTEND_JS_URL settings
 - ✨(backend) add a download action returning the media url
+- ✨(frontend) add right click feature
 
 ### Fixed
 

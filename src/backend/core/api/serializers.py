@@ -8,6 +8,7 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from lasuite.drf.models.choices import LinkReachChoices, get_equivalent_link_definition
@@ -201,6 +202,7 @@ class ListItemSerializer(serializers.ModelSerializer):
     nb_accesses = serializers.IntegerField(read_only=True)
     user_role = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    url_permalink = serializers.SerializerMethodField()
     url_preview = serializers.SerializerMethodField()
     creator = UserLightSerializer(read_only=True)
     hard_delete_at = serializers.SerializerMethodField(read_only=True)
@@ -231,6 +233,7 @@ class ListItemSerializer(serializers.ModelSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "filename",
             "mimetype",
@@ -263,6 +266,7 @@ class ListItemSerializer(serializers.ModelSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "mimetype",
             "main_workspace",
@@ -311,6 +315,27 @@ class ListItemSerializer(serializers.ModelSerializer):
             return None
 
         return f"{settings.MEDIA_BASE_URL}{settings.MEDIA_URL}{quote(item.file_key)}"
+
+    def get_url_permalink(self, item):
+        """Return a stable permalink URL for downloading the item.
+
+        Unlike the url field, this URL does not change when the item is renamed
+        since it is based on the item's UUID rather than its filename.
+        """
+        if (
+            item.type != models.ItemTypeChoices.FILE
+            or item.upload_state == models.ItemUploadStateChoices.PENDING
+            or item.filename is None
+        ):
+            return None
+
+        path = reverse("items-download", kwargs={"pk": item.id})
+
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(path)
+
+        return path
 
     def get_url_preview(self, item):
         """Return the URL of the item."""
@@ -365,6 +390,7 @@ class ListItemLightSerializer(ListItemSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "filename",
             "mimetype",
@@ -392,6 +418,7 @@ class ListItemLightSerializer(ListItemSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "mimetype",
             "main_workspace",
@@ -442,6 +469,7 @@ class ItemSerializer(ListItemSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "filename",
             "mimetype",
@@ -474,6 +502,7 @@ class ItemSerializer(ListItemSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "url_preview",
             "filename",
             "mimetype",
@@ -547,6 +576,7 @@ class CreateItemSerializer(ItemSerializer):
             "type",
             "upload_state",
             "url",
+            "url_permalink",
             "filename",
             "policy",
             "main_workspace",
@@ -575,6 +605,7 @@ class CreateItemSerializer(ItemSerializer):
             "user_role",
             "upload_state",
             "url",
+            "url_permalink",
             "policy",
             "main_workspace",
             "size",

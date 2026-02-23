@@ -2,6 +2,7 @@ import test, { expect } from "@playwright/test";
 import { clearDb, login } from "./utils-common";
 import path from "path";
 import { clickToMyFiles } from "./utils-navigate";
+import { uploadFile } from "./utils/upload-utils";
 
 test("Display HEIC not supported message when opening a HEIC file", async ({
   page,
@@ -16,19 +17,14 @@ test("Display HEIC not supported message when opening a HEIC file", async ({
   const heicFilePath = path.join(__dirname, "/assets/test-image.heic");
 
   // Upload the HEIC file
-  const fileChooserPromise = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "Import" }).click();
-  await page.getByRole("menuitem", { name: "Import files" }).click();
-
-  const fileChooser = await fileChooserPromise;
-  await fileChooser.setFiles(heicFilePath);
+  await uploadFile(page, heicFilePath);
 
   // Wait for the file to be uploaded and visible in the list
   await expect(page.getByText("Drop your files here")).not.toBeVisible();
   await expect(page.getByRole("cell", { name: "test-image.heic" })).toBeVisible(
     {
       timeout: 10000,
-    }
+    },
   );
 
   // Click on the HEIC file to open the preview
@@ -40,6 +36,6 @@ test("Display HEIC not supported message when opening a HEIC file", async ({
 
   // Check that the HEIC-specific message is displayed
   await expect(
-    filePreview.getByText("HEIC files are not yet supported for preview.")
+    filePreview.getByText("HEIC files are not yet supported for preview."),
   ).toBeVisible();
 });

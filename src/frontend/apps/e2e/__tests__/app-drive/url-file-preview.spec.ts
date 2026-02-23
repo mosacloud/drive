@@ -1,16 +1,9 @@
-import test, { BrowserContext, expect } from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import { clearDb, login } from "./utils-common";
 import path from "path";
 import { clickToMyFiles } from "./utils-navigate";
-
-const grantClipboardPermissions = async (
-  browserName: string,
-  context: BrowserContext
-) => {
-  if (browserName === "chromium" || browserName === "webkit") {
-    await context.grantPermissions(["clipboard-read"]);
-  }
-};
+import { uploadFile } from "./utils/upload-utils";
+import { grantClipboardPermissions } from "./utils/various-utils";
 
 test("Share url leads to standalone file preview", async ({
   page,
@@ -29,12 +22,7 @@ test("Share url leads to standalone file preview", async ({
   await expect(page.getByText("This tab is empty")).toBeVisible();
 
   //   Start waiting for file chooser before clicking. Note no await.
-  const fileChooserPromise = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "Import" }).click();
-  await page.getByRole("menuitem", { name: "Import files" }).click();
-
-  const fileChooser = await fileChooserPromise;
-  await fileChooser.setFiles(path.join(__dirname, "/assets/pv_cm.pdf"));
+  await uploadFile(page, path.join(__dirname, "/assets/pv_cm.pdf"));
 
   await expect(page.getByText("This tab is empty")).not.toBeVisible();
   await page
@@ -47,7 +35,7 @@ test("Share url leads to standalone file preview", async ({
 
   // Get clipboard content after the link/button has been clicked
   const handle = await page.evaluateHandle(() =>
-    navigator.clipboard.readText()
+    navigator.clipboard.readText(),
   );
   const clipboardContent = await handle.jsonValue();
   await page.goto(clipboardContent);
@@ -58,7 +46,7 @@ test("Share url leads to standalone file preview", async ({
   await expect(
     filePreview
       .getByTestId("file-preview")
-      .getByRole("button", { name: "close" })
+      .getByRole("button", { name: "close" }),
   ).not.toBeVisible();
   await expect(filePreview.getByTestId("file-preview-nav")).not.toBeVisible();
 });

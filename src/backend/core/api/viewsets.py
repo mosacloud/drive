@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from io import BytesIO
-from urllib.parse import unquote, urlparse
+from urllib.parse import quote, unquote, urlparse
 
 from django.conf import settings
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -1513,6 +1513,31 @@ class ItemViewSet(
             "Subrequest authorization successful. Extracted parameters: %s", url_params
         )
         return url_params, user_abilities, request.user.id, item
+
+    @drf.decorators.action(detail=True, methods=["get"], url_path="download")
+    def download(self, request, *args, **kwargs):
+        """
+        Permalink endpoint for downloading an item's file.
+
+        Returns a redirect to the current media URL for the item, so this link
+        remains valid even after the item is renamed. Authentication is still
+        enforced by the existing media-auth mechanism on the redirected URL.
+        """
+        item = self.get_object()
+
+        if item.type != models.ItemTypeChoices.FILE:
+            raise drf.exceptions.PermissionDenied()
+
+        if item.upload_state == models.ItemUploadStateChoices.PENDING:
+            raise drf.exceptions.PermissionDenied()
+
+        redirect_url = (
+            f"{settings.MEDIA_BASE_URL}{settings.MEDIA_URL}{quote(item.file_key)}"
+        )
+        return drf.response.Response(
+            status=status.HTTP_302_FOUND,
+            headers={"Location": redirect_url},
+        )
 
     @drf.decorators.action(detail=False, methods=["get"], url_path="media-auth")
     def media_auth(self, request, *args, **kwargs):

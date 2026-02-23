@@ -10,6 +10,8 @@ from core import factories, models
 
 pytestmark = pytest.mark.django_db
 
+# # pylint: disable=duplicate-code
+
 
 def test_models_sub_item_abilities_downgraded():
     """
@@ -58,6 +60,7 @@ def test_models_sub_item_abilities_downgraded():
             "restricted": None,
         },
         "media_auth": True,
+        "download": True,
         "move": False,
         "partial_update": True,
         "restore": False,
@@ -90,6 +93,7 @@ def test_models_sub_item_abilities_downgraded():
             "restricted": None,
         },
         "media_auth": True,
+        "download": True,
         "move": False,
         "partial_update": False,
         "restore": False,
@@ -121,6 +125,7 @@ def test_models_items_root_get_abilities_owner(django_assert_num_queries):
         "link_configuration": True,
         "link_select_options": link_select_options,
         "media_auth": True,
+        "download": True,
         "move": True,
         "partial_update": True,
         "restore": True,
@@ -147,6 +152,7 @@ def test_models_items_root_get_abilities_owner(django_assert_num_queries):
         "link_configuration": False,
         "link_select_options": {},
         "media_auth": False,
+        "download": False,
         "move": False,
         "partial_update": False,
         "restore": True,
@@ -178,6 +184,7 @@ def test_models_items_root_get_abilities_administrator(django_assert_num_queries
         "link_configuration": True,
         "link_select_options": link_select_options,
         "media_auth": True,
+        "download": True,
         "move": True,
         "partial_update": True,
         "restore": False,
@@ -218,6 +225,7 @@ def test_models_items_root_get_abilities_editor_user(django_assert_num_queries):
         "link_configuration": False,
         "link_select_options": link_select_options,
         "media_auth": True,
+        "download": True,
         "move": False,
         "partial_update": True,
         "restore": False,
@@ -259,6 +267,7 @@ def test_models_items_root_get_abilities_reader_user(django_assert_num_queries):
         "link_configuration": False,
         "link_select_options": link_select_options,
         "media_auth": True,
+        "download": True,
         "move": False,
         "partial_update": access_from_link,
         "restore": False,

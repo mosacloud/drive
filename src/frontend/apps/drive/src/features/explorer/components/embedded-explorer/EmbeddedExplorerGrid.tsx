@@ -36,6 +36,8 @@ import { Droppable } from "@/features/explorer/components/Droppable";
 import { useDragItemContext } from "@/features/explorer/components/ExplorerDndProvider";
 import { useModal } from "@gouvfr-lasuite/cunningham-react";
 import { ExplorerMoveFolder } from "@/features/explorer/components/modals/move/ExplorerMoveFolderModal";
+import { useContextMenuContext } from "@gouvfr-lasuite/ui-kit";
+import { useItemActionMenuItems } from "../../hooks/useItemActionMenuItems";
 
 export type EmbeddedExplorerGridProps = {
   isCompact?: boolean;
@@ -74,7 +76,7 @@ export const useEmbeddedExplorerGirdContext = () => {
   const context = useContext(EmbeddedExplorerGridContext);
   if (!context) {
     throw new Error(
-      "useEmbeddedExplorerGirdContext must be used within an EmbeddedExplorerGridContext"
+      "useEmbeddedExplorerGirdContext must be used within an EmbeddedExplorerGridContext",
     );
   }
   return context;
@@ -100,6 +102,13 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
   const [moveItem, setMoveItem] = useState<Item | null>(null);
   const moveModal = useModal();
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const {
+    getMenuItems: getItemActionMenuItems,
+    modals: itemActionModals,
+  } = useItemActionMenuItems({
+    onModalOpenChange: setIsActionModalOpen,
+  });
+  const contextMenu = useContextMenuContext();
 
   const selectedItems = props.selectedItems ?? [];
   const selectedItemsMap = useMemo(() => {
@@ -240,20 +249,20 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
                           // Get all rows between last selected and current
                           const rows = table.getRowModel().rows;
                           const lastSelectedIndex = rows.findIndex(
-                            (r) => r.id === lastSelectedRowRef.current
+                            (r) => r.id === lastSelectedRowRef.current,
                           );
                           const currentIndex = rows.findIndex(
-                            (r) => r.id === row.id
+                            (r) => r.id === row.id,
                           );
 
                           if (lastSelectedIndex !== -1 && currentIndex !== -1) {
                             const startIndex = Math.min(
                               lastSelectedIndex,
-                              currentIndex
+                              currentIndex,
                             );
                             const endIndex = Math.max(
                               lastSelectedIndex,
-                              currentIndex
+                              currentIndex,
                             );
 
                             const newSelection = [...selectedItems];
@@ -276,11 +285,11 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
                             let newValue = [...value];
                             if (
                               newValue.find(
-                                (item) => item.id == row.original.id
+                                (item) => item.id == row.original.id,
                               )
                             ) {
                               newValue = newValue.filter(
-                                (item) => item.id !== row.original.id
+                                (item) => item.id !== row.original.id,
                               );
                             } else {
                               newValue.push(row.original);
@@ -309,12 +318,19 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
                         }
                       }
                     }}
+                    onContextMenu={(e) => {
+                      if (isSelected) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      contextMenu.open({
+                        position: { x: e.clientX, y: e.clientY },
+                        items: getItemActionMenuItems(row.original),
+                      });
+                    }}
                   >
                     {row.getVisibleCells().map((cell, index, array) => {
                       const isLastCell = index === array.length - 1;
                       const isFirstCell = index === 0;
-                      // Check if the item is selected, if so, we can't drop an item inside it
-                      const isSelected = !!selectedItemsMap[row.original.id];
                       return (
                         <td
                           key={cell.id}
@@ -335,13 +351,15 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
                               setOveredItemIds?.((prev) => ({
                                 ...prev,
                                 [row.original.id]:
-                                  item.id === row.original.id ? false : isOver,
+                                  item.id === row.original.id
+                                    ? false
+                                    : isOver,
                               }));
                             }}
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
-                              cell.getContext()
+                              cell.getContext(),
                             )}
                           </Droppable>
                         </td>
@@ -361,6 +379,7 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
             initialFolderId={props.parentItem?.id}
           />
         )}
+        {itemActionModals}
       </EmbeddedExplorerGridContext.Provider>
     </>
   );

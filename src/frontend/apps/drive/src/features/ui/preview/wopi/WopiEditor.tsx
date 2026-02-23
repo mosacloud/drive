@@ -91,6 +91,7 @@ export const WopiEditor = ({ item, onFileRename }: WopiEditorProps) => {
         name="office_frame"
         className="wopi-editor-iframe"
         title={item.title}
+        allow="clipboard-read *; clipboard-write *"
       />
     </div>
   );

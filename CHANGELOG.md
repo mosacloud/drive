@@ -27,6 +27,7 @@ and this project adheres to
 - 🐛(frontend) fix 401 page infinite redirect loop after login
 - 🐛(backend) fix OIDC redirect allowed hosts format in dev config
 - 🐛(global) update ui when renaming file from wopi editor
+- 🐛(frontend) fix clipboard copy-paste in WOPI editor iframe
 
 ### Changed
 

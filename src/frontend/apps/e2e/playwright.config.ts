@@ -24,8 +24,10 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { outputFolder: "./report" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  snapshotPathTemplate: '{snapshotDir}/{arg}{-projectName}{ext}',
   use: {
     baseURL,
+    viewport: { width: 1280, height: 720 },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "retain-on-failure",

@@ -5,7 +5,7 @@ import { clickToMyFiles } from "./utils-navigate";
 import { uploadFile } from "./utils/upload-utils";
 import { grantClipboardPermissions } from "./utils/various-utils";
 
-test("Wopi editor", async ({ page, context, browserName }) => {
+test("Copy and paste works in wopi editor", async ({ page, context, browserName }) => {
   test.skip(browserName !== "chromium", "Only runs on chromium");
   grantClipboardPermissions(browserName, context);
   await clearDb();
@@ -55,6 +55,8 @@ test("Wopi editor", async ({ page, context, browserName }) => {
     .contentFrame()
     .locator('canvas[id="document-canvas"]');
   await expect(canvas).toBeVisible();
+
+  // The editor zone is a canvas, so we need to take a screenshot of it.
   await expect(canvas).toHaveScreenshot("empty-doc-canvas.png", {
     maxDiffPixelRatio: 0.01,
   });
@@ -62,7 +64,7 @@ test("Wopi editor", async ({ page, context, browserName }) => {
     .locator('iframe[name="office_frame"]')
     .contentFrame()
     .locator(".leaflet-layer")
-    .click();
+    .click({ force: true });
   await page.waitForTimeout(1000);
   await page
     .locator('iframe[name="office_frame"]')

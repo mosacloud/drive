@@ -123,6 +123,7 @@ services:
     env_file:
       - env.d/development/common
       - env.d/development/common.local
+      - env.d/development/common.${ENV_OVERRIDE:-local}
       - env.d/development/postgresql
       - env.d/development/postgresql.local
     volumes:

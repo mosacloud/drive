@@ -19,6 +19,7 @@ and this project adheres to
 ### Changed
 
 - 🐛(backend) replace VersionId by Etag for WOPI
+- 🐛(backend) sanitize slash in template-created filenames
 
 ### Removed
 

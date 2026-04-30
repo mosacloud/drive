@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - ✨(backend) manage reconciliation requests for user accounts
+- ✨(backend) add recursive folder export as ZIP archive
 
 ### Changed
 

@@ -18,6 +18,7 @@ from django.db import IntegrityError, transaction
 from django.db import models as db
 from django.db.models.expressions import RawSQL
 from django.db.models.functions import Coalesce
+from django.http import StreamingHttpResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
@@ -46,6 +47,7 @@ from rest_framework_api_key.permissions import HasAPIKey
 
 from core import enums, models
 from core.entitlements import get_entitlements_backend
+from core.services.item_exports import build_zip_stream, export_descendants
 from core.services.sdk_relay import SDKRelayManager
 from core.services.search_indexers import (
     get_file_indexer,
@@ -77,8 +79,6 @@ MEDIA_STORAGE_URL_PATTERN = re.compile(
     f"{settings.MEDIA_URL:s}(?P<preview>preview/)?"
     f"(?P<key>{ITEM_FOLDER:s}/(?P<pk>{UUID_REGEX:s})/.*{FILE_EXT_REGEX:s})$"
 )
-
-
 # pylint: disable=too-many-ancestors
 
 
@@ -1528,6 +1528,23 @@ class ItemViewSet(
         return drf.response.Response(
             status=status.HTTP_302_FOUND,
             headers={"Location": redirect_url},
+        )
+
+    @drf.decorators.action(detail=True, methods=["get"], url_path="export")
+    def export(self, request, *args, **kwargs):
+        """
+        Stream a recursive ZIP archive of a folder's content.
+        """
+        folder = self.get_object()
+
+        descendants = export_descendants(folder)
+        zip_stream = build_zip_stream(descendants)
+
+        encoded_name = quote(f"{folder.title}.zip", safe="")
+        return StreamingHttpResponse(
+            zip_stream,
+            content_type="application/zip",
+            headers={"Content-Disposition": f"attachment; filename*=UTF-8''{encoded_name}"},
         )
 
     @drf.decorators.action(detail=False, methods=["get"], url_path="media-auth")

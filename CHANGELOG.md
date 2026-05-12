@@ -24,6 +24,10 @@ and this project adheres to
 
 - 🔥(backend) drop deprecated numchild columns from item
 
+### Added
+
+- ✨(frontend) add CTA on public link for anonymous and authenticated users
+
 ## [v0.18.0] - 2026-05-04
 
 ### Added

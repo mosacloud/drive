@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import uuid
 from io import BytesIO
 from urllib.parse import quote, unquote, urlparse
 
@@ -2082,6 +2083,53 @@ class InvitationViewset(
             },
             item=item,
         )
+
+
+class ReconciliationConfirmView(drf.views.APIView):
+    """API endpoint to confirm user reconciliation emails.
+
+    GET /user-reconciliations/{user_type}/{confirmation_id}/
+    Marks `active_email_checked` or `inactive_email_checked` to True.
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, user_type, confirmation_id):
+        """Check the confirmation ID and mark the corresponding email as checked."""
+        try:
+            # validate UUID
+            uuid_obj = uuid.UUID(str(confirmation_id))
+        except ValueError:
+            return drf_response.Response(
+                {"detail": "Badly formatted confirmation id"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user_type not in ("active", "inactive"):
+            return drf_response.Response(
+                {"detail": "Invalid user_type"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        lookup = (
+            {"active_email_confirmation_id": uuid_obj}
+            if user_type == "active"
+            else {"inactive_email_confirmation_id": uuid_obj}
+        )
+
+        try:
+            reconciliation = models.UserReconciliation.objects.get(**lookup)
+        except models.UserReconciliation.DoesNotExist:
+            return drf_response.Response(
+                {"detail": "Reconciliation entry not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        field_name = "active_email_checked" if user_type == "active" else "inactive_email_checked"
+        if not getattr(reconciliation, field_name):
+            setattr(reconciliation, field_name, True)
+            reconciliation.save()
+
+        return drf_response.Response({"detail": "Confirmation received"})
 
 
 class ConfigView(drf.views.APIView):

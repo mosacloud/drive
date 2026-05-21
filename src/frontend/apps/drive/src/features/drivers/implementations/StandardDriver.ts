@@ -481,6 +481,13 @@ export class StandardDriver extends Driver {
     const data = await response.json();
     return data;
   }
+
+  async confirmUserReconciliation(
+    userType: "active" | "inactive",
+    confirmationId: string,
+  ): Promise<void> {
+    await fetchAPI(`user-reconciliations/${userType}/${confirmationId}/`);
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

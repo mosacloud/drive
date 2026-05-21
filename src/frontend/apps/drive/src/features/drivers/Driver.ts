@@ -161,4 +161,10 @@ export abstract class Driver {
   abstract getWopiInfo(itemId: string): Promise<WopiInfo>;
 
   abstract getEntitlements(): Promise<Entitlements>;
+
+  // User reconciliation
+  abstract confirmUserReconciliation(
+    userType: "active" | "inactive",
+    confirmationId: string,
+  ): Promise<void>;
 }

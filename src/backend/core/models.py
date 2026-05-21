@@ -324,6 +324,41 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
             raise ValueError("User has no email address.")
         mail.send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def send_email(self, subject, context=None, language=None):
+        """Generate and send email to the user from a template."""
+
+        if not settings.EMAIL_HOST:
+            logger.info("EMAIL_HOST host is not set, skipping email sending")
+            return
+
+        context = context or {}
+        domain = settings.EMAIL_URL_APP or Site.objects.get_current().domain
+        language = language or get_language()
+        context.update(
+            {
+                "brandname": settings.EMAIL_BRAND_NAME,
+                "domain": domain,
+                "logo_img": settings.EMAIL_LOGO_IMG,
+            }
+        )
+
+        with override(language):
+            msg_html = render_to_string("mail/html/reconciliation.html", context)
+            msg_plain = render_to_string("mail/text/reconciliation.txt", context)
+            subject = str(subject)  # Force translation
+
+            try:
+                send_mail(
+                    subject.capitalize(),
+                    msg_plain,
+                    settings.EMAIL_FROM,
+                    [self.email],
+                    html_message=msg_html,
+                    fail_silently=False,
+                )
+            except smtplib.SMTPException as exception:
+                logger.error("email to %s was not sent: %s", self.email, exception)
+
     @cached_property
     def teams(self):
         """

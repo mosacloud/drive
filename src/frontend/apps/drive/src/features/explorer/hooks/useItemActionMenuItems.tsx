@@ -20,6 +20,7 @@ import {
   useGlobalExplorer,
 } from "../components/GlobalExplorerContext";
 import { useDownloadItem } from "@/features/items/hooks/useDownloadItem";
+import { baseApiUrl } from "@/features/api/utils";
 import { ExplorerRenameItemModal } from "../components/modals/ExplorerRenameItemModal";
 import { ExplorerCreateFolderModal } from "../components/modals/ExplorerCreateFolderModal";
 import { ItemShareModal } from "../components/modals/share/ItemShareModal";
@@ -162,6 +163,14 @@ export const useItemActionMenuItems = ({
         isHidden: item.type === ItemType.FOLDER || minimal,
         callback: () => {
           handleDownloadItem(item);
+        },
+      },
+      {
+        icon: <Download />,
+        label: t("explorer.item.actions.export"),
+        isHidden: !item.abilities?.export || minimal,
+        callback: () => {
+          window.location.href = `${baseApiUrl()}items/${effectiveItemId}/export/`;
         },
       },
       {

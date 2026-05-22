@@ -79,6 +79,7 @@ export type Item = {
     children_create: boolean;
     children_list: boolean;
     destroy: boolean;
+    export: boolean;
     favorite: boolean;
     invite_owner: boolean;
     link_configuration: boolean;

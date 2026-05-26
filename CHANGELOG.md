@@ -12,6 +12,10 @@ and this project adheres to
 
 - 🐛(backend) replace VersionId by Etag for WOPI
 
+### Removed
+
+- 🔥(backend) drop deprecated numchild columns from item
+
 ## [v0.18.0] - 2026-05-04
 
 ### Added

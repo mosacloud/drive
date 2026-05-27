@@ -213,6 +213,31 @@ def test_models_items_hard_delete():
 
 
 @pytest.mark.parametrize(
+    "extension,expected",
+    [
+        ("doc", True),
+        ("DOC", True),
+        ("xls", True),
+        ("ppt", True),
+        ("docx", False),
+        ("pdf", False),
+        (None, False),
+    ],
+)
+def test_models_items_get_abilities_convert(extension, expected):
+    """Flag convert only for legacy extensions on READY files with update access."""
+    user = factories.UserFactory()
+    filename = f"file.{extension}" if extension else None
+    item = factories.ItemFactory(
+        users=[(user, "editor")],
+        type=models.ItemTypeChoices.FILE,
+        filename=filename or "file",
+        update_upload_state=models.ItemUploadStateChoices.READY,
+    )
+    assert item.get_abilities(user)["convert"] is expected
+
+
+@pytest.mark.parametrize(
     "is_authenticated,reach,role",
     [
         (True, "restricted", "reader"),
@@ -256,6 +281,7 @@ def test_models_items_get_abilities_forbidden(
         "update": False,
         "upload_ended": False,
         "wopi": False,
+        "convert": False,
     }
     nb_queries = 1 if is_authenticated else 0
     with django_assert_num_queries(nb_queries):
@@ -305,6 +331,7 @@ def test_models_items_get_abilities_reader(is_authenticated, reach, django_asser
         "update": False,
         "upload_ended": False,
         "wopi": True,
+        "convert": False,
     }
     nb_queries = 1 if is_authenticated else 0
     with django_assert_num_queries(nb_queries):
@@ -380,6 +407,7 @@ def test_models_items_get_abilities_editor(  # noqa: PLR0913
         link_role="editor",
         type=item_type,
         update_upload_state=upload_state,
+        filename="document.pdf" if item_type == models.ItemTypeChoices.FILE else None,
     )
 
     user = factories.UserFactory() if is_authenticated else AnonymousUser()
@@ -408,6 +436,7 @@ def test_models_items_get_abilities_editor(  # noqa: PLR0913
         "update": True,
         "upload_ended": is_authenticated,
         "wopi": True,
+        "convert": False,
     }
     nb_queries = 1 if is_authenticated else 0
     with django_assert_num_queries(nb_queries):
@@ -443,7 +472,10 @@ def test_models_items_not_root_get_abilities_owner(
     """Check abilities returned for the owner of an item."""
     user = factories.UserFactory()
     item = factories.ItemFactory(
-        users=[(user, "owner")], type=item_type, update_upload_state=upload_state
+        users=[(user, "owner")],
+        type=item_type,
+        update_upload_state=upload_state,
+        filename="document.pdf" if item_type == models.ItemTypeChoices.FILE else None,
     )
     can_export = item_type == models.ItemTypeChoices.FOLDER
     expected_abilities = {
@@ -474,6 +506,7 @@ def test_models_items_not_root_get_abilities_owner(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -503,6 +536,7 @@ def test_models_items_not_root_get_abilities_owner(
         "update": False,
         "upload_ended": False,
         "wopi": False,
+        "convert": False,
     }
 
 
@@ -531,6 +565,7 @@ def test_models_items_not_root_get_abilities_administrator(
         users=[(user, "administrator")],
         type=item_type,
         update_upload_state=upload_state,
+        filename="document.pdf" if item_type == models.ItemTypeChoices.FILE else None,
     )
     can_export = item_type == models.ItemTypeChoices.FOLDER
     expected_abilities = {
@@ -561,6 +596,7 @@ def test_models_items_not_root_get_abilities_administrator(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -601,6 +637,7 @@ def test_models_items_not_root_get_abilities_editor_user(
     item = factories.ItemFactory(
         parent=parent,
         type=item_type,
+        filename="document.pdf" if item_type == models.ItemTypeChoices.FILE else None,
         update_upload_state=upload_state,
     )
     link_select_options = LinkReachChoices.get_select_options(**item.ancestors_link_definition)
@@ -629,6 +666,7 @@ def test_models_items_not_root_get_abilities_editor_user(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -681,6 +719,7 @@ def test_models_items_not_root_get_abilities_reader_user(django_assert_num_queri
         "update": access_from_link,
         "upload_ended": access_from_link,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(2):
         assert item.get_abilities(user) == expected_abilities
@@ -738,6 +777,7 @@ def test_models_items_get_abilities_hard_delete_non_root_by_non_creator(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert child.get_abilities(owner) == expected_abilities
@@ -768,6 +808,7 @@ def test_models_items_get_abilities_hard_delete_non_root_by_non_creator(
         "update": False,
         "upload_ended": False,
         "wopi": False,
+        "convert": False,
     }
 
 

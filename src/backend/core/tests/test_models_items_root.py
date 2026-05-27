@@ -71,6 +71,7 @@ def test_models_sub_item_abilities_downgraded():
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
 
     # Downgrade the role on the root item
@@ -106,6 +107,7 @@ def test_models_sub_item_abilities_downgraded():
         "update": False,
         "upload_ended": False,
         "wopi": True,
+        "convert": False,
     }
 
 
@@ -159,6 +161,7 @@ def test_models_items_root_get_abilities_owner(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -188,6 +191,7 @@ def test_models_items_root_get_abilities_owner(
         "update": False,
         "upload_ended": False,
         "wopi": False,
+        "convert": False,
     }
 
 
@@ -215,6 +219,7 @@ def test_models_items_root_get_abilities_administrator(
     item = factories.ItemFactory(
         users=[(user, "administrator")],
         type=item_type,
+        filename=("document.pdf" if item_type == models.ItemTypeChoices.FILE else None),
         update_upload_state=upload_state,
     )
     link_select_options = LinkReachChoices.get_select_options(**item.ancestors_link_definition)
@@ -243,6 +248,7 @@ def test_models_items_root_get_abilities_administrator(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -277,7 +283,10 @@ def test_models_items_root_get_abilities_editor_user(
     """Check abilities returned for the editor of a root item."""
     user = factories.UserFactory()
     item = factories.ItemFactory(
-        users=[(user, "editor")], type=item_type, update_upload_state=upload_state
+        users=[(user, "editor")],
+        type=item_type,
+        filename="document.pdf" if item_type == models.ItemTypeChoices.FILE else None,
+        update_upload_state=upload_state,
     )
     link_select_options = LinkReachChoices.get_select_options(**item.ancestors_link_definition)
     can_export = item_type == models.ItemTypeChoices.FOLDER
@@ -305,6 +314,7 @@ def test_models_items_root_get_abilities_editor_user(
         "update": True,
         "upload_ended": True,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities
@@ -357,6 +367,7 @@ def test_models_items_root_get_abilities_reader_user(
         "update": access_from_link,
         "upload_ended": access_from_link,
         "wopi": True,
+        "convert": False,
     }
     with django_assert_num_queries(1):
         assert item.get_abilities(user) == expected_abilities

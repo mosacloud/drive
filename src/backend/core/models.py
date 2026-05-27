@@ -43,6 +43,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from timezone_field import TimeZoneField
 
 from core.utils.item_title import manage_unique_title as manage_unique_title_utils
+from wopi.conversion.policy import target_extension_for
 
 logger = getLogger(__name__)
 
@@ -1293,6 +1294,12 @@ class Item(TreeModel, BaseModel):
             and self.upload_state == ItemUploadStateChoices.READY
         )
         can_export = can_get and self.type == ItemTypeChoices.FOLDER
+        can_convert = (
+            can_update
+            and self.type == ItemTypeChoices.FILE
+            and self.upload_state == ItemUploadStateChoices.READY
+            and bool(target_extension_for(self.extension))
+        )
 
         return {
             "accesses_manage": can_manage,
@@ -1318,6 +1325,7 @@ class Item(TreeModel, BaseModel):
             "update": can_update,
             "upload_ended": can_update and user.is_authenticated,
             "wopi": can_get,
+            "convert": can_convert,
         }
 
     def send_email(self, subject, emails, context=None, language=None):

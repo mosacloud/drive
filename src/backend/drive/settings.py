@@ -1395,6 +1395,9 @@ class Base(Configuration):
     WOPI_ACCESS_TOKEN_TIMEOUT = values.IntegerValue(
         60 * 60 * 10, environ_name="WOPI_ACCESS_TOKEN_TIMEOUT", environ_prefix=None
     )
+    WOPI_CONVERSION_SOURCE_TOKEN_TIMEOUT = values.IntegerValue(
+        120, environ_name="WOPI_CONVERSION_SOURCE_TOKEN_TIMEOUT", environ_prefix=None
+    )
     WOPI_LOCK_TIMEOUT = values.IntegerValue(
         30 * 60, environ_name="WOPI_LOCK_TIMEOUT", environ_prefix=None
     )

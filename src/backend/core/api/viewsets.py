@@ -56,7 +56,10 @@ from core.services.search_indexers import (
 from core.storage import get_storage_compute_backend
 from core.tasks.item import duplicate_file, process_item_purge, rename_file
 from core.utils.analytics import posthog_capture
+from wopi.conversion import exceptions as conversion_exceptions
+from wopi.conversion.services import prepare_conversion
 from wopi.services import access as access_service
+from wopi.tasks.conversion import convert_file
 from wopi.utils import compute_wopi_launch_url, get_wopi_client_config
 
 from . import permissions, serializers, utils
@@ -643,6 +646,38 @@ class ItemViewSet(
         instance.hard_delete()
         process_item_purge.delay(instance.id)
         return drf.response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @drf.decorators.action(detail=True, methods=["post"], url_path="convert")
+    def convert(self, request, *args, **kwargs):
+        """Queue a legacy Office file conversion.
+
+        Creates a placeholder Item in CONVERTING state in the destination folder
+        and dispatches the celery task that will attach the converted bytes.
+        """
+        source = self.get_object()
+        try:
+            placeholder = prepare_conversion(source, request.user)
+        except conversion_exceptions.ConversionPermissionDenied as exc:
+            raise drf.exceptions.PermissionDenied() from exc
+        except (
+            conversion_exceptions.ConversionRejected,
+            conversion_exceptions.ConversionMisconfigured,
+        ) as exc:
+            raise drf.exceptions.ValidationError({"detail": str(exc)}) from exc
+
+        try:
+            convert_file.delay(
+                source_item_id=str(source.id),
+                converted_item_id=str(placeholder.id),
+                user_id=str(request.user.id),
+            )
+        except Exception:
+            placeholder.soft_delete()
+            placeholder.delete()
+            raise
+
+        serializer = self.get_serializer(placeholder)
+        return drf.response.Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
         """List top level items with pagination and filtering."""

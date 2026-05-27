@@ -159,6 +159,7 @@ export abstract class Driver {
   abstract deleteItems(ids: string[]): Promise<void>;
   abstract hardDeleteItems(ids: string[]): Promise<void>;
   abstract getWopiInfo(itemId: string): Promise<WopiInfo>;
+  abstract convertItem(itemId: string): Promise<Item>;
 
   abstract getEntitlements(): Promise<Entitlements>;
 

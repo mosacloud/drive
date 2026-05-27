@@ -20,6 +20,7 @@ export enum LinkRole {
 export enum ItemUploadState {
   PENDING = "pending",
   DUPLICATING = "duplicating",
+  CONVERTING = "converting",
   ANALYZING = "analyzing",
   SUSPICIOUS = "suspicious",
   FILE_TOO_LARGE_TO_ANALYZE = "file_too_large_to_analyze",
@@ -93,6 +94,7 @@ export type Item = {
     tree: boolean;
     update: boolean;
     upload_ended: boolean;
+    convert?: boolean;
   };
   policy?: string;
 };

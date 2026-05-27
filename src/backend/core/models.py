@@ -73,6 +73,7 @@ class ItemUploadStateChoices(models.TextChoices):
 
     PENDING = "pending", _("Pending")
     DUPLICATING = "duplicating", ("Duplicating")
+    CONVERTING = "converting", _("Converting")
     ANALYZING = "analyzing", _("Analyzing")
     SUSPICIOUS = "suspicious", _("Suspicious")
     FILE_TOO_LARGE_TO_ANALYZE = (
@@ -1033,7 +1034,11 @@ class Item(TreeModel, BaseModel):
         if (
             self.created_at is None
             and self.type == ItemTypeChoices.FILE
-            and self.upload_state != ItemUploadStateChoices.DUPLICATING
+            and self.upload_state
+            not in (
+                ItemUploadStateChoices.DUPLICATING,
+                ItemUploadStateChoices.CONVERTING,
+            )
         ):
             self.upload_state = ItemUploadStateChoices.PENDING
 

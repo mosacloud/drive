@@ -1516,7 +1516,10 @@ def test_api_items_retrieve_wopi_supported():
         WOPI_CONFIGURATION_CACHE_KEY,
         {
             "mimetypes": {
-                "application/vnd.oasis.opendocument.text": "https://vendorA.com/launch_url",
+                "application/vnd.oasis.opendocument.text": {
+                    "url": "https://vendorA.com/launch_url",
+                    "client": "vendorA",
+                },
             },
             "extensions": {},
         },

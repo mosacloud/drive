@@ -39,9 +39,11 @@ def get_wopi_client_config(item, user):
         return None
 
     result = None
-    # Extension must always be checked first.
-    if item.extension in wopi_configuration["extensions"]:
-        result = wopi_configuration["extensions"][item.extension]
+    # Extension must always be checked first. Filenames preserve case (REPORT.DOC),
+    # while the discovery stores extensions in lowercase, so normalize the lookup.
+    extension = item.extension.lower() if item.extension else None
+    if extension and extension in wopi_configuration["extensions"]:
+        result = wopi_configuration["extensions"][extension]
     elif item.mimetype in wopi_configuration["mimetypes"]:
         result = wopi_configuration["mimetypes"][item.mimetype]
 

@@ -483,6 +483,15 @@
               "cancel": "Cancel",
               "submit": "Rename"
             }
+          },
+          "convert": {
+            "modal": {
+              "title": "Convert to open this file",
+              "content": "Drive will create an editable copy. Your original file stays untouched.",
+              "cancel": "Cancel",
+              "confirm": "Convert",
+              "error": "Conversion failed. Please try again."
+            }
           }
         },
         "item": {
@@ -501,7 +510,8 @@
             "duplicate_error": "An error occurred while duplicating the item.",
             "delete": "Delete"
           },
-          "duplicating": "duplication in progress"
+          "duplicating": "duplication in progress",
+          "converting": "conversion in progress"
         }
       },
       "time": {
@@ -1073,6 +1083,15 @@
               "cancel": "Annuler",
               "submit": "Renommer"
             }
+          },
+          "convert": {
+            "modal": {
+              "title": "Convertir pour ouvrir ce fichier",
+              "content": "Drive va créer une copie modifiable. Votre fichier d'origine reste intact.",
+              "cancel": "Annuler",
+              "confirm": "Convertir",
+              "error": "La conversion a échoué. Veuillez réessayer."
+            }
           }
         },
         "item": {
@@ -1091,7 +1110,8 @@
             "duplicate_error": "Une erreur est survenue lors de la duplication.",
             "delete": "Supprimer"
           },
-          "duplicating": "duplication en cours"
+          "duplicating": "duplication en cours",
+          "converting": "conversion en cours"
         }
       },
       "time": {
@@ -1657,6 +1677,15 @@
               "cancel": "Annuleren",
               "submit": "Hernoem"
             }
+          },
+          "convert": {
+            "modal": {
+              "title": "Converteren om dit bestand te openen",
+              "content": "Drive maakt een bewerkbare kopie. Uw originele bestand blijft ongewijzigd.",
+              "cancel": "Annuleren",
+              "confirm": "Converteren",
+              "error": "Conversie mislukt. Probeer het opnieuw."
+            }
           }
         },
         "item": {
@@ -1675,7 +1704,8 @@
             "duplicate_error": "Er is een fout opgetreden bij het dupliceren.",
             "delete": "Verwijder"
           },
-          "duplicating": "duplicatie bezig"
+          "duplicating": "duplicatie bezig",
+          "converting": "conversie bezig"
         }
       },
       "time": {

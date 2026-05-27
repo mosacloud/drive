@@ -13,11 +13,13 @@ import {
 import { InfiniteScroll } from "@/features/ui/components/infinite-scroll/InfiniteScroll";
 import { useRouter } from "next/router";
 import { DefaultRoute, getDefaultRouteId } from "@/utils/defaultRoutes";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { canCreateChildren } from "@/features/items/utils";
 import { Spinner } from "@gouvfr-lasuite/ui-kit";
 import { openWopiInNewTab } from "@/features/wopi/openWopi";
 import { itemToPreviewFile } from "@/features/explorer/utils/utils";
+import { useModal } from "@gouvfr-lasuite/cunningham-react";
+import { ConvertLegacyFileModal } from "@/features/explorer/components/modals/ConvertLegacyFileModal";
 
 /**
  * Wrapper around EmbeddedExplorerGrid to display a list of items in a table.
@@ -45,9 +47,17 @@ export const AppExplorerGrid = () => {
 
   const effectiveOnNavigate = appExplorer.onNavigate ?? onNavigate;
 
+  const convertModal = useModal();
+  const [itemToConvert, setItemToConvert] = useState<Item | null>(null);
+
   const handleFileClick =
     appExplorer.onFileClick ??
     ((item: Item) => {
+      if (item.abilities.convert) {
+        setItemToConvert(item);
+        convertModal.open();
+        return;
+      }
       if (item.is_wopi_supported) {
         openWopiInNewTab(itemToPreviewFile(item));
         return;
@@ -170,6 +180,13 @@ export const AppExplorerGrid = () => {
         <div className="explorer__grid__loading-overlay">
           <Spinner size="xl" />
         </div>
+      )}
+      {convertModal.isOpen && itemToConvert && (
+        <ConvertLegacyFileModal
+          item={itemToConvert}
+          isOpen={convertModal.isOpen}
+          onClose={convertModal.onClose}
+        />
       )}
     </div>
   );

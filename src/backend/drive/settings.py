@@ -1398,6 +1398,32 @@ class Base(Configuration):
     WOPI_LOCK_TIMEOUT = values.IntegerValue(
         30 * 60, environ_name="WOPI_LOCK_TIMEOUT", environ_prefix=None
     )
+<<<<<<< HEAD
+||||||| parent of f8297c68 (✨(backend) add OnlyOffice conversion backend)
+    WOPI_LEGACY_CONVERSION_TARGETS = {
+        "doc": "docx",
+        "xls": "xlsx",
+        "ppt": "pptx",
+    }
+=======
+    WOPI_LEGACY_CONVERSION_TARGETS = {
+        "doc": "docx",
+        "xls": "xlsx",
+        "ppt": "pptx",
+    }
+    WOPI_ONLYOFFICE_CONVERT_HTTP_CONNECT_TIMEOUT = values.IntegerValue(
+        5, environ_name="WOPI_ONLYOFFICE_CONVERT_HTTP_CONNECT_TIMEOUT", environ_prefix=None
+    )
+    WOPI_ONLYOFFICE_CONVERT_HTTP_READ_TIMEOUT = values.IntegerValue(
+        60, environ_name="WOPI_ONLYOFFICE_CONVERT_HTTP_READ_TIMEOUT", environ_prefix=None
+    )
+    WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_CONNECT_TIMEOUT = values.IntegerValue(
+        5, environ_name="WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_CONNECT_TIMEOUT", environ_prefix=None
+    )
+    WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_READ_TIMEOUT = values.IntegerValue(
+        30, environ_name="WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_READ_TIMEOUT", environ_prefix=None
+    )
+>>>>>>> f8297c68 (✨(backend) add OnlyOffice conversion backend)
     WOPI_DISABLE_CHAT = values.IntegerValue(
         0, environ_name="WOPI_DISABLE_CHAT", environ_prefix=None
     )

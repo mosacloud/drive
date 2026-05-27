@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Row, flexRender } from "@tanstack/react-table";
 import clsx from "clsx";
-import { Item, ItemType, ItemUploadState } from "@/features/drivers/types";
+import { Item, ItemType, TRANSIENT_UPLOAD_STATES } from "@/features/drivers/types";
 import { Droppable } from "@/features/explorer/components/Droppable";
 import { useIsItemSelected } from "@/features/explorer/stores/selectionStore";
 
@@ -25,14 +25,15 @@ const EmbeddedExplorerGridRowComponent = ({
 }: EmbeddedExplorerGridRowProps) => {
   const item = row.original;
   const isSelected = useIsItemSelected(item.id);
+  const isTransient = TRANSIENT_UPLOAD_STATES.includes(item.upload_state);
 
   return (
     <tr
       className={clsx({
-        selectable: item.upload_state !== ItemUploadState.DUPLICATING,
+        selectable: !isTransient,
         selected: isSelected,
         over: isOvered,
-        duplicating: item.upload_state === ItemUploadState.DUPLICATING,
+        duplicating: isTransient,
       })}
       data-id={item.id}
       tabIndex={0}

@@ -1,4 +1,8 @@
-import { Item, ItemType, ItemUploadState } from "@/features/drivers/types";
+import {
+  Item,
+  ItemType,
+  TRANSIENT_UPLOAD_STATES,
+} from "@/features/drivers/types";
 import {
   createContext,
   useCallback,
@@ -296,7 +300,7 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
 
   const handleRowClick = useCallback(
     (e: React.MouseEvent<HTMLTableRowElement>, row: Row<Item>) => {
-      if (row.original.upload_state === ItemUploadState.DUPLICATING) {
+      if (TRANSIENT_UPLOAD_STATES.includes(row.original.upload_state)) {
         return;
       }
 
@@ -355,7 +359,7 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
       e.preventDefault();
       e.stopPropagation();
 
-      if (row.original.upload_state === ItemUploadState.DUPLICATING) {
+      if (TRANSIENT_UPLOAD_STATES.includes(row.original.upload_state)) {
         return;
       }
 

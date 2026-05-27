@@ -27,6 +27,11 @@ export enum ItemUploadState {
   READY = "ready",
 }
 
+export const TRANSIENT_UPLOAD_STATES: string[] = [
+  ItemUploadState.DUPLICATING,
+  ItemUploadState.CONVERTING,
+];
+
 export type ItemBreadcrumb = {
   id: string;
   originalId?: string; // Used to identify all occurrences of the same item in the tree

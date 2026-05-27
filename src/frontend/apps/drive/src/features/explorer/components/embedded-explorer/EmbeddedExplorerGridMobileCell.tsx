@@ -1,10 +1,10 @@
 import { CellContext } from "@tanstack/react-table";
-import { Item, ItemUploadState } from "@/features/drivers/types";
+import { Item } from "@/features/drivers/types";
 import { memo } from "react";
 import { ItemIcon } from "@/features/explorer/components/icons/ItemIcon";
 import { timeAgo } from "@/features/explorer/utils/utils";
 import { LoadingRing } from "@/features/ui/components/loading-ring/LoadingRing";
-import { useTranslation } from "react-i18next";
+import { useTransientItem } from "@/features/explorer/hooks/useTransientItem";
 import clsx from "clsx";
 import { removeFileExtension } from "@gouvfr-lasuite/ui-kit";
 
@@ -14,12 +14,11 @@ const EmbeddedExplorerGridMobileCellComponent = (
   params: EmbeddedExplorerGridMobileCellProps,
 ) => {
   const item = params.row.original;
-  const { t } = useTranslation();
-  const isDuplicating = item.upload_state === ItemUploadState.DUPLICATING;
+  const { isTransient, label: transientLabel } = useTransientItem(item);
 
   return (
     <div className="explorer__grid__item__mobile">
-      {isDuplicating ? (
+      {isTransient ? (
         <div className="explorer__grid__item__name__spinner-container">
           <LoadingRing size="md" />
         </div>
@@ -30,14 +29,14 @@ const EmbeddedExplorerGridMobileCellComponent = (
         <div className="explorer__grid__item__mobile__info__title">
           <span
             className={clsx("explorer__grid__item__name__text", {
-              "explorer__grid__item__name--duplicating-text": isDuplicating,
+              "explorer__grid__item__name--duplicating-text": isTransient,
             })}
           >
             {removeFileExtension(item.title)}
-            {isDuplicating && (
+            {isTransient && (
               <span className="explorer__grid__item__name__duplicating-label">
                 {" "}
-                ({t("explorer.item.duplicating")})
+                ({transientLabel})
               </span>
             )}
           </span>

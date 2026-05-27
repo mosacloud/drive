@@ -1,5 +1,5 @@
 import { CellContext } from "@tanstack/react-table";
-import { Item, ItemUploadState, LinkReach } from "@/features/drivers/types";
+import { Item, LinkReach } from "@/features/drivers/types";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Draggable } from "@/features/explorer/components/Draggable";
 import { Tooltip } from "@gouvfr-lasuite/cunningham-react";
@@ -9,7 +9,7 @@ import { Icon, IconSize, removeFileExtension } from "@gouvfr-lasuite/ui-kit";
 import { LoadingRing } from "@/features/ui/components/loading-ring/LoadingRing";
 import { useEmbeddedExplorerGirdContext } from "./EmbeddedExplorerGrid";
 import { useIsItemSelected } from "@/features/explorer/stores/selectionStore";
-import { useTranslation } from "react-i18next";
+import { useTransientItem } from "@/features/explorer/hooks/useTransientItem";
 import clsx from "clsx";
 export type EmbeddedExplorerGridNameCellProps = CellContext<Item, string> & {
   children?: React.ReactNode;
@@ -19,12 +19,11 @@ const EmbeddedExplorerGridNameCellComponent = (
   params: EmbeddedExplorerGridNameCellProps,
 ) => {
   const item = params.row.original;
-  const { t } = useTranslation();
   const ref = useRef<HTMLSpanElement>(null);
   const [isOverflown, setIsOverflown] = useState(false);
   const { disableItemDragAndDrop } = useEmbeddedExplorerGirdContext();
   const isSelected = useIsItemSelected(item.id);
-  const isDuplicating = item.upload_state === ItemUploadState.DUPLICATING;
+  const { isTransient, label: transientLabel } = useTransientItem(item);
 
   const disableDrag = useDisableDragGridItem(item);
 
@@ -36,20 +35,20 @@ const EmbeddedExplorerGridNameCellComponent = (
         id={params.cell.id + "-title"}
         item={item}
         className="explorer__grid__item__name__title-wrapper"
-        disabled={isDuplicating || disableItemDragAndDrop || isSelected} // If it's selected then we can drag on the entire cell
+        disabled={isTransient || disableItemDragAndDrop || isSelected} // If it's selected then we can drag on the entire cell
       >
         <div className="explorer__grid__item__name__title-wrapper">
           <span
             className={clsx("explorer__grid__item__name__text", {
-              "explorer__grid__item__name--duplicating-text": isDuplicating,
+              "explorer__grid__item__name--duplicating-text": isTransient,
             })}
             ref={ref}
           >
             {removeFileExtension(item.title)}
-            {isDuplicating && (
+            {isTransient && (
               <span className="explorer__grid__item__name__duplicating-label">
                 {" "}
-                ({t("explorer.item.duplicating")})
+                ({transientLabel})
               </span>
             )}
             {params.children}
@@ -90,14 +89,14 @@ const EmbeddedExplorerGridNameCellComponent = (
     <Draggable
       id={params.cell.id}
       item={item}
-      disabled={isDuplicating || disableDrag}
+      disabled={isTransient || disableDrag}
     >
       <div
         className={clsx("explorer__grid__item__name", {
-          "explorer__grid__item__name--duplicating": isDuplicating,
+          "explorer__grid__item__name--duplicating": isTransient,
         })}
       >
-        {isDuplicating ? (
+        {isTransient ? (
           <div className="explorer__grid__item__name__spinner-container">
             <LoadingRing size="md" />
           </div>

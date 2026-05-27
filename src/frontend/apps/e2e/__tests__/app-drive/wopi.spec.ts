@@ -1,5 +1,5 @@
 import path from "path";
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import { clearDb, login } from "./utils-common";
 import { clickToMyFiles } from "./utils-navigate";
 import { getRowItem } from "./utils-embedded-grid";
@@ -8,6 +8,252 @@ import { grantClipboardPermissions } from "./utils/various-utils";
 
 const IMAGE_FILE_PATH = path.join(__dirname, "/assets/test-image.png");
 const DOCX_FILE_PATH = path.join(__dirname, "/assets/empty_doc.docx");
+
+/**
+ * Intercepts items API responses to inject convert: true on all items.
+ */
+const mockRequiresConversion = async (page: Page) => {
+  const inject = (item: Record<string, unknown>) => {
+    item.abilities = {
+      ...(item.abilities as Record<string, unknown>),
+      convert: true,
+    };
+  };
+  await page.route(
+    (url) => /\/api\/v1\.0\/items(\/|$)/.test(url.pathname),
+    async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      const response = await route.fetch();
+      const json = await response.json();
+      if (Array.isArray(json?.results)) {
+        json.results.forEach(inject);
+      } else if (json?.id) {
+        inject(json);
+      }
+      await route.fulfill({ response, json });
+    },
+  );
+};
+
+test("Double-clicking a file with convert ability opens the conversion modal", async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Only runs on chromium");
+  await clearDb();
+  await login(page, "drive@example.com");
+  await mockRequiresConversion(page);
+  await page.goto("/");
+  await clickToMyFiles(page);
+  await expect(page.getByText("This tab is empty")).toBeVisible();
+
+  await uploadFile(page, DOCX_FILE_PATH);
+  await expect(page.getByText("Drop your files here")).not.toBeVisible();
+
+  const row = await getRowItem(page, "empty_doc");
+  await row.dblclick();
+
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).toBeVisible();
+});
+
+test("Cancelling the conversion modal (convert mocked) does not call the convert API", async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Only runs on chromium");
+  await clearDb();
+  await login(page, "drive@example.com");
+  await mockRequiresConversion(page);
+  await page.goto("/");
+  await clickToMyFiles(page);
+  await expect(page.getByText("This tab is empty")).toBeVisible();
+
+  await uploadFile(page, DOCX_FILE_PATH);
+  await expect(page.getByText("Drop your files here")).not.toBeVisible();
+
+  let convertCalled = false;
+  await page.route("**/api/v1.0/items/*/convert/", async (route) => {
+    convertCalled = true;
+    await route.continue();
+  });
+
+  const row = await getRowItem(page, "empty_doc");
+  await row.dblclick();
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Cancel" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).not.toBeVisible();
+  expect(convertCalled).toBe(false);
+});
+
+test("Confirming the conversion modal (convert mocked) shows the converting placeholder in the folder", async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Only runs on chromium");
+  await clearDb();
+  await login(page, "drive@example.com");
+  await mockRequiresConversion(page);
+  await page.goto("/");
+  await clickToMyFiles(page);
+  await expect(page.getByText("This tab is empty")).toBeVisible();
+
+  await uploadFile(page, DOCX_FILE_PATH);
+  await expect(page.getByText("Drop your files here")).not.toBeVisible();
+
+  // The POST /convert/ now returns the placeholder Item directly. We mock it
+  // and let the front-end refresh the folder so the placeholder appears.
+  const placeholderId = "00000000-0000-0000-0000-000000000001";
+  await page.route("**/api/v1.0/items/*/convert/", async (route) => {
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: placeholderId,
+        title: "empty_doc.docx",
+        filename: "empty_doc.docx",
+        type: "file",
+        upload_state: "converting",
+        abilities: {},
+      }),
+    });
+  });
+
+  // Inject the placeholder in the folder list returned by /items/ so it shows
+  // up after the post-conversion refresh.
+  await page.route(
+    (url) => /\/api\/v1\.0\/items(\/|$)/.test(url.pathname),
+    async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      const response = await route.fetch();
+      const json = await response.json();
+      const placeholder = {
+        id: placeholderId,
+        title: "empty_doc.docx",
+        filename: "empty_doc.docx",
+        type: "file",
+        upload_state: "converting",
+        abilities: {},
+      };
+      if (Array.isArray(json?.results)) {
+        json.results.push(placeholder);
+      }
+      await route.fulfill({ response, json });
+    },
+  );
+
+  const row = await getRowItem(page, "empty_doc");
+  await row.dblclick();
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Convert" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).not.toBeVisible({ timeout: 5000 });
+  await expect(page.getByText("conversion in progress")).toBeVisible();
+});
+
+test("Conversion failure removes the converting placeholder and shows an error toast", async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Only runs on chromium");
+  await clearDb();
+  await login(page, "drive@example.com");
+  await mockRequiresConversion(page);
+  await page.goto("/");
+  await clickToMyFiles(page);
+  await expect(page.getByText("This tab is empty")).toBeVisible();
+
+  await uploadFile(page, DOCX_FILE_PATH);
+  await expect(page.getByText("Drop your files here")).not.toBeVisible();
+
+  const placeholderId = "00000000-0000-0000-0000-000000000001";
+  await page.route("**/api/v1.0/items/*/convert/", async (route) => {
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: placeholderId,
+        title: "empty_doc.docx",
+        filename: "empty_doc.docx",
+        type: "file",
+        upload_state: "converting",
+        abilities: {},
+      }),
+    });
+  });
+
+  // Inject the placeholder in the folder list returned by /items/.
+  await page.route(
+    (url) => /\/api\/v1\.0\/items(\/|$)/.test(url.pathname),
+    async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      const response = await route.fetch();
+      const json = await response.json();
+      const placeholder = {
+        id: placeholderId,
+        title: "empty_doc.docx",
+        filename: "empty_doc.docx",
+        type: "file",
+        upload_state: "converting",
+        abilities: {},
+      };
+      if (Array.isArray(json?.results)) {
+        json.results.push(placeholder);
+      }
+      await route.fulfill({ response, json });
+    },
+  );
+
+  // The poller's GET on the placeholder returns 404 (cleanup by the task on_failure).
+  await page.route(
+    `**/api/v1.0/items/${placeholderId}/`,
+    async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.continue();
+        return;
+      }
+      await route.fulfill({
+        status: 404,
+        contentType: "application/json",
+        body: JSON.stringify({ detail: "Not found." }),
+      });
+    },
+  );
+
+  const row = await getRowItem(page, "empty_doc");
+  await row.dblclick();
+  await expect(
+    page.getByRole("heading", { name: "Convert to open this file" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Convert" }).click();
+
+  await expect(
+    page.getByText("Conversion failed. Please try again."),
+  ).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText("conversion in progress")).not.toBeVisible({
+    timeout: 10000,
+  });
+});
 
 test("Double-clicking a WOPI file opens the editor in a new tab", async ({
   page,

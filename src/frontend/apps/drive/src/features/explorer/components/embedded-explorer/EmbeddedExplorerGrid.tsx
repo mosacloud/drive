@@ -45,7 +45,7 @@ import {
 } from "../../types/columns";
 import { ColumnHeader } from "./headers/ColumnHeader";
 import { CustomizableColumnHeader } from "./headers/CustomizableColumnHeader";
-import { useDuplicatingItemsPoller } from "../../hooks/useDuplicatingItemsPoller";
+import { useTransientItemsPoller } from "../../hooks/useTransientItemsPoller";
 import { EmbeddedExplorerGridRow } from "./EmbeddedExplorerGridRow";
 import posthog from "posthog-js";
 
@@ -128,7 +128,7 @@ export const EmbeddedExplorerGrid = (props: EmbeddedExplorerGridProps) => {
     });
   const contextMenu = useContextMenuContext();
 
-  useDuplicatingItemsPoller(props.items ?? EMPTY_ARRAY);
+  useTransientItemsPoller(props.items ?? EMPTY_ARRAY);
 
   const selectionStore = useSelectionStore();
   // TODO: This hook makes use of the ExplorerContext to manage the overred items. So, this component is not really standalone as it should be.

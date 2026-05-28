@@ -13,6 +13,7 @@ and this project adheres to
 - ✨(backend) manage reconciliation requests for user accounts
 - ✨(backend) add recursive folder export as ZIP archive
 - ✨(frontend) add folder export action
+- ✨(backend) background conversion of legacy Office files
 
 ### Changed
 

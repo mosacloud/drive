@@ -14,6 +14,7 @@ and this project adheres to
 - ✨(backend) add recursive folder export as ZIP archive
 - ✨(frontend) add folder export action
 - ✨(backend) background conversion of legacy Office files
+- ✨(backend) allow grist file upload
 
 ### Changed
 

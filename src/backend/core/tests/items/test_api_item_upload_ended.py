@@ -95,6 +95,30 @@ def test_api_item_upload_ended_on_wrong_upload_state():
     }
 
 
+def test_api_item_upload_ended_success_grist_file():
+    """Upload a .grist file (SQLite format) should succeed."""
+    user = factories.UserFactory()
+    client = APIClient()
+    client.force_login(user)
+
+    item = factories.ItemFactory(type=ItemTypeChoices.FILE, filename="my_table.grist")
+    factories.UserItemAccessFactory(item=item, user=user, role="owner")
+
+    # Minimal valid SQLite database header (100 bytes).
+    sqlite_header = b"SQLite format 3\x00\x10\x00\x01\x01\x00\x40\x20\x20" + b"\x00" * 76
+    default_storage.save(item.file_key, BytesIO(sqlite_header))
+
+    with mock.patch.object(malware_detection, "analyse_file") as mock_analyse_file:
+        response = client.post(f"/api/v1.0/items/{item.id!s}/upload-ended/")
+
+    mock_analyse_file.assert_called_once_with(item.file_key, item_id=item.id)
+    assert response.status_code == 200
+
+    item.refresh_from_db()
+    assert item.upload_state == ItemUploadStateChoices.ANALYZING
+    assert item.mimetype == "application/vnd.sqlite3"
+
+
 def test_api_item_upload_ended_success():
     """
     Users should be able to end an upload on items that are files and in the UPLOADING upload state.

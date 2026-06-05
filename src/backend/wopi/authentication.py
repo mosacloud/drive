@@ -12,13 +12,13 @@ class WopiAccessTokenAuthentication(BaseAuthentication):
     """
 
     def _get_access_token(self, request):
-        """Look for the access_token in both headers and query params."""
-        access_token = request.headers.get(
-            "Authorization", request.query_params.get("access_token")
-        )
+        """Look for the access_token in query params first, then headers."""
+        access_token = request.query_params.get("access_token")
 
-        if access_token and access_token.startswith("Bearer "):
-            access_token = access_token[7:]
+        if not access_token:
+            access_token = request.headers.get("Authorization", "")
+            if access_token.startswith("Bearer "):
+                access_token = access_token[7:]
 
         return access_token
 

@@ -59,20 +59,29 @@ def test_convert_sends_synchronous_payload_with_shardkey():
 
 @responses.activate
 def test_convert_signs_payload_when_jwt_secret_is_set():
-    """Wrap the payload in a JWT and send it in body and Authorization header."""
+    """Encode conversion parameters directly in a body JWT token."""
     responses.add(responses.POST, CONVERT_URL, body=_ok_body(), status=200)
     responses.add(responses.GET, FILE_URL, body=b"converted", status=200)
 
     backend = OnlyOfficeConversionBackend(convert_service_url=CONVERT_URL, jwt_secret=JWT_SECRET)
-    backend.convert(_item(), SOURCE_URL, "docx")
+    item = _item()
+    backend.convert(item, SOURCE_URL, "docx")
 
     request = responses.calls[0].request
-    payload = json.loads(request.body)
-    token = payload.pop("token")
+    body = json.loads(request.body)
+    assert list(body.keys()) == ["token"]
 
-    decoded = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-    assert decoded["payload"] == payload
-    assert request.headers.get("Authorization") == f"Bearer {token}"
+    decoded = jwt.decode(body["token"], JWT_SECRET, algorithms=["HS256"])
+    key = decoded.pop("key")
+    assert decoded == {
+        "async": False,
+        "filetype": "doc",
+        "outputtype": "docx",
+        "title": item.filename,
+        "url": SOURCE_URL,
+    }
+    assert str(item.id) in key
+    assert "Authorization" not in request.headers
 
 
 @responses.activate

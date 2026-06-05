@@ -1420,6 +1420,9 @@ class Base(Configuration):
     WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_READ_TIMEOUT = values.IntegerValue(
         30, environ_name="WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_READ_TIMEOUT", environ_prefix=None
     )
+    WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = SecretFileValue(
+        None, environ_name="WOPI_ONLYOFFICE_CONVERT_JWT_SECRET", environ_prefix=None
+    )
     WOPI_DISABLE_CHAT = values.IntegerValue(
         0, environ_name="WOPI_DISABLE_CHAT", environ_prefix=None
     )

@@ -270,7 +270,8 @@ services:
     environment:
       TZ: "Europe/Berlin"
       USE_UNAUTHORIZED_STORAGE: "true"
-      JWT_ENABLED: "false"
+      JWT_ENABLED: "true"
+      JWT_SECRET: "ThisIsNotASecretKeyDev"
     ports:
       - "9981:80"
     volumes:

@@ -87,6 +87,7 @@ WOPI_COLLABORA_OPTIONS={"SupportsRename": False}
 # Background conversion of legacy Office files (.doc, .xls, .ppt) is forced
 # server-side via the OnlyOffice /converter endpoint.
 WOPI_ONLYOFFICE_OPTIONS={"ForceConvertExtensions": ["doc", "xls", "ppt"], "ConvertServiceUrl": "http://onlyoffice/converter"}
+WOPI_ONLYOFFICE_CONVERT_JWT_SECRET=ThisIsNotASecretKeyDev
 
 # Indexer
 # SEARCH_INDEXER_CLASS="core.services.search_indexers.SearchIndexer"

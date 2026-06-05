@@ -45,13 +45,13 @@ class OnlyOfficeConversionBackend:
             )
         return response
 
-    def _post_convert(self, payload, headers):
+    def _post_convert(self, payload, headers, key):
         """Call /converter and return the parsed completion payload."""
         response = self._request(
             "post",
             self.convert_service_url,
             label="/converter",
-            params={"shardkey": payload["key"]},
+            params={"shardkey": key},
             json=payload,
             headers=headers,
             timeout=self.http_timeout,
@@ -91,9 +91,8 @@ class OnlyOfficeConversionBackend:
         }
         headers = {"Accept": "application/json"}
         if self.jwt_secret:
-            token = jwt.encode({"payload": payload}, self.jwt_secret, algorithm="HS256")
-            payload = {**payload, "token": token}
-            headers["Authorization"] = f"Bearer {token}"
+            token = jwt.encode(payload, self.jwt_secret, algorithm="HS256")
+            payload = {"token": token}
 
-        data = self._post_convert(payload, headers)
+        data = self._post_convert(payload, headers, key)
         return self._download(data["fileUrl"], target_extension)

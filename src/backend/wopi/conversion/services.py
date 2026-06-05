@@ -56,6 +56,7 @@ def resolve_backend(client_options):
 
     return OnlyOfficeConversionBackend(
         convert_service_url=convert_service_url,
+        jwt_secret=settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET,
     )
 
 

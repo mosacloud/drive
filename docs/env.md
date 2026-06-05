@@ -127,6 +127,12 @@ This document lists all configurable environment variables for the Drive applica
 | `WOPI_SRC_BASE_URL` | The backend url | None |
 | `WOPI_ACCESS_TOKEN_TIMEOUT` | TTL in seconds for the access_token_ttl sent to the WOPI client | `36000` (10H) |
 | `WOPI_LOCK_TIMEOUT` | TTL for the lock acquired by a WOPI client | `1800` (30 min) |
+| `WOPI_CONVERSION_SOURCE_TOKEN_TIMEOUT` | TTL in seconds for the short-lived token OnlyOffice uses to fetch the source file | `120` |
+| `WOPI_ONLYOFFICE_CONVERT_JWT_SECRET` | Shared secret for signing OnlyOffice /converter requests. Required for conversion to work. | `None` |
+| `WOPI_ONLYOFFICE_CONVERT_HTTP_CONNECT_TIMEOUT` | Connect timeout in seconds for the /converter request | `5` |
+| `WOPI_ONLYOFFICE_CONVERT_HTTP_READ_TIMEOUT` | Read timeout in seconds for the /converter request | `60` |
+| `WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_CONNECT_TIMEOUT` | Connect timeout in seconds for downloading the converted file | `5` |
+| `WOPI_ONLYOFFICE_CONVERT_DOWNLOAD_READ_TIMEOUT` | Read timeout in seconds for downloading the converted file | `30` |
 | `WOPI_DISABLE_CHAT` | Disable chat in the WOPI client interface | `0` |
 | `WOPI_CONFIGURATION_CRONTAB_MINUTE` | Used to configure the celery beat crontab, See https://docs.celeryq.dev/en/main/reference/celery.schedules.html#celery.schedules.crontab | `0` |
 | `WOPI_CONFIGURATION_CRONTAB_HOUR` | Used to configure the celery beat crontab, See https://docs.celeryq.dev/en/main/reference/celery.schedules.html#celery.schedules.crontab | `3` |

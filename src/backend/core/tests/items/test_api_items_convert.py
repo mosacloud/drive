@@ -34,6 +34,7 @@ def _build_user_and_item():
 def _wopi_settings(settings):
     """Configure the OnlyOffice WOPI client for the conversion tests."""
     settings.WOPI_SRC_BASE_URL = "https://drive.example"
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = "test-jwt-secret"
     settings.WOPI_CLIENTS_CONFIGURATION = {
         "onlyoffice": {
             "options": {

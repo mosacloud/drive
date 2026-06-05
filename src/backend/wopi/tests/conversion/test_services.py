@@ -36,6 +36,7 @@ def _fake_backend(request):
 def _configure_wopi(settings, client="onlyoffice", options=None):
     """Wire a WOPI client config covering .doc files."""
     settings.WOPI_SRC_BASE_URL = "https://drive.example"
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = "test-jwt-secret"
     settings.WOPI_CLIENTS_CONFIGURATION = {
         client: {
             "options": options
@@ -307,6 +308,20 @@ def test_resolve_backend_raises_when_onlyoffice_url_is_missing():
         exceptions.ConversionMisconfigured, match="Missing OnlyOffice ConvertServiceUrl"
     ):
         services.resolve_backend({})
+
+
+def test_prepare_conversion_raises_when_jwt_secret_is_missing(settings):
+    """Reject conversion before creating the placeholder when the secret is missing."""
+    _configure_wopi(settings)
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = None
+    user = factories.UserFactory()
+    item = _file(user)
+
+    with pytest.raises(
+        exceptions.ConversionMisconfigured,
+        match="Missing WOPI_ONLYOFFICE_CONVERT_JWT_SECRET",
+    ):
+        services.prepare_conversion(item, user)
 
 
 def test_prepare_conversion_returns_placeholder_in_converting_state(settings):

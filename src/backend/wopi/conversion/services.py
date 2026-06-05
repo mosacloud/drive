@@ -41,6 +41,9 @@ def _validate_conversion(item, user):
     if onlyoffice_config is None:
         raise ConversionRejected("No OnlyOffice client configured.")
 
+    if not settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET:
+        raise ConversionMisconfigured("Missing WOPI_ONLYOFFICE_CONVERT_JWT_SECRET")
+
     client_options = onlyoffice_config.get("options", {})
     if not is_forced_conversion(item, client_options):
         raise ConversionRejected("Conversion not forced by the active WOPI client.")
@@ -56,7 +59,6 @@ def resolve_backend(client_options):
 
     return OnlyOfficeConversionBackend(
         convert_service_url=convert_service_url,
-        jwt_secret=settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET,
     )
 
 

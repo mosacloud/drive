@@ -1299,6 +1299,7 @@ class Item(TreeModel, BaseModel):
             and self.type == ItemTypeChoices.FILE
             and self.upload_state == ItemUploadStateChoices.READY
             and bool(target_extension_for(self.extension))
+            and bool(settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET)
         )
 
         return {

@@ -17,12 +17,11 @@ class OnlyOfficeConversionBackend:
     def __init__(
         self,
         convert_service_url,
-        jwt_secret=None,
         http_timeout=None,
         download_timeout=None,
     ):
         self.convert_service_url = convert_service_url
-        self.jwt_secret = jwt_secret
+        self.jwt_secret = settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET
         self.http_timeout = http_timeout or (
             settings.WOPI_ONLYOFFICE_CONVERT_HTTP_CONNECT_TIMEOUT,
             settings.WOPI_ONLYOFFICE_CONVERT_HTTP_READ_TIMEOUT,

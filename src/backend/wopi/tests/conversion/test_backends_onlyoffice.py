@@ -3,8 +3,6 @@
 import json
 from unittest import mock
 
-from django.conf import settings
-
 import jwt
 import pytest
 import requests
@@ -31,8 +29,9 @@ def _ok_body():
 
 
 @responses.activate
-def test_convert_sends_synchronous_payload_with_shardkey():
+def test_convert_sends_synchronous_payload_with_shardkey(settings):
     """Send a synchronous /converter call with required fields and shardkey."""
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = None
     responses.add(responses.POST, CONVERT_URL, body=_ok_body(), status=200)
     responses.add(responses.GET, FILE_URL, body=b"converted", status=200)
 
@@ -58,12 +57,13 @@ def test_convert_sends_synchronous_payload_with_shardkey():
 
 
 @responses.activate
-def test_convert_signs_payload_when_jwt_secret_is_set():
+def test_convert_signs_payload_when_jwt_secret_is_set(settings):
     """Encode conversion parameters directly in a body JWT token."""
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = JWT_SECRET
     responses.add(responses.POST, CONVERT_URL, body=_ok_body(), status=200)
     responses.add(responses.GET, FILE_URL, body=b"converted", status=200)
 
-    backend = OnlyOfficeConversionBackend(convert_service_url=CONVERT_URL, jwt_secret=JWT_SECRET)
+    backend = OnlyOfficeConversionBackend(convert_service_url=CONVERT_URL)
     item = _item()
     backend.convert(item, SOURCE_URL, "docx")
 
@@ -85,8 +85,9 @@ def test_convert_signs_payload_when_jwt_secret_is_set():
 
 
 @responses.activate
-def test_convert_does_not_sign_when_no_secret():
+def test_convert_does_not_sign_when_no_secret(settings):
     """Skip the token field when the backend has no JWT secret."""
+    settings.WOPI_ONLYOFFICE_CONVERT_JWT_SECRET = None
     responses.add(responses.POST, CONVERT_URL, body=_ok_body(), status=200)
     responses.add(responses.GET, FILE_URL, body=b"converted", status=200)
 
@@ -111,7 +112,7 @@ def test_convert_returns_content_file_with_downloaded_bytes():
     assert result.name.endswith(".docx")
 
 
-def test_convert_uses_separate_connect_and_read_timeouts():
+def test_convert_uses_separate_connect_and_read_timeouts(settings):
     """Apply the configured connect/read timeouts to /converter and the download."""
     with mock.patch("wopi.conversion.backends.onlyoffice.requests") as requests_mock:
         post_response = mock.Mock(ok=True)

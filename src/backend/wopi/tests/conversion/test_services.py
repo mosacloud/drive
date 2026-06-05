@@ -289,18 +289,14 @@ def test_perform_conversion_removes_saved_file_when_database_save_fails(settings
     assert deleted_keys == saved_keys
 
 
-def test_resolve_backend_builds_onlyoffice_backend_from_options():
-    """Build the OnlyOffice backend from the WOPI client options."""
+def test_resolve_backend_builds_onlyoffice_backend():
+    """Build the OnlyOffice backend from WOPI client options."""
     backend = services.resolve_backend(
-        {
-            "ConvertServiceUrl": "https://office.example/converter",
-            "ConvertJwtSecret": "test-secret",
-        },
+        {"ConvertServiceUrl": "https://office.example/converter"},
     )
 
     assert isinstance(backend, OnlyOfficeConversionBackend)
     assert backend.convert_service_url == "https://office.example/converter"
-    assert backend.jwt_secret == "test-secret"
 
 
 def test_resolve_backend_raises_when_onlyoffice_url_is_missing():

@@ -56,8 +56,6 @@ def resolve_backend(client_options):
 
     return OnlyOfficeConversionBackend(
         convert_service_url=convert_service_url,
-        jwt_secret=client_options.get("ConvertJwtSecret"),
-        jwt_required=bool(client_options.get("ConvertJwtRequired", False)),
     )
 
 

@@ -89,12 +89,6 @@ def test_convert_does_not_sign_when_no_secret():
     assert "token" not in payload
 
 
-def test_constructor_raises_when_jwt_required_but_secret_missing():
-    """Fail fast at construction time when JWT is required but the secret is missing."""
-    with pytest.raises(exceptions.ConversionMisconfigured, match="OnlyOffice JWT is required"):
-        OnlyOfficeConversionBackend(convert_service_url=CONVERT_URL, jwt_required=True)
-
-
 @responses.activate
 def test_convert_returns_content_file_with_downloaded_bytes():
     """Wrap the downloaded bytes in a ContentFile named after the target."""

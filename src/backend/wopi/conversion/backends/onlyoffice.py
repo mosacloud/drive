@@ -8,28 +8,19 @@ from django.core.files.base import ContentFile
 import jwt
 import requests
 
-from wopi.conversion.exceptions import (
-    ConversionMisconfigured,
-    ConversionProviderError,
-)
+from wopi.conversion.exceptions import ConversionProviderError
 
 
 class OnlyOfficeConversionBackend:
     """Run a synchronous OnlyOffice conversion through the /converter endpoint."""
 
-    # pylint: disable-next=too-many-arguments,too-many-positional-arguments
     def __init__(
         self,
         convert_service_url,
         jwt_secret=None,
-        jwt_required=False,
         http_timeout=None,
         download_timeout=None,
     ):
-        if jwt_required and not jwt_secret:
-            raise ConversionMisconfigured(
-                "OnlyOffice JWT is required but no ConvertJwtSecret is configured."
-            )
         self.convert_service_url = convert_service_url
         self.jwt_secret = jwt_secret
         self.http_timeout = http_timeout or (

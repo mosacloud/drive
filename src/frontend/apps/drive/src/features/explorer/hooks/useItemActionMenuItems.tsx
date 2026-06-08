@@ -167,7 +167,7 @@ export const useItemActionMenuItems = ({
       },
       {
         icon: <Download />,
-        label: t("explorer.item.actions.export"),
+        label: t("explorer.item.actions.download"),
         isHidden: !item.abilities?.export || minimal,
         callback: () => {
           window.location.href = `${baseApiUrl()}items/${effectiveItemId}/export/`;

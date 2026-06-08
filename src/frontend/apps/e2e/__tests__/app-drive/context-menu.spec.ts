@@ -80,14 +80,14 @@ test.describe("Context menu", () => {
     await expect(page.getByRole("menuitem", { name: "Share" })).toBeVisible();
     await expect(page.getByRole("menuitem", { name: "Move" })).toBeVisible();
     await expect(
-      page.getByRole("menuitem", { name: "Export" }),
+      page.getByRole("menuitem", { name: "Download" }),
     ).toBeVisible();
     await expect(page.getByRole("menuitem", { name: "Rename" })).toBeVisible();
     await expect(page.getByRole("menuitem", { name: "Star" })).toBeVisible();
     await expect(page.getByRole("menuitem", { name: "Delete" })).toBeVisible();
   });
 
-  test("Right-click on folder > Export calls the export endpoint", async ({
+  test("Right-click on folder > Download calls the export endpoint", async ({
     page,
   }) => {
     await createFolderInCurrentFolder(page, "TestFolder");
@@ -109,7 +109,7 @@ test.describe("Context menu", () => {
 
     const row = await getRowItem(page, "TestFolder");
     await row.click({ button: "right" });
-    await page.getByRole("menuitem", { name: "Export" }).click();
+    await page.getByRole("menuitem", { name: "Download" }).click();
 
     const exportRequest = await exportRequestPromise;
     expect(exportRequest.url()).toMatch(

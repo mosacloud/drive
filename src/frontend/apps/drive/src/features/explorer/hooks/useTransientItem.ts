@@ -13,10 +13,11 @@ export type TransientItem = {
 export const useTransientItem = (item: Item): TransientItem => {
   const { t } = useTranslation();
   const isTransient = TRANSIENT_UPLOAD_STATES.includes(item.upload_state);
-  const label = !isTransient
-    ? null
-    : item.upload_state === ItemUploadState.CONVERTING
-      ? t("explorer.item.converting")
-      : t("explorer.item.duplicating");
+  const transientLabels: Record<string, string> = {
+    [ItemUploadState.ANALYZING]: t("explorer.item.analyzing"),
+    [ItemUploadState.CONVERTING]: t("explorer.item.converting"),
+    [ItemUploadState.DUPLICATING]: t("explorer.item.duplicating"),
+  };
+  const label = transientLabels[item.upload_state] ?? null;
   return { isTransient, label };
 };

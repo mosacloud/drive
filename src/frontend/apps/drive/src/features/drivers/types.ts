@@ -28,6 +28,7 @@ export enum ItemUploadState {
 }
 
 export const TRANSIENT_UPLOAD_STATES: string[] = [
+  ItemUploadState.ANALYZING,
   ItemUploadState.DUPLICATING,
   ItemUploadState.CONVERTING,
 ];

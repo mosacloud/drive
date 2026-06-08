@@ -511,7 +511,8 @@
             "delete": "Delete"
           },
           "duplicating": "duplication in progress",
-          "converting": "conversion in progress"
+          "converting": "conversion in progress",
+          "analyzing": "analysis in progress"
         }
       },
       "anonymous_cta": {
@@ -1122,7 +1123,8 @@
             "delete": "Supprimer"
           },
           "duplicating": "duplication en cours",
-          "converting": "conversion en cours"
+          "converting": "conversion en cours",
+          "analyzing": "analyse en cours"
         }
       },
       "anonymous_cta": {
@@ -1727,7 +1729,8 @@
             "delete": "Verwijder"
           },
           "duplicating": "duplicatie bezig",
-          "converting": "conversie bezig"
+          "converting": "conversie bezig",
+          "analyzing": "analyse bezig"
         }
       },
       "anonymous_cta": {

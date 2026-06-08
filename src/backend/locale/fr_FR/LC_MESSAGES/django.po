@@ -370,6 +370,10 @@ msgstr ""
 msgid "German"
 msgstr ""
 
+#: wopi/conversion/services.py:86
+msgid "converted"
+msgstr "converti"
+
 #~ msgid "A new item was created on your behalf!"
 #~ msgstr "Un nouveau item a été créé pour vous !"
 

@@ -58,7 +58,7 @@ def test_convert_endpoint_creates_placeholder_and_queues_task():
     body = response.json()
     placeholder = models.Item.objects.get(id=body["id"])
     assert placeholder.upload_state == models.ItemUploadStateChoices.CONVERTING
-    assert placeholder.filename == "document.docx"
+    assert placeholder.filename == "document (converted).docx"
     assert placeholder.parent().id == item.parent().id
     delay_mock.assert_called_once_with(
         source_item_id=str(item.id),

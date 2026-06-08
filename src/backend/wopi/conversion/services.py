@@ -5,6 +5,7 @@ from os.path import splitext
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.db import DatabaseError, transaction
+from django.utils.translation import gettext as _
 
 from core import models
 from core.api.utils import detect_mimetype
@@ -81,8 +82,8 @@ def _target_filename(item, target_extension, parent, user):
     else:
         siblings = Item.objects.filter(path__depth=1, accesses__user=user).distinct()
 
-    base, _ = splitext(item.filename)
-    target = f"{base}.{target_extension}"
+    base, _extension = splitext(item.filename)
+    target = f"{base} ({_('converted')}).{target_extension}"
 
     return manage_unique_title(siblings, target)
 

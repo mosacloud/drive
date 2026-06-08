@@ -76,7 +76,7 @@ def test_convert_item_creates_converted_file_copy(settings):
 
     converted = services.convert_item(item, user)
 
-    assert converted.filename == "document.docx"
+    assert converted.filename == "document (converted).docx"
     assert converted.parent().id == parent.id
     assert converted.upload_state == models.ItemUploadStateChoices.READY
 
@@ -125,16 +125,16 @@ def test_convert_item_keeps_title_and_filename_aligned_on_collision(settings):
     factories.ItemFactory(
         parent=parent,
         type=models.ItemTypeChoices.FILE,
-        title="document.docx",
-        filename="document.docx",
+        title="document (converted).docx",
+        filename="document (converted).docx",
         update_upload_state=models.ItemUploadStateChoices.READY,
     )
     item = _file(user, parent=parent)
 
     converted = services.convert_item(item, user)
 
-    assert converted.title == "document_01.docx"
-    assert converted.filename == "document_01.docx"
+    assert converted.title == "document (converted)_01.docx"
+    assert converted.filename == "document (converted)_01.docx"
 
 
 def test_convert_item_uses_source_parent_when_user_can_update_it_via_link(settings):
@@ -336,7 +336,7 @@ def test_prepare_conversion_returns_placeholder_in_converting_state(settings):
 
     placeholder = services.prepare_conversion(item, user)
 
-    assert placeholder.filename == "document.docx"
+    assert placeholder.filename == "document (converted).docx"
     assert placeholder.upload_state == models.ItemUploadStateChoices.CONVERTING
     assert placeholder.parent().id == parent.id
 

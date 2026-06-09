@@ -487,7 +487,7 @@
           "convert": {
             "modal": {
               "title": "Convert to open this file",
-              "content": "Drive will create an editable copy. Your original file stays untouched.",
+              "content": "This file needs to be converted before it can be edited. A copy will be created: your original file stays untouched.",
               "cancel": "Cancel",
               "confirm": "Convert",
               "error": "Conversion failed. Please try again."
@@ -1099,7 +1099,7 @@
           "convert": {
             "modal": {
               "title": "Convertir pour ouvrir ce fichier",
-              "content": "Drive va créer une copie modifiable. Votre fichier d'origine reste intact.",
+              "content": "Ce fichier nécessite une conversion pour être édité. Une copie sera créée : votre fichier original reste intact.",
               "cancel": "Annuler",
               "confirm": "Convertir",
               "error": "La conversion a échoué. Veuillez réessayer."
@@ -1705,7 +1705,7 @@
           "convert": {
             "modal": {
               "title": "Converteren om dit bestand te openen",
-              "content": "Drive maakt een bewerkbare kopie. Uw originele bestand blijft ongewijzigd.",
+              "content": "Dit bestand moet worden geconverteerd om te kunnen bewerken. Er wordt een kopie gemaakt: uw originele bestand blijft ongewijzigd.",
               "cancel": "Annuleren",
               "confirm": "Converteren",
               "error": "Conversie mislukt. Probeer het opnieuw."

@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [v0.19.0] - 2026-06-09
+
 ### Added
 
 - ✨(backend) manage reconciliation requests for user accounts
@@ -15,6 +17,7 @@ and this project adheres to
 - ✨(frontend) add folder export action
 - ✨(backend) background conversion of legacy Office files
 - ✨(backend) allow grist file upload
+- ✨(frontend) add CTA on public link for anonymous and authenticated users
 
 ### Changed
 
@@ -24,10 +27,6 @@ and this project adheres to
 ### Removed
 
 - 🔥(backend) drop deprecated numchild columns from item
-
-### Added
-
-- ✨(frontend) add CTA on public link for anonymous and authenticated users
 
 ## [v0.18.0] - 2026-05-04
 
@@ -453,7 +452,8 @@ and this project adheres to
 - 🌐(front) add english translation for rename modal
 - 🐛(global) fix wrong Content-Type on specific s3 implementations
 
-[unreleased]: https://github.com/suitenumerique/drive/compare/v0.18.0...main
+[unreleased]: https://github.com/suitenumerique/drive/compare/v0.19.0...main
+[v0.19.0]: https://github.com/suitenumerique/drive/releases/v0.19.0
 [v0.18.0]: https://github.com/suitenumerique/drive/releases/v0.18.0
 [v0.17.0]: https://github.com/suitenumerique/drive/releases/v0.17.0
 [v0.16.0]: https://github.com/suitenumerique/drive/releases/v0.16.0

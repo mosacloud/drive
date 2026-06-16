@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- ✨(backend) accept configurable media-auth forward headers (Traefik X-Forwarded-Uri)
+
 ## [v0.19.0] - 2026-06-09
 
 ### Added

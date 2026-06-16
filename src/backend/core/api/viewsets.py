@@ -1472,12 +1472,14 @@ class ItemViewSet(
     def _authorize_subrequest(self, request, pattern):
         """
         Shared method to authorize access based on the original URL of an Nginx subrequest
-        and user permissions. Returns a dictionary of URL parameters if authorized.
+        (or equivalent Traefik ForwardAuth subrequest) and user permissions.
+        Returns a dictionary of URL parameters if authorized.
 
         The original url is passed by nginx in the "HTTP_X_ORIGINAL_URL" header.
         See corresponding ingress configuration in Helm chart and read about the
         nginx.ingress.kubernetes.io/auth-url annotation to understand how the Nginx ingress
-        is configured to do this.
+        is configured to do this. Traefik's ForwardAuth middleware sends the equivalent
+        value in the "HTTP_X_FORWARDED_URI" header, which is accepted as a fallback.
 
         Based on the original url and the logged in user, we must decide if we authorize Nginx
         to let this request go through (by returning a 200 code) or if we block it (by returning
@@ -1492,10 +1494,22 @@ class ItemViewSet(
         Raises:
         - PermissionDenied if authorization fails.
         """
-        # Extract the original URL from the request header
-        original_url = request.META.get("HTTP_X_ORIGINAL_URL")
+        # Extract the original URL from the first configured header that is present.
+        # nginx ingress passes it in "X-Original-Url"; Traefik's ForwardAuth uses
+        # "X-Forwarded-Uri". The list of accepted headers is configurable via the
+        # MEDIA_AUTH_FORWARD_HEADERS setting.
+        original_url = None
+        for header in settings.MEDIA_AUTH_FORWARD_HEADERS:
+            meta_key = "HTTP_" + header.upper().replace("-", "_")
+            original_url = request.META.get(meta_key)
+            if original_url:
+                break
+
         if not original_url:
-            logger.debug("Missing HTTP_X_ORIGINAL_URL header in subrequest")
+            logger.debug(
+                "Missing media auth header (tried %s) in subrequest",
+                ", ".join(settings.MEDIA_AUTH_FORWARD_HEADERS),
+            )
             raise drf.exceptions.PermissionDenied()
 
         parsed_url = urlparse(original_url)

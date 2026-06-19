@@ -94,9 +94,11 @@ $app-gradient-end: #d97706;
     }
 
     img {
+      display: block;
       width: 32rem;
       max-width: 80%;
       height: auto;
+      margin: 0 auto;
     }
   }
 

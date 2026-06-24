@@ -9,6 +9,7 @@ import { ItemFilters } from "@/features/drivers/Driver";
 import { useIsMinimalLayout } from "@/utils/useLayout";
 import { Feedback } from "@/features/feedback/Feedback";
 import { Gaufre } from "@/features/ui/components/gaufre/Gaufre";
+import { AppSwitcherButton } from "@/features/ui/components/app-switcher/AppSwitcherPanel";
 import { UserProfile } from "@/features/ui/components/user/UserProfile";
 
 export const HeaderIcon = () => {
@@ -78,6 +79,7 @@ export const HeaderRight = ({
 
       {!isTablet && (
         <>
+          <AppSwitcherButton />
           <Gaufre />
           <UserProfile />
         </>

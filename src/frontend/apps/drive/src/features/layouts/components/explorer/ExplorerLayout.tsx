@@ -40,7 +40,7 @@ import {
 } from "@gouvfr-lasuite/cunningham-react";
 import { useTranslation } from "react-i18next";
 import i18n from "@/features/i18n/initI18n";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { UserProfile } from "@/features/ui/components/user/UserProfile";
 import { Gaufre } from "@/features/ui/components/gaufre/Gaufre";
 import { useMessagesWidget } from "@/features/feedback/useMessagesWidget";
@@ -54,6 +54,14 @@ export const GlobalExplorerLayout = ({
 }: {
   children: React.ReactNode;
 }) => {
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) window.location.reload();
+    };
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
+
   return (
     <GlobalLayout>
       <ColumnPreferencesProvider>

@@ -613,7 +613,18 @@
         "title": "User reconciliation",
         "success": "Your email address has been confirmed. To complete the merge of your accounts, please click the confirmation links sent to all the addresses you provided.",
         "error": "An error occurred during email validation."
-      }
+      },
+      "YOU'RE IN": "YOU'RE IN",
+      "JUMP TO": "JUMP TO",
+      "Switch app": "Switch app",
+      "Home": "Home",
+      "Documents": "Documents",
+      "Files": "Files",
+      "Video calls": "Video calls",
+      "Email": "Email",
+      "Schedule": "Schedule",
+      "Messaging": "Messaging",
+      "Admin": "Admin"
     }
   },
   "fr": {
@@ -1238,7 +1249,18 @@
         "title": "Réconciliation de comptes",
         "success": "Votre adresse e-mail a été confirmée. Pour finaliser la fusion de vos comptes, cliquez sur les liens de confirmation envoyés à toutes les adresses que vous avez fournies.",
         "error": "Une erreur s'est produite lors de la validation de l'e-mail."
-      }
+      },
+      "YOU'RE IN": "VOUS ÊTES DANS",
+      "JUMP TO": "ALLER VERS",
+      "Switch app": "Changer d'application",
+      "Home": "Accueil",
+      "Documents": "Documents",
+      "Files": "Fichiers",
+      "Video calls": "Appels vidéo",
+      "Email": "Email",
+      "Schedule": "Planning",
+      "Messaging": "Messagerie",
+      "Admin": "Administration"
     }
   },
   "nl": {
@@ -1780,7 +1802,6 @@
         "copy_link": "Kopieer link",
         "languages": "Talen"
       },
- 
       "time": {
         "years_ago_one": "{{count}} jaar geleden",
         "years_ago_other": "{{count}} jaren geleden",
@@ -1856,7 +1877,18 @@
         "title": "Accountreconciliatie",
         "success": "Uw e-mailadres is bevestigd. Klik op de bevestigingslinks die naar alle door u opgegeven adressen zijn verzonden om het samenvoegen van uw accounts te voltooien.",
         "error": "Er is een fout opgetreden tijdens de e-mailvalidatie."
-      }
+      },
+      "YOU'RE IN": "JE BENT IN",
+      "JUMP TO": "GA NAAR",
+      "Switch app": "Wissel van app",
+      "Home": "Home",
+      "Documents": "Documenten",
+      "Files": "Bestanden",
+      "Video calls": "Videogesprekken",
+      "Email": "E-mail",
+      "Schedule": "Planning",
+      "Messaging": "Berichten",
+      "Admin": "Beheer"
     }
   }
 }

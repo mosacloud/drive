@@ -62,7 +62,7 @@ OIDC_RS_AUDIENCE_CLAIM="client_id"  # The claim used to identify the audience
 OIDC_RS_ALLOWED_AUDIENCES=""
 
 # Frontend
-FRONTEND_THEME=default
+FRONTEND_THEME=dsfr-light
 FRONTEND_MORE_LINK=""
 FRONTEND_FEEDBACK_BUTTON_SHOW=False
 FRONTEND_FEEDBACK_BUTTON_IDLE=False
@@ -72,6 +72,15 @@ FRONTEND_FEEDBACK_MESSAGES_WIDGET_API_URL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_CHANNEL=
 FRONTEND_FEEDBACK_MESSAGES_WIDGET_PATH=
 FRONTEND_HIDE_GAUFRE=True
+
+# App switcher — uncomment and set URLs to show other apps in the switcher
+# APP_URL_EPICENTRE=https://epicentre.mosa.cloud
+# APP_URL_DOCS=https://docs.mosa.cloud
+# APP_URL_MEET=https://meet.mosa.cloud
+# APP_URL_MAIL=https://mail.mosa.cloud
+# APP_URL_CALENDAR=https://calendar.mosa.cloud
+# APP_URL_CHAT=https://chat.mosa.cloud
+# APP_URL_COMMANDER=https://commander.mosa.cloud
 
 # WOPI
 WOPI_CLIENTS="collabora,onlyoffice"

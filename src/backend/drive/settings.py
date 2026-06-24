@@ -1028,6 +1028,15 @@ class Base(Configuration):
     FRONTEND_HIDE_GAUFRE = values.BooleanValue(
         default=False, environ_name="FRONTEND_HIDE_GAUFRE", environ_prefix=None
     )
+
+    # App switcher URLs — set any of these to expose the app in the switcher
+    APP_URL_EPICENTRE = values.Value(None, environ_name="APP_URL_EPICENTRE", environ_prefix=None)
+    APP_URL_DOCS = values.Value(None, environ_name="APP_URL_DOCS", environ_prefix=None)
+    APP_URL_MEET = values.Value(None, environ_name="APP_URL_MEET", environ_prefix=None)
+    APP_URL_MAIL = values.Value(None, environ_name="APP_URL_MAIL", environ_prefix=None)
+    APP_URL_CALENDAR = values.Value(None, environ_name="APP_URL_CALENDAR", environ_prefix=None)
+    APP_URL_CHAT = values.Value(None, environ_name="APP_URL_CHAT", environ_prefix=None)
+    APP_URL_COMMANDER = values.Value(None, environ_name="APP_URL_COMMANDER", environ_prefix=None)
     FRONTEND_SILENT_LOGIN_ENABLED = values.BooleanValue(
         default=False, environ_name="FRONTEND_SILENT_LOGIN_ENABLED", environ_prefix=None
     )

@@ -106,6 +106,9 @@ constraint-dependencies = [
     # recipients). Pulled transitively via django-lasuite, which has no
     # upper bound on joserfc.
     "joserfc>=1.7.5",
+    # Pin cryptography above the version bundling vulnerable OpenSSL
+    # (GHSA-537c-gmf6-5ccf). Pulled transitively.
+    "cryptography>=48.0.1",
 ]
 
 [tool.uv.build-backend]

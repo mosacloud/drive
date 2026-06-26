@@ -103,6 +103,7 @@ def test_api_config(is_authenticated):
         "SDK_ENABLED": True,
         "SENTRY_DSN": "https://sentry.test/123",
         "theme_customization": {},
+        "APP_URLS": {},
     }
 
 

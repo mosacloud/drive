@@ -103,6 +103,9 @@ constraint-dependencies = [
     # (HMAC verify accepts an empty key). Pulled transitively via
     # django-lasuite, which has no upper bound on joserfc.
     "joserfc>=1.6.8",
+    # Pin cryptography above the version bundling vulnerable OpenSSL
+    # (GHSA-537c-gmf6-5ccf). Pulled transitively.
+    "cryptography>=48.0.1",
 ]
 
 [tool.uv.build-backend]

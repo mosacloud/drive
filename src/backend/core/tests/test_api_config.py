@@ -85,6 +85,7 @@ def test_api_config(is_authenticated):
         "POSTHOG_HOST": "https://eu.i.posthog-test.com",
         "SENTRY_DSN": "https://sentry.test/123",
         "theme_customization": {},
+        "APP_URLS": {},
     }
 
 

@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛(frontend) map legacy FRONTEND_THEME names to avoid favicon crash
+
 ## [v0.23.0] - 2026-09-23
 
 ### Added
@@ -61,7 +65,6 @@ and this project adheres to
 
 ### Added
 
-- ✨(load-tests) add JMeter load-testing scenarios and a LoadTest configuration
 - ✨(backend) make the upload ACL configurable to support GCS based storages
 - ✨(frontend) show the messages widget button on the homepage
 - ✨(frontend) open the messages widget from the help menu

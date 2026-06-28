@@ -10,6 +10,24 @@ export interface ConfigContextType {
   config: ApiConfig;
 }
 
+// Theme names were renamed when upgrading cunningham-react/ui-kit
+// (default→dsfr-light, anct→anct-light, dark→dsfr-dark). Deployments whose
+// FRONTEND_THEME env var still uses an old name would resolve to a base theme
+// that has no `components.favicon` override, crashing the whole app. Map the
+// legacy names to their current equivalents so stale env vars keep working.
+const LEGACY_THEME_ALIASES: Record<string, string> = {
+  default: "dsfr-light",
+  anct: "anct-light",
+  dark: "dsfr-dark",
+};
+
+const resolveTheme = (theme?: string | null) => {
+  if (!theme) {
+    return "dsfr-light";
+  }
+  return LEGACY_THEME_ALIASES[theme] ?? theme;
+};
+
 export const ConfigContext = createContext<ConfigContextType | undefined>(
   undefined,
 );
@@ -27,11 +45,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
   const { setTheme } = useAppContext();
 
   useEffect(() => {
-    if (config?.FRONTEND_THEME) {
-      setTheme(config.FRONTEND_THEME);
-    } else {
-      setTheme("dsfr-light");
-    }
+    setTheme(resolveTheme(config?.FRONTEND_THEME));
   }, [config?.FRONTEND_THEME, setTheme]);
 
   if (!config) {

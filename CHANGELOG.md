@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛(frontend) map legacy FRONTEND_THEME names to avoid favicon crash
+
 ## [v0.21.0] - 2026-08-07
 
 ### Added

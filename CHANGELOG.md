@@ -8,23 +8,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-## [v0.22.0] - 2026-09-09
-
-### Added
-
-- 📈(backend) add a Sentry performance monitoring sample rate setting
-- ♻️(backend) route permission decisions through a swappable backend
-- ✨(backend) add restricted access on folders, detached behind a restriction
-
-### Changed
-
-- ♻️(frontend) migrate to the merged @gouvfr-lasuite/ui-components package
-
 ### Fixed
 
-- 🐛(frontend) render the JPEG 2000 layers of scanned PDFs in the preview
-- 🐛(backend) prevent item deletion by a creator whose access was revoked
-- 🐛(backend) resolve the direct parent by exact path after a move
+- 🐛(frontend) map legacy FRONTEND_THEME names to avoid favicon crash
 
 ## [v0.21.2] - 2026-08-25
 
@@ -47,7 +33,6 @@ and this project adheres to
 
 ### Added
 
-- ✨(load-tests) add JMeter load-testing scenarios and a LoadTest configuration
 - ✨(backend) make the upload ACL configurable to support GCS based storages
 - ✨(frontend) show the messages widget button on the homepage
 - ✨(frontend) open the messages widget from the help menu
@@ -534,8 +519,7 @@ and this project adheres to
 - 🌐(front) add english translation for rename modal
 - 🐛(global) fix wrong Content-Type on specific s3 implementations
 
-[unreleased]: https://github.com/suitenumerique/drive/compare/v0.22.0...main
-[v0.22.0]: https://github.com/suitenumerique/drive/releases/v0.22.0
+[unreleased]: https://github.com/suitenumerique/drive/compare/v0.21.2...main
 [v0.21.2]: https://github.com/suitenumerique/drive/releases/v0.21.2
 [v0.21.1]: https://github.com/suitenumerique/drive/releases/v0.21.1
 [v0.21.0]: https://github.com/suitenumerique/drive/releases/v0.21.0

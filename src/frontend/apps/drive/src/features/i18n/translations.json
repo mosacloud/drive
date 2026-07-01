@@ -624,7 +624,46 @@
       "Email": "Email",
       "Schedule": "Schedule",
       "Messaging": "Messaging",
-      "Admin": "Admin"
+      "Admin": "Admin",
+      "app_switcher": {
+        "you_are_in": "YOU'RE IN",
+        "jump_to": "JUMP TO",
+        "switch_app": "Switch app",
+        "apps": {
+          "epicentre": {
+            "label": "Epicentre",
+            "subtitle": "Home"
+          },
+          "docs": {
+            "label": "Docs",
+            "subtitle": "Documents"
+          },
+          "drive": {
+            "label": "Drive",
+            "subtitle": "Files"
+          },
+          "meet": {
+            "label": "Meet",
+            "subtitle": "Video calls"
+          },
+          "mail": {
+            "label": "Mail",
+            "subtitle": "Email"
+          },
+          "calendar": {
+            "label": "Calendar",
+            "subtitle": "Schedule"
+          },
+          "chat": {
+            "label": "Chat",
+            "subtitle": "Messaging"
+          },
+          "commander": {
+            "label": "Commander",
+            "subtitle": "Admin"
+          }
+        }
+      }
     }
   },
   "fr": {
@@ -1260,7 +1299,46 @@
       "Email": "Email",
       "Schedule": "Planning",
       "Messaging": "Messagerie",
-      "Admin": "Administration"
+      "Admin": "Administration",
+      "app_switcher": {
+        "you_are_in": "VOUS UTILISEZ",
+        "jump_to": "ALLER VERS",
+        "switch_app": "Changer d'application",
+        "apps": {
+          "epicentre": {
+            "label": "Epicentre",
+            "subtitle": "Accueil"
+          },
+          "docs": {
+            "label": "Docs",
+            "subtitle": "Documents"
+          },
+          "drive": {
+            "label": "Drive",
+            "subtitle": "Fichiers"
+          },
+          "meet": {
+            "label": "Meet",
+            "subtitle": "Appels vidéo"
+          },
+          "mail": {
+            "label": "Mail",
+            "subtitle": "E-mail"
+          },
+          "calendar": {
+            "label": "Calendar",
+            "subtitle": "Planification"
+          },
+          "chat": {
+            "label": "Chat",
+            "subtitle": "Messagerie"
+          },
+          "commander": {
+            "label": "Commander",
+            "subtitle": "Admin"
+          }
+        }
+      }
     }
   },
   "nl": {
@@ -1888,7 +1966,46 @@
       "Email": "E-mail",
       "Schedule": "Planning",
       "Messaging": "Berichten",
-      "Admin": "Beheer"
+      "Admin": "Beheer",
+      "app_switcher": {
+        "you_are_in": "JE GEBRUIKT",
+        "jump_to": "GA NAAR",
+        "switch_app": "App wisselen",
+        "apps": {
+          "epicentre": {
+            "label": "Epicentre",
+            "subtitle": "Start"
+          },
+          "docs": {
+            "label": "Docs",
+            "subtitle": "Documenten"
+          },
+          "drive": {
+            "label": "Drive",
+            "subtitle": "Bestanden"
+          },
+          "meet": {
+            "label": "Meet",
+            "subtitle": "Videogesprekken"
+          },
+          "mail": {
+            "label": "Mail",
+            "subtitle": "E-mail"
+          },
+          "calendar": {
+            "label": "Calendar",
+            "subtitle": "Agenda"
+          },
+          "chat": {
+            "label": "Chat",
+            "subtitle": "Berichten"
+          },
+          "commander": {
+            "label": "Commander",
+            "subtitle": "Beheer"
+          }
+        }
+      }
     }
   }
 }

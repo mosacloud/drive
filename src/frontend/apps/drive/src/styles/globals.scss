@@ -75,6 +75,23 @@ body {
   ) !important;
 }
 
+.c__button {
+  contain: content;
+}
+
+.c__button:disabled {
+  cursor: unset;
+}
+
+.c__button:focus-visible {
+  outline: none;
+}
+
+.c__button--medium {
+  min-height: var(--c--components--button--medium-height);
+  height: auto;
+}
+
 .c__left-panel {
   border-right: none;
 }

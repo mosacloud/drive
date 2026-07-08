@@ -81,7 +81,17 @@ const APP_META: Record<
   },
 };
 
-const APP_ORDER: AppId[] = [
+const DOT_ORDER: AppId[] = [
+  "epicentre",
+  "drive",
+  "meet",
+  "mail",
+  "calendar",
+  "chat",
+  "commander",
+];
+
+const NAV_ORDER: AppId[] = [
   "epicentre",
   "docs",
   "meet",
@@ -124,7 +134,7 @@ const Panel = ({
 }) => {
   const { t } = useTranslation();
 
-  const jumpTo = APP_ORDER.filter(
+  const jumpTo = NAV_ORDER.filter(
     (id) => id in appUrls && id in APP_META,
   );
 
@@ -187,7 +197,7 @@ export const AppSwitcherButton = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const appUrls = config?.APP_URLS ?? {};
-  const hasOtherApps = APP_ORDER.some(
+  const hasOtherApps = NAV_ORDER.some(
     (id) => id in appUrls && id in APP_META,
   );
 
@@ -224,7 +234,7 @@ export const AppSwitcherButton = () => {
         icon={
           <span className="app-switcher-panel__trigger-grid" aria-hidden>
             <svg width="18" height="18" viewBox="0 0 18 18">
-              {[...APP_ORDER, APP_ORDER[0], APP_ORDER[1]].map((id, i) => (
+              {[...DOT_ORDER, DOT_ORDER[0], DOT_ORDER[1]].map((id, i) => (
                 <circle
                   key={i}
                   cx={3 + (i % 3) * 6}

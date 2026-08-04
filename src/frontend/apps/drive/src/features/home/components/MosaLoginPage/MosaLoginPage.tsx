@@ -174,6 +174,9 @@ export const MosaLoginPage = () => {
 
           <div className="mosa-login__mobile-header">
             <img src="/logos/mosa-cloud-logo.svg" alt="mosa.cloud" />
+            <div className="mosa-login__mobile-header-lang-slot">
+              <LanguageSelector />
+            </div>
           </div>
 
           <div className="mosa-login__form-container">

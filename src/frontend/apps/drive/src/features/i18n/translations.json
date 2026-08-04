@@ -735,7 +735,7 @@
         "switch_app": "Switch app",
         "apps": {
           "epicentre": {
-            "label": "Epicentre",
+            "label": "Hub",
             "subtitle": "Home"
           },
           "docs": {
@@ -1506,7 +1506,7 @@
         "switch_app": "Changer d'application",
         "apps": {
           "epicentre": {
-            "label": "Epicentre",
+            "label": "Hub",
             "subtitle": "Accueil"
           },
           "docs": {
@@ -2277,7 +2277,7 @@
         "switch_app": "App wisselen",
         "apps": {
           "epicentre": {
-            "label": "Epicentre",
+            "label": "Hub",
             "subtitle": "Start"
           },
           "docs": {

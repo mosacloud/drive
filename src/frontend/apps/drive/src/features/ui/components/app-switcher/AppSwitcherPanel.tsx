@@ -25,7 +25,7 @@ const APP_META: Record<
 > = {
   epicentre: {
     icon: "/images/icons/epicentre-icon.svg",
-    label: "Epicentre",
+    label: "Hub",
     subtitle: "Home",
     color: "#0284C7",
     gradientEnd: "#0443F2",

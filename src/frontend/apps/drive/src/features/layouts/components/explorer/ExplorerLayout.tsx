@@ -43,6 +43,7 @@ import i18n from "@/features/i18n/initI18n";
 import { useEffect, useMemo } from "react";
 import { UserProfile } from "@/features/ui/components/user/UserProfile";
 import { Gaufre } from "@/features/ui/components/gaufre/Gaufre";
+import { AppSwitcherButton } from "@/features/ui/components/app-switcher/AppSwitcherPanel";
 import { useMessagesWidget } from "@/features/feedback/useMessagesWidget";
 
 export const getGlobalExplorerLayout = (page: React.ReactElement) => {
@@ -188,6 +189,7 @@ export const LeftPanelFooterMobile = (props: LeftPanelFooterProps) => {
     <div className="c__left-panel__footer__drive">
       <UserProfile />
       <Gaufre />
+      <AppSwitcherButton />
       <LeftPanelFooterStorageGauge onClick={props.openSettingsModal} />
       <HelpMenuButton />
     </div>

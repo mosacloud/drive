@@ -79,8 +79,9 @@ body {
   contain: content;
 }
 
-.c__button:disabled {
-  cursor: unset;
+.c__button:disabled,
+.c__button--disabled {
+  cursor: not-allowed;
 }
 
 .c__button--medium {

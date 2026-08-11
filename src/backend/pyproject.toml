@@ -95,18 +95,22 @@ dev = [
 
 [tool.uv]
 constraint-dependencies = [
-    # Pin pillow above the versions vulnerable to CVE-2026-40192
-    # (FITS GZIP decompression bomb) and CVE-2026-54058 (McIdas AREA
-    # memory disclosure). Pulled transitively via easy_thumbnails,
-    # which has no upper bound on pillow.
+    # Pin pillow above the versions vulnerable to CVE-2026-40192 (FITS GZIP
+    # decompression bomb) and CVE-2026-54058/54059/54060/55379/55380/59197/
+    # 59199/59200/59204/59205 (McIdas AREA memory disclosure and others).
+    # Pulled transitively via easy_thumbnails, which has no upper bound on
+    # pillow.
     "pillow>=12.3.0",
     # Pin joserfc above the version vulnerable to CVE-2026-49852
     # (HMAC verify accepts an empty key). Pulled transitively via
     # django-lasuite, which has no upper bound on joserfc.
     "joserfc>=1.6.8",
-    # Pin cryptography above the version bundling vulnerable OpenSSL
-    # (GHSA-537c-gmf6-5ccf). Pulled transitively.
-    "cryptography>=48.0.1",
+    # Pin cryptography above the version vulnerable to CVE-2026-69247.
+    # Pulled transitively.
+    "cryptography>=50.0.0",
+    # Pin setuptools above the version vulnerable to CVE-2025-47273
+    # (path traversal). Pulled transitively.
+    "setuptools>=78.1.1",
 ]
 
 [tool.uv.build-backend]

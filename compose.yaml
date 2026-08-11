@@ -96,7 +96,7 @@ services:
       celery-dev:
         condition: service_started
       collabora:
-        condition: service_healthy
+        condition: service_started
       onlyoffice:
         condition: service_healthy
 

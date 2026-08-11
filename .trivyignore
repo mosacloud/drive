@@ -1,9 +1,0 @@
-# False positives: these packages are only referenced in pip's own vendored
-# CycloneDX SBOM (pip/_vendor/bom.cdx.json), used internally by pip for its
-# build-isolation fallback. They are not actually installed in the image —
-# `python3 -c "import setuptools"` / `import msgpack` both fail — so they are
-# not exploitable here. Confirmed still present in pip 26.2.1 (latest as of
-# 2026-08), so this is an upstream pip issue, not something we can fix by
-# bumping our own dependencies.
-CVE-2025-47273
-GHSA-6v7p-g79w-8964

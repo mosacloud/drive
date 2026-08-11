@@ -55,7 +55,7 @@ jobs:
         with:
           docker-build-args: "--target backend-production -f Dockerfile"
           docker-image-name: "docker.io/mosacloud/drive-backend:${{ github.sha }}"
-          trivyignores: ".trivyignore"
+          trivyignores: ".trivyignore.yaml"
       - name: Build and push
         if: env.SHOULD_PUSH == 'true'
         uses: docker/build-push-action@v6

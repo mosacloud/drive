@@ -1135,7 +1135,7 @@ class Base(Configuration):
         {}, environ_name="OIDC_AUTH_REQUEST_EXTRA_PARAMS", environ_prefix=None
     )
     OIDC_RP_SCOPES = values.Value(
-        "openid email", environ_name="OIDC_RP_SCOPES", environ_prefix=None
+        "openid email profile", environ_name="OIDC_RP_SCOPES", environ_prefix=None
     )
     LOGIN_REDIRECT_URL = values.Value(None, environ_name="LOGIN_REDIRECT_URL", environ_prefix=None)
     LOGIN_REDIRECT_URL_FAILURE = values.Value(
@@ -1187,7 +1187,7 @@ class Base(Configuration):
 
     # OIDC claims to store
     OIDC_STORE_CLAIMS = values.ListValue(
-        default=[],
+        default=["picture"],
         environ_name="OIDC_STORE_CLAIMS",
         environ_prefix=None,
     )

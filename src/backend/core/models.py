@@ -389,6 +389,11 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
         """
         return []
 
+    @property
+    def picture(self):
+        """Profile picture URL from the OIDC provider, if any."""
+        return self.claims.get("picture")
+
 
 class UserReconciliation(BaseModel):
     """Model to run batch jobs to replace an active user by another one."""

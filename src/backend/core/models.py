@@ -392,7 +392,8 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
     @property
     def picture(self):
         """Profile picture URL from the OIDC provider, if any."""
-        return self.claims.get("picture")
+        picture = self.claims.get("picture")
+        return picture if isinstance(picture, str) else None
 
 
 class UserReconciliation(BaseModel):

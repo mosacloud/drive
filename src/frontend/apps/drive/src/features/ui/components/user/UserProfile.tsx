@@ -44,7 +44,11 @@ const useProfilePictureVar = (picture?: string | null) => {
 
     const image = new Image();
     image.onload = () => {
-      root.style.setProperty("--user-profile-picture-url", `url(${picture})`);
+      const escaped = picture.replace(/["\\]/g, "\\$&");
+      root.style.setProperty(
+        "--user-profile-picture-url",
+        `url("${escaped}")`
+      );
       root.dataset.hasProfilePicture = "";
     };
     image.onerror = clear;

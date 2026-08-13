@@ -1,6 +1,6 @@
 import { LanguagePicker, useResponsive } from "@gouvfr-lasuite/ui-kit";
 import { useAuth } from "@/features/auth/Auth";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ExplorerSearchButton } from "@/features/explorer/components/app-view/ExplorerSearchButton";
 import { getDriver } from "@/features/config/Config";
@@ -88,14 +88,41 @@ export const HeaderRight = ({
   );
 };
 
+const matchLanguageValue = (lang?: string | null) => {
+  if (!lang) {
+    return undefined;
+  }
+  const base = lang.toLowerCase().split("-")[0];
+  return LANGUAGES.find(
+    (language) => language.value.toLowerCase().split("-")[0] === base
+  )?.value;
+};
 
 export const LanguagePickerUserMenu = () => {
   const { i18n } = useTranslation();
   const { user, refreshUser } = useAuth();
   const driver = getDriver();
-  const [selectedLanguage, setSelectedLanguage] = useState(user?.language);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    user?.language ?? matchLanguageValue(i18n.language)
+  );
 
   // We must set the language to lowercase because django does not use "en-US", but "en-us".
+
+  useEffect(() => {
+    if (user?.language) {
+      setSelectedLanguage(user.language);
+      return;
+    }
+
+    setSelectedLanguage(matchLanguageValue(i18n.language));
+    const onLanguageChanged = (lng: string) => {
+      setSelectedLanguage(matchLanguageValue(lng));
+    };
+    i18n.on("languageChanged", onLanguageChanged);
+    return () => {
+      i18n.off("languageChanged", onLanguageChanged);
+    };
+  }, [user?.language, i18n]);
 
   const languages = useMemo(() => {
     return LANGUAGES.map((language) => ({

@@ -17,18 +17,6 @@ import { useTranslation } from "react-i18next";
 import { useClipboard } from "@/hooks/useCopyToClipboard";
 import { useEffect } from "react";
 
-/**
- * The dropdown content of ui-kit's UserMenu is rendered through a react-aria
- * Popover, which portals its DOM node out from under any wrapper we render
- * here. CSS custom properties still inherit through portals via the real DOM
- * tree, so we set the picture on <html> instead of a local wrapper.
- *
- * The picture URL comes from the OIDC provider and isn't guaranteed to stay
- * reachable for the whole session (expired/session-scoped URL, network
- * error). We preload it and only flip on the CSS var once it actually
- * loads, so a failed load leaves the avatar's initials fallback visible
- * instead of an empty circle.
- */
 const useProfilePictureVar = (picture?: string | null) => {
   useEffect(() => {
     const root = document.documentElement;

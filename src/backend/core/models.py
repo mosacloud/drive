@@ -393,7 +393,13 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
     def picture(self):
         """Profile picture URL from the OIDC provider, if any."""
         picture = self.claims.get("picture")
-        return picture if isinstance(picture, str) else None
+        if not isinstance(picture, str):
+            return None
+        try:
+            validators.URLValidator(schemes=["http", "https"])(picture)
+        except ValidationError:
+            return None
+        return picture
 
 
 class UserReconciliation(BaseModel):

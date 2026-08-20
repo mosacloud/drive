@@ -51,7 +51,12 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: Run trivy scan
-        uses: numerique-gouv/action-trivy-cache@main
+        # Pinned to main@d6e94cf (2026-03-11) instead of the mutable @main
+        # ref: this action has no version tags, and floating on @main means
+        # a future push there (e.g. a trivy-action bump) could silently
+        # change scan behavior or break the .trivyignore.yaml wiring this
+        # branch depends on, without us noticing until the gate misbehaves.
+        uses: numerique-gouv/action-trivy-cache@d6e94cfb488f03a0b3e8b8739aad94e74d24d8da
         with:
           docker-build-args: "--target backend-production -f Dockerfile"
           docker-image-name: "docker.io/mosacloud/drive-backend:${{ github.sha }}"
@@ -102,7 +107,9 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: Run trivy scan
-        uses: numerique-gouv/action-trivy-cache@main
+        # See the backend job above: pinned to the same commit for the same
+        # reason (no version tags published, @main is a moving target).
+        uses: numerique-gouv/action-trivy-cache@d6e94cfb488f03a0b3e8b8739aad94e74d24d8da
         with:
           docker-build-args: "-f src/frontend/Dockerfile --target frontend-production"
           docker-image-name: "docker.io/mosacloud/drive-frontend:${{ github.sha }}"

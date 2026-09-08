@@ -71,6 +71,30 @@ def test_models_users_convert_valid_invitations():
     assert models.Invitation.objects.filter(id=other_email_invitation.id).exists()
 
 
+@pytest.mark.parametrize(
+    "claims",
+    [
+        {},
+        {"picture": None},
+        {"picture": 123},
+        {"picture": ["https://example.com/pic.png"]},
+        {"picture": "not-a-url"},
+        {"picture": "ftp://example.com/pic.png"},
+    ],
+)
+def test_models_users_picture_invalid(claims):
+    """Missing, non-string, non-URL, or non-http(s) picture claims should return None."""
+    user = factories.UserFactory(claims=claims)
+    assert user.picture is None
+
+
+def test_models_users_picture_valid():
+    """A well-formed http(s) URL string should be returned as-is."""
+    picture = "https://example.com/pic.png"
+    user = factories.UserFactory(claims={"picture": picture})
+    assert user.picture == picture
+
+
 def test_models_users_send_email():
     """The "send_email" method should send a templated email to the user."""
     user = factories.UserFactory(email="recipient@example.com")

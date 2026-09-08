@@ -229,6 +229,7 @@ export const AppSwitcherButton = () => {
         color="brand"
         variant="tertiary"
         aria-label={t("app_switcher.switch_app")}
+        title={t("app_switcher.switch_app")}
         aria-expanded={isOpen}
         onClick={handleOpen}
         icon={

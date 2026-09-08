@@ -184,6 +184,7 @@ export type User = {
   email: string;
   full_name: string;
   short_name: string;
+  picture: string | null;
   language: string;
   last_release_note_seen?: string | null;
   column_preferences?: ColumnPreferences | null;

@@ -1,0 +1,25 @@
+html[data-has-profile-picture] {
+  .user-menu__button .c__avatar,
+  .user-menu__content__body__user-info .c__avatar {
+    background-image: var(--user-profile-picture-url);
+    background-size: cover;
+    background-position: center;
+    border-color: transparent;
+
+    .c__avatar__initials {
+      visibility: hidden;
+    }
+  }
+}
+
+// ui-kit's popover positioning uses window.innerWidth, which includes the
+// page's scrollbar width. When the trigger sits close to the viewport edge
+// and the page has a vertical scrollbar, the computed position overshoots
+// the actually visible area by the scrollbar's width. The popover locks
+// page scroll while open, so there's no fallback scrollbar to reach that
+// sliver — it's just clipped. Pin it to a safe distance from the edge
+// instead of trusting the computed left offset.
+.user-menu__popover {
+  left: auto !important;
+  right: 1rem !important;
+}

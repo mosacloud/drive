@@ -389,6 +389,18 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
         """
         return []
 
+    @property
+    def picture(self):
+        """Profile picture URL from the OIDC provider, if any."""
+        picture = self.claims.get("picture")
+        if not isinstance(picture, str):
+            return None
+        try:
+            validators.URLValidator(schemes=["http", "https"])(picture)
+        except ValidationError:
+            return None
+        return picture
+
 
 class UserReconciliation(BaseModel):
     """Model to run batch jobs to replace an active user by another one."""

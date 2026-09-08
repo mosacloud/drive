@@ -11,6 +11,7 @@ import { ColumnPreferences } from "../explorer/types/columns";
 export interface User {
   id: string;
   email: string;
+  picture?: string | null;
   language: string | null;
   main_workspace: Item;
   last_release_note_seen?: string | null;

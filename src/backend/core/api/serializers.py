@@ -48,11 +48,12 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "full_name",
             "short_name",
+            "picture",
             "language",
             "last_release_note_seen",
             "column_preferences",
         ]
-        read_only_fields = ["id", "email", "full_name", "short_name"]
+        read_only_fields = ["id", "email", "full_name", "short_name", "picture"]
 
 
 class UserLightSerializer(UserSerializer):

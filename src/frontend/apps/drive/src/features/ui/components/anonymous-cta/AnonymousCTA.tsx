@@ -1,5 +1,6 @@
 import { login } from "@/features/auth/Auth";
 import { useConfig } from "@/features/config/ConfigProvider";
+import { SESSION_STORAGE_REDIRECT_AFTER_LOGIN_URL } from "@/features/api/fetchApi";
 import { Button } from "@gouvfr-lasuite/cunningham-react";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +23,13 @@ export const AnonymousCTA = () => {
       <Button
         variant="primary"
         size="small"
-        onClick={() => login()}
+        onClick={() => {
+          sessionStorage.setItem(
+            SESSION_STORAGE_REDIRECT_AFTER_LOGIN_URL,
+            window.location.href
+          );
+          login();
+        }}
         data-testid="anonymous-cta-login"
       >
         {t("anonymous_cta.login")}

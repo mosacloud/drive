@@ -1,0 +1,22 @@
+vulnerabilities:
+  - id: CVE-2025-47273
+    purls:
+      - "pkg:pypi/setuptools@70.3.0"
+    statement: >-
+      setuptools is only referenced in pip's own vendored CycloneDX SBOM
+      (pip/_vendor/bom.cdx.json), used internally by pip for its
+      build-isolation fallback. It is not actually installed in the image
+      (`import setuptools` fails). Confirmed still present in pip 26.2.1
+      (latest as of 2026-08), so this is an upstream pip issue, not
+      something fixable by bumping our own dependencies.
+    expired_at: 2026-12-31
+  - id: GHSA-6v7p-g79w-8964
+    purls:
+      - "pkg:pypi/msgpack@1.1.2"
+    statement: >-
+      msgpack is only referenced in pip's own vendored CycloneDX SBOM
+      (pip/_vendor/bom.cdx.json), used internally by pip for its
+      build-isolation fallback. It is not actually installed in the image
+      (`import msgpack` fails). Same upstream pip issue as CVE-2025-47273
+      above.
+    expired_at: 2026-12-31

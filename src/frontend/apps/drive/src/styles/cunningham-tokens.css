@@ -4641,3 +4641,37 @@
 	--c--components--badge--info--background-color: var(--c--contextuals--background--semantic--info--secondary);
 	--c--components--badge--info--color: var(--c--contextuals--content--semantic--info--secondary);
 }
+.cunningham-theme--mosa{
+	--c--globals--colors--brand-050: #E7EDFE;
+	--c--globals--colors--brand-100: #CFDCFD;
+	--c--globals--colors--brand-150: #B7CAFC;
+	--c--globals--colors--brand-200: #9FB9FB;
+	--c--globals--colors--brand-250: #87A7FA;
+	--c--globals--colors--brand-300: #6F96F9;
+	--c--globals--colors--brand-350: #5784F8;
+	--c--globals--colors--brand-400: #3F73F7;
+	--c--globals--colors--brand-450: #2761F6;
+	--c--globals--colors--brand-500: #0F50F5;
+	--c--globals--colors--brand-550: #0443F2;
+	--c--globals--colors--brand-600: #033BD9;
+	--c--globals--colors--brand-650: #0334C0;
+	--c--globals--colors--brand-700: #022CA7;
+	--c--globals--colors--brand-750: #02258E;
+	--c--globals--colors--brand-800: #011D75;
+	--c--globals--colors--brand-850: #01165C;
+	--c--globals--colors--brand-900: #010E43;
+	--c--globals--colors--brand-950: #00072A;
+	--c--globals--colors--logo-1: #0443F2;
+	--c--globals--font--families--base: Inter, Roboto Flex Variable, sans-serif;
+	--c--globals--font--families--accent: Inter, Roboto Flex Variable, sans-serif;
+	--c--components--datagrid--body--background-color-hover: var(--c--contextuals--background--semantic--contextual--primary);
+	--c--components--gaufre--widgetPath: '';
+	--c--components--gaufre--apiUrl: '';
+	--c--components--favicon--src: '/assets/favicon-light.png';
+	--c--components--logo--src: url('/assets/mosa-horizontal.svg');
+	--c--components--logo-icon--src: url('/assets/mosa.svg');
+	--c--components--la-gaufre: false;
+	--c--components--home-proconnect: false;
+	--c--components--beta: false;
+	--c--components--footer: false;
+}

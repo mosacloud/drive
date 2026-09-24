@@ -1,0 +1,48 @@
+// Shared brand tokens, entry animation and trigger-button styling for the
+// small header popups (profile dropdown, app switcher). Kept in one place
+// so the two don't silently drift apart, and so `@keyframes mosa-panel-in`
+// — a plain CSS global, not scoped by Sass `@use` — is declared only once;
+// Dart Sass de-dupes a module's CSS across every `@use` of it, so this
+// partial's output is emitted a single time regardless of how many popup
+// components load it.
+$mosa-surface: #ffffff;
+$mosa-bg: #f7f8fa;
+$mosa-border: #e6eaf1;
+$mosa-ink: #333333;
+$mosa-graphite: #5a6577;
+$mosa-shadow-elev:
+  0 2px 4px rgba(0, 0, 0, 0.02),
+  0 4px 8px rgba(0, 0, 0, 0.03),
+  0 8px 16px rgba(0, 0, 0, 0.04),
+  0 16px 32px rgba(0, 0, 0, 0.05),
+  0 32px 64px rgba(0, 0, 0, 0.08);
+$mosa-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+@keyframes mosa-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@mixin trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 150ms $mosa-ease;
+
+  &:hover {
+    background: $mosa-bg;
+  }
+}

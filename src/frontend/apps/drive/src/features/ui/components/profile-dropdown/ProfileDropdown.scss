@@ -1,0 +1,146 @@
+@use "../../../../styles/mosa-popup-tokens" as popup;
+
+$mosa-surface: popup.$mosa-surface;
+$mosa-bg: popup.$mosa-bg;
+$mosa-border: popup.$mosa-border;
+$mosa-ink: popup.$mosa-ink;
+$mosa-graphite: popup.$mosa-graphite;
+$mosa-shadow-elev: popup.$mosa-shadow-elev;
+$mosa-ease: popup.$mosa-ease;
+
+$mosa-danger: #dc2626;
+$mosa-danger-tint: #fef2f2;
+
+/* ── Trigger ─────────────────────────────────────────────── */
+.profile-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-dropdown__trigger {
+  @include popup.trigger;
+}
+
+/* ── Avatar ──────────────────────────────────────────────── */
+.profile-dropdown__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* ── Panel ───────────────────────────────────────────────── */
+.profile-dropdown__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+
+  &--up {
+    top: auto;
+    bottom: calc(100% + 8px);
+  }
+
+  min-width: 240px;
+  max-width: 320px;
+  background: $mosa-surface;
+  border: 1px solid $mosa-border;
+  border-radius: 16px;
+  box-shadow: $mosa-shadow-elev;
+  padding: 14px 0 8px;
+  z-index: 2000;
+  animation: mosa-panel-in 150ms $mosa-ease both;
+
+  @media (max-width: 1024px) {
+    position: fixed;
+    top: 60px;
+    bottom: auto;
+    left: 16px;
+    right: 16px;
+    margin: 0 auto;
+    width: auto;
+    max-width: 420px;
+    max-height: calc(100vh - 76px);
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    &--up {
+      top: auto;
+      bottom: 68px;
+      max-height: calc(100vh - 84px);
+    }
+  }
+}
+
+/* ── Header row ──────────────────────────────────────────── */
+.profile-dropdown__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 14px 10px;
+}
+
+.profile-dropdown__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-dropdown__full-name {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: $mosa-ink;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-dropdown__email {
+  font-size: 0.8125rem;
+  color: $mosa-graphite;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.profile-dropdown__divider {
+  height: 1px;
+  background: $mosa-border;
+  margin: 4px 0;
+}
+
+/* ── Logout row ──────────────────────────────────────────── */
+.profile-dropdown__logout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 28px);
+  margin: 0 14px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: $mosa-danger;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 150ms $mosa-ease;
+
+  &:hover {
+    background: $mosa-danger-tint;
+  }
+}

@@ -4,7 +4,6 @@ import { LANGUAGES } from "@/features/i18n/conf";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ExplorerSearchButton } from "@/features/explorer/components/app-view/ExplorerSearchButton";
-import { getDriver } from "@/features/config/Config";
 import { Item } from "@/features/drivers/types";
 import { ItemFilters } from "@/features/drivers/Driver";
 import { useIsMinimalLayout } from "@/utils/useLayout";
@@ -56,6 +55,11 @@ export const HeaderRight = ({
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <AppSwitcherButton />
           <Gaufre />
+          {/* Logged-in users manage their language via Epicentre/Hub, not
+              in-app — but an anonymous visitor (e.g. viewing a shared item
+              without an account) has no other way to set it, so this stays
+              for them. */}
+          {!user && <HeaderLanguagePicker />}
           <UserProfile />
         </div>
       )}
@@ -63,12 +67,8 @@ export const HeaderRight = ({
   );
 };
 
-export const LanguagePickerUserMenu = () => {
+export const HeaderLanguagePicker = () => {
   const { i18n } = useTranslation();
-  const { user, refreshUser } = useAuth();
-  const driver = getDriver();
-  // i18n.language is always one of LANGUAGES_ALLOWED and already reflects the
-  // user, then the cookie, then the browser: it is the active language.
   const languages = useMemo(() => {
     return LANGUAGES.map((language) => ({
       ...language,
@@ -80,11 +80,6 @@ export const LanguagePickerUserMenu = () => {
     i18n.changeLanguage(value).catch((err) => {
       console.error("Error changing language", err);
     });
-    if (user) {
-      driver.updateUser({ language: value, id: user.id }).then(() => {
-        void refreshUser?.();
-      });
-    }
   };
 
   return (

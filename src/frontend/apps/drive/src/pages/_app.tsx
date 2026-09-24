@@ -13,6 +13,7 @@ import {
   CunninghamProvider,
 } from "@gouvfr-lasuite/ui-components";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Open_Sans, Poppins } from "next/font/google";
 import {
   MutationCache,
   Query,
@@ -40,6 +41,20 @@ import {
 import { ResponsiveDivs } from "@/features/ui/components/responsive/ResponsiveDivs";
 import { FeedbackFooterMobile } from "@/features/feedback/Feedback";
 import { useRouter } from "next/router";
+
+const poppins = Poppins({
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const openSans = Open_Sans({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+  display: "swap",
+});
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -131,7 +146,7 @@ const MyAppInner = ({ Component, pageProps }: AppPropsWithLayout) => {
   );
 
   return (
-    <>
+    <div className={`${poppins.variable} ${openSans.variable}`}>
       <Head>
         <title>{t("app_title")}</title>
         <link
@@ -159,6 +174,6 @@ const MyAppInner = ({ Component, pageProps }: AppPropsWithLayout) => {
           <ReactQueryDevtools initialIsOpen={false} />
         )}
       </QueryClientProvider>
-    </>
+    </div>
   );
 };

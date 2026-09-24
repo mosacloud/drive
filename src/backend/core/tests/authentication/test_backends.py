@@ -33,7 +33,10 @@ def test_authentication_getter_existing_user_no_email(django_assert_num_queries,
 
     monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
 
-    with django_assert_num_queries(1):
+    # +2 vs. a bare lookup: the default OIDC_STORE_CLAIMS (picture, locale)
+    # makes the claims bag differ from the factory user's default `{}`, so
+    # update_user_if_needed resyncs it (uniqueness-validation SELECT + UPDATE).
+    with django_assert_num_queries(3):
         user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
 
     assert user == db_user
@@ -216,8 +219,9 @@ def test_authentication_getter_existing_user_with_email(django_assert_num_querie
 
     monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
 
-    # Only 1 query because email and names have not changed
-    with django_assert_num_queries(1):
+    # 1 query because email and names have not changed, +2 for the claims bag
+    # resync (see test_authentication_getter_existing_user_no_email)
+    with django_assert_num_queries(3):
         authenticated_user = klass.get_or_create_user(
             access_token="test-token", id_token=None, payload=None
         )
@@ -352,6 +356,54 @@ def test_authentication_getter_new_user_with_email(monkeypatch):
     assert user.short_name == "John"
     assert user.has_usable_password() is False
     assert models.User.objects.count() == 1
+
+
+def test_authentication_getter_new_user_full_name_from_standard_oidc_claims(monkeypatch):
+    """
+    A real IdP (e.g. Zitadel) sends the standard "given_name"/"family_name"
+    claims rather than the dev Keycloak realm's "first_name"/"last_name" —
+    both must resolve to a full name.
+    """
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "123",
+            "email": "drive@example.com",
+            "given_name": "John",
+            "family_name": "Doe",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    assert user.full_name == "John Doe"
+
+
+def test_authentication_getter_new_user_full_name_does_not_duplicate(monkeypatch):
+    """
+    An IdP that populates both the dev Keycloak realm's "first_name"/"last_name"
+    fields and the standard OIDC "given_name"/"family_name" claims for the same
+    person should not end up with a doubled full name.
+    """
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "123",
+            "email": "drive@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "given_name": "John",
+            "family_name": "Doe",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    assert user.full_name == "John Doe"
 
 
 @override_settings(OIDC_OP_USER_ENDPOINT="http://oidc.endpoint.test/userinfo")
@@ -602,6 +654,72 @@ def test_authentication_store_claims_existing_user(monkeypatch):
     assert user.email == email
     assert user.claims == {"iss": "https://example.com"}
     assert models.User.objects.count() == 1
+
+
+def test_authentication_getter_language_from_locale_claim(monkeypatch):
+    """A supported OIDC 'locale' claim is applied as the user's language."""
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "123",
+            "email": "drive@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "locale": "nl-NL",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    assert user.language == "nl-nl"
+    assert user.language_confirmed_by_idp is True
+
+
+def test_authentication_getter_language_missing_locale_claim(monkeypatch):
+    """No 'locale' claim leaves the user's language untouched."""
+    klass = OIDCAuthenticationBackend()
+    user = UserFactory(email="drive@example.com", sub="123", language="fr-fr")
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "123",
+            "email": "drive@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    user.refresh_from_db()
+    assert user.language == "fr-fr"
+    assert user.language_confirmed_by_idp is False
+
+
+def test_authentication_getter_language_unsupported_locale_claim(monkeypatch):
+    """An unsupported 'locale' claim leaves the user's language untouched."""
+    klass = OIDCAuthenticationBackend()
+    user = UserFactory(email="drive@example.com", sub="123", language="fr-fr")
+
+    def get_userinfo_mocked(*args):
+        return {
+            "sub": "123",
+            "email": "drive@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
+            "locale": "ja-JP",
+        }
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    user.refresh_from_db()
+    assert user.language == "fr-fr"
+    assert user.language_confirmed_by_idp is False
 
 
 @mock.patch("core.authentication.backends.get_entitlements_backend")

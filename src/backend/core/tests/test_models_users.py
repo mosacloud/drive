@@ -101,3 +101,44 @@ def test_models_users_send_email():
 
     assert "My message" in email_content
     assert "https://example.com/some-link/" in email_content
+
+
+def test_models_users_picture_valid_url():
+    """The "picture" property should return a valid http(s) claim value."""
+    user = factories.UserFactory(claims={"picture": "https://example.com/avatar.png"})
+    assert user.picture == "https://example.com/avatar.png"
+
+
+def test_models_users_picture_missing():
+    """The "picture" property should return None when the claim is absent."""
+    user = factories.UserFactory(claims={})
+    assert user.picture is None
+
+
+@pytest.mark.parametrize(
+    "picture",
+    [
+        "javascript:alert(1)",
+        "ftp://example.com/avatar.png",
+        "not a url",
+        123,
+        None,
+    ],
+)
+def test_models_users_picture_invalid(picture):
+    """The "picture" property should discard non-http(s) or non-string claim values."""
+    user = factories.UserFactory(claims={"picture": picture})
+    assert user.picture is None
+
+
+def test_models_users_language_confirmed_by_idp_true():
+    """language_confirmed_by_idp should be True for a supported locale claim."""
+    user = factories.UserFactory(claims={"locale": "nl-NL"})
+    assert user.language_confirmed_by_idp is True
+
+
+@pytest.mark.parametrize("claims", [{}, {"locale": "ja-JP"}, {"locale": 123}])
+def test_models_users_language_confirmed_by_idp_false(claims):
+    """language_confirmed_by_idp should be False without a supported locale claim."""
+    user = factories.UserFactory(claims=claims)
+    assert user.language_confirmed_by_idp is False

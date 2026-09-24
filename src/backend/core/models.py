@@ -42,6 +42,7 @@ from lasuite.drf.models.choices import (
 from pydantic import BaseModel as PydanticBaseModel
 from timezone_field import TimeZoneField
 
+from core.authentication.language import compute_language
 from core.permissions import get_permissions_backend
 from core.storage.cache import invalidate_storage_used_cache
 from core.utils.item_title import manage_unique_title as manage_unique_title_utils
@@ -340,6 +341,44 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
         transaction.on_commit(lambda: invalidate_storage_used_cache([self.id]))
 
         valid_invitations.delete()
+
+    @property
+    def picture(self):
+        """Profile picture URL from the OIDC provider, if any.
+
+        The claims bag is stored verbatim, so this value is whatever the
+        identity provider sent. It ends up in an ``<img src>``, so anything
+        that isn't a plain http(s) URL is dropped here rather than handed to
+        the browser.
+        """
+        picture = self.claims.get("picture")
+        if not isinstance(picture, str):
+            return None
+        try:
+            validators.URLValidator(schemes=["http", "https"])(picture)
+        except ValidationError:
+            logger.warning("Discarded non-http(s) OIDC 'picture' claim")
+            return None
+        return picture
+
+    @property
+    def language_confirmed_by_idp(self):
+        """Whether the identity provider asserted a language we can honour.
+
+        ``language`` is nullable but, once set, cannot distinguish an
+        IdP-asserted preference from Drive's own browser-detected fallback
+        (see ``useSyncUserLanguage`` on the frontend). Drive has no in-app
+        language picker for a logged-in user — language changes go through
+        Epicentre/Hub instead — so the frontend uses this flag to know when
+        it's still safe to keep resyncing its own browser/cookie-detected
+        guess (e.g. a language picked on the anonymous login page) onto
+        ``language`` on every login, versus an IdP-confirmed value that must
+        never be overwritten by a guess.
+
+        Derived from the stored claim rather than recorded at login, so it is
+        available to any request and for any user, not just an OIDC session.
+        """
+        return compute_language(self.claims) is not None
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Email this user."""

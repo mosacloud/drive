@@ -27,8 +27,8 @@ $app-gradient-end: #d97706;
 }
 
 .mosa-login {
-  --font-heading: 'Poppins', sans-serif;
-  --font-body: 'Open Sans', sans-serif;
+  --font-heading: var(--font-poppins), sans-serif;
+  --font-body: var(--font-open-sans), sans-serif;
   --app-color: #{$app-color};
   --app-gradient-end: #{$app-gradient-end};
   min-height: 100vh;

@@ -20,7 +20,6 @@ import {
 } from "@gouvfr-lasuite/ui-components";
 import { ExplorerDndProvider } from "./ExplorerDndProvider";
 import { useFirstLevelItems } from "../hooks/useQueries";
-import { useTranslation } from "react-i18next";
 import { getItemTitle } from "../utils/utils";
 import { SpinnerPage } from "@/features/ui/components/spinner/SpinnerPage";
 
@@ -304,7 +303,6 @@ const TreeProviderInitializer = ({
   children: React.ReactNode;
 }) => {
   const { setTreeIsInitialized } = useGlobalExplorer();
-  const { t } = useTranslation();
   const { user } = useAuth();
 
   const treeContext = useTreeContext<TreeItem>();
@@ -326,7 +324,10 @@ const TreeProviderInitializer = ({
       nodeType: TreeViewNodeTypeEnum.SIMPLE_NODE,
       childrenCount: favorites.length,
       children: favorites,
-      label: t("explorer.tree.favorites"),
+      // Store the raw i18n key, not the translated string: this node is only
+      // rebuilt when `user` changes, so a translated string here would go
+      // stale on a language switch. ExplorerTreeItem translates it at render time.
+      label: "explorer.tree.favorites",
       pagination: response.pagination,
     };
 

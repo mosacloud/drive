@@ -266,6 +266,8 @@ def test_api_users_retrieve_me_authenticated():
         "language": user.language,
         "last_release_note_seen": None,
         "column_preferences": None,
+        "picture": None,
+        "language_confirmed_by_idp": False,
     }
 
 
@@ -287,6 +289,8 @@ def test_api_users_retrieve_me_authenticated_with_release_note():
         "language": user.language,
         "last_release_note_seen": "0.11.1",
         "column_preferences": None,
+        "picture": None,
+        "language_confirmed_by_idp": False,
     }
 
 
@@ -316,7 +320,26 @@ def test_api_users_retrieve_me_authenticated_with_column_preferences():
         "language": user.language,
         "last_release_note_seen": None,
         "column_preferences": {"column1": "file_size", "column2": "last_modified"},
+        "picture": None,
+        "language_confirmed_by_idp": False,
     }
+
+
+def test_api_users_retrieve_me_authenticated_with_picture_and_language_confirmed():
+    """The "/users/me" path should expose the OIDC-derived picture and language_confirmed_by_idp."""
+    user = factories.UserFactory(
+        claims={"picture": "https://example.com/avatar.png", "locale": "nl-NL"}
+    )
+
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.get("/api/v1.0/users/me/")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["picture"] == "https://example.com/avatar.png"
+    assert body["language_confirmed_by_idp"] is True
 
 
 def test_api_users_retrieve_anonymous():

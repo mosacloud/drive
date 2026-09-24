@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@gouvfr-lasuite/ui-components";
 import { useConfig } from "@/features/config/ConfigProvider";
+import { useDismissablePopup } from "@/hooks/useDismissablePopup";
+import { usePopupPosition } from "@/hooks/usePopupPosition";
 
 type AppId =
   | "epicentre"
@@ -17,65 +18,47 @@ const APP_META: Record<
   AppId,
   {
     icon: string;
-    label: string;
-    subtitle: string;
     color: string;
     gradientEnd: string;
   }
 > = {
   epicentre: {
     icon: "/images/icons/epicentre-icon.svg",
-    label: "Hub",
-    subtitle: "Home",
     color: "#0284C7",
     gradientEnd: "#0443F2",
   },
   docs: {
     icon: "/images/icons/file-icon.svg",
-    label: "Docs",
-    subtitle: "Documents",
     color: "#06B6D4",
     gradientEnd: "#0891B2",
   },
   drive: {
     icon: "/images/icons/folder-icon.svg",
-    label: "Drive",
-    subtitle: "Files",
     color: "#F2AF05",
     gradientEnd: "#D97706",
   },
   meet: {
     icon: "/images/icons/camera-icon.svg",
-    label: "Meet",
-    subtitle: "Video calls",
     color: "#00B574",
     gradientEnd: "#059669",
   },
   mail: {
     icon: "/images/icons/mail-icon.svg",
-    label: "Mail",
-    subtitle: "Email",
     color: "#F8497B",
     gradientEnd: "#A0033A",
   },
   calendar: {
     icon: "/images/icons/calendar-icon.svg",
-    label: "Calendar",
-    subtitle: "Schedule",
     color: "#A78BFA",
     gradientEnd: "#6D3FDE",
   },
   chat: {
     icon: "/images/icons/chat-icon.svg",
-    label: "Chat",
-    subtitle: "Messaging",
     color: "#FA7108",
     gradientEnd: "#C2410C",
   },
   commander: {
     icon: "/images/icons/commander-icon.svg",
-    label: "Commander",
-    subtitle: "Admin",
     color: "#0284C7",
     gradientEnd: "#0064C8",
   },
@@ -102,7 +85,8 @@ const NAV_ORDER: AppId[] = [
 ];
 
 const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
-  const { icon, label, color, gradientEnd } = APP_META[id];
+  const { t } = useTranslation();
+  const { icon, color, gradientEnd } = APP_META[id];
   const radius = size <= 36 ? 9 : 12;
   return (
     <span
@@ -116,7 +100,7 @@ const AppIcon = ({ id, size = 40 }: { id: AppId; size?: number }) => {
     >
       <img
         src={icon}
-        alt={label}
+        alt={t(`app_switcher.apps.${id}.label`)}
         style={{ width: size * 0.45, height: size * 0.45 }}
       />
     </span>
@@ -144,6 +128,8 @@ const Panel = ({
       style={{
         background: `linear-gradient(180deg, color-mix(in srgb, ${APP_META.drive.color} 8%, transparent) 0%, transparent 100%) top center / 100% 80px no-repeat, #ffffff`,
       }}
+      role="dialog"
+      aria-label={t("app_switcher.switch_app")}
     >
       <div className="app-switcher-panel__current">
         <AppIcon id="drive" size={44} />
@@ -193,60 +179,49 @@ export const AppSwitcherButton = () => {
   const { config } = useConfig();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [opensUpward, setOpensUpward] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const appUrls = config?.APP_URLS ?? {};
   const hasOtherApps = NAV_ORDER.some(
     (id) => id in appUrls && id in APP_META,
   );
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [isOpen]);
+  const opensUpward =
+    usePopupPosition(ref, isOpen, (rect) => window.innerHeight - rect.bottom < 320) ??
+    false;
+
+  useDismissablePopup(ref, triggerRef, isOpen, setIsOpen);
 
   if (!hasOtherApps) return null;
 
-  const handleOpen = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      setOpensUpward(spaceBelow < 320);
-    }
-    setIsOpen((v) => !v);
-  };
+  const handleOpen = () => setIsOpen((v) => !v);
 
   return (
     <div ref={ref} className="app-switcher-panel">
-      <Button
-        color="brand"
-        variant="tertiary"
+      <button
+        ref={triggerRef}
+        type="button"
+        className="app-switcher-panel__trigger"
         aria-label={t("app_switcher.switch_app")}
+        aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={handleOpen}
-        icon={
-          <span className="app-switcher-panel__trigger-grid" aria-hidden>
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              {[...DOT_ORDER, DOT_ORDER[0], DOT_ORDER[1]].map((id, i) => (
-                <circle
-                  key={i}
-                  cx={3 + (i % 3) * 6}
-                  cy={3 + Math.floor(i / 3) * 6}
-                  r={2}
-                  fill={APP_META[id].color}
-                />
-              ))}
-            </svg>
-          </span>
-        }
-      />
+      >
+        <span className="app-switcher-panel__trigger-grid" aria-hidden>
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            {[...DOT_ORDER, DOT_ORDER[0], DOT_ORDER[1]].map((id, i) => (
+              <circle
+                key={i}
+                cx={3 + (i % 3) * 6}
+                cy={3 + Math.floor(i / 3) * 6}
+                r={2}
+                fill={APP_META[id].color}
+              />
+            ))}
+          </svg>
+        </span>
+      </button>
       {isOpen && (
         <Panel
           onClose={() => setIsOpen(false)}

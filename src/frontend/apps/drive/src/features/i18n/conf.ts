@@ -36,3 +36,7 @@ export const LANGUAGES_ALLOWED = LANGUAGES.map(({ value }) => value);
 export const DEFAULT_LANGUAGE = "en-us";
 
 export const LANGUAGE_LOCAL_STORAGE = "main-language";
+
+// Shared by the language detector (options.ts) and the logout cleanup so the
+// two can't drift apart; the backend uses the same name (LANGUAGE_COOKIE_NAME).
+export const LANGUAGE_COOKIE = "drive_language";

@@ -784,8 +784,16 @@ class UserMeSerializer(UserSerializer):
 
     class Meta:
         model = models.User
-        fields = UserSerializer.Meta.fields
-        read_only_fields = UserSerializer.Meta.read_only_fields
+        # `picture` and `language_confirmed_by_idp` are model properties (see
+        # User) that stay on this serializer rather than the shared one:
+        # adding them to `UserSerializer` would expose another user's raw
+        # OIDC-derived claims data (and the extra payload) on every endpoint
+        # that embeds a user, e.g. item accesses, collaborator lists.
+        fields = UserSerializer.Meta.fields + ["picture", "language_confirmed_by_idp"]
+        read_only_fields = UserSerializer.Meta.read_only_fields + [
+            "picture",
+            "language_confirmed_by_idp",
+        ]
 
 
 class LinkItemSerializer(serializers.ModelSerializer):

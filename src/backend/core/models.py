@@ -42,6 +42,8 @@ from lasuite.drf.models.choices import (
 from pydantic import BaseModel as PydanticBaseModel
 from timezone_field import TimeZoneField
 
+from core.authentication.language import is_language_confirmed
+from core.authentication.profile import picture_from_claims
 from core.permissions import get_permissions_backend
 from core.storage.cache import invalidate_storage_used_cache
 from core.utils.item_title import manage_unique_title as manage_unique_title_utils
@@ -340,6 +342,22 @@ class User(AbstractBaseUser, BaseModel, auth_models.PermissionsMixin):
         transaction.on_commit(lambda: invalidate_storage_used_cache([self.id]))
 
         valid_invitations.delete()
+
+    @property
+    def picture(self) -> str | None:
+        """Profile picture URL from the OIDC provider, if any."""
+        return picture_from_claims(self.claims)
+
+    @property
+    def language_confirmed_by_idp(self) -> bool:
+        """Whether ``language`` is the one the identity provider asserted.
+
+        ``language`` alone can't tell an IdP-synced value from one set through
+        the API or the browser-detected fallback (see ``useSyncUserLanguage``),
+        so the frontend only stops resyncing its own guess when this is True.
+        Requires "locale" to be listed in ``OIDC_STORE_CLAIMS``.
+        """
+        return is_language_confirmed(self.claims, self.language)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Email this user."""

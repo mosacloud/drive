@@ -23,12 +23,14 @@ import { useRouter } from "next/router";
 import { DefaultRoute } from "@/utils/defaultRoutes";
 import { setFromRoute } from "../../utils/utils";
 import folderIconTree from "@/assets/tree/folder.svg";
+import { useTranslation } from "react-i18next";
 
 type ExplorerTreeItemProps = NodeRendererProps<TreeDataItem<TreeItem>>;
 
 export const ExplorerTreeItem = ({ ...props }: ExplorerTreeItemProps) => {
   const { onNavigate, setPreviewItem, setPreviewItems } = useGlobalExplorer();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const item: TreeViewDataType<TreeItemData> = props.node.data.value;
 
@@ -80,7 +82,7 @@ export const ExplorerTreeItem = ({ ...props }: ExplorerTreeItemProps) => {
                     color="var(--c--contextuals--content--semantic--neutral--tertiary)"
                   />
                   <span className="explorer__tree__item__title">
-                    {item.label}
+                    {t(item.label)}
                   </span>
                 </>
               )}

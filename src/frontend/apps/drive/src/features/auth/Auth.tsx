@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useCallback, useEffect, useState } from "react";
 
 import { fetchAPI } from "@/features/api/fetchApi";
 import { User } from "@/features/auth/types";
@@ -9,8 +9,24 @@ import { SpinnerPage } from "@/features/ui/components/spinner/SpinnerPage";
 import { attemptSilentLogin, canAttemptSilentLogin } from "./silentLogin";
 import { authUrl } from "./authUrl";
 import { useConfig } from "../config/ConfigProvider";
+import { LANGUAGE_COOKIE, LANGUAGE_LOCAL_STORAGE } from "@/features/i18n/conf";
 
 export const logout = () => {
+  // Drop the remembered interface language: it's shared by every visitor of
+  // this browser, and an IdP-confirmed language gets written into it. Keeping
+  // it would boot the next person on a shared machine into this user's
+  // language. Each side is cleared on its own so one failing (private mode,
+  // blocked storage) can't leave the other behind or stop the sign-out.
+  try {
+    document.cookie = `${LANGUAGE_COOKIE}=; path=/; max-age=0`;
+  } catch (err) {
+    console.warn("Could not clear the remembered language cookie", err);
+  }
+  try {
+    localStorage.removeItem(LANGUAGE_LOCAL_STORAGE);
+  } catch (err) {
+    console.warn("Could not clear the remembered language from storage", err);
+  }
   window.location.replace(new URL("logout/", baseApiUrl()).href);
   posthog.reset();
 };
@@ -36,7 +52,11 @@ export const Auth = ({
   const [user, setUser] = useState<User | null>();
   const { config } = useConfig();
 
-  const init = async () => {
+  // Stable identities: consumed by useSyncUserLanguage's effect dependency
+  // arrays, where a new function on every render would re-fire those effects
+  // (e.g. re-sending an already-in-flight language update) independently of
+  // any actual user-state change.
+  const init = useCallback(async () => {
     try {
       const response = await fetchAPI(`users/me/`, undefined, {
         redirectOn40x: false,
@@ -56,11 +76,11 @@ export const Auth = ({
       }
       return null;
     }
-  };
+  }, [config.FRONTEND_SILENT_LOGIN_ENABLED]);
 
-  const refreshUser = async () => {
-    void init();
-  };
+  const refreshUser = useCallback(async () => {
+    await init();
+  }, [init]);
 
   useEffect(() => {
     void init();

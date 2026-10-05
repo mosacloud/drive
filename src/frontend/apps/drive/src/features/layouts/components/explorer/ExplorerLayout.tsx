@@ -16,7 +16,7 @@ import {
   Tooltip,
   useModal,
 } from "@gouvfr-lasuite/ui-components";
-import { HeaderIcon, HeaderRight } from "../header/Header";
+import { HeaderIcon, HeaderRight, HeaderLanguagePicker } from "../header/Header";
 import {
   GlobalExplorerProvider,
   NavigationEvent,
@@ -179,6 +179,7 @@ export const LeftPanelFooterMobile = (props: LeftPanelFooterProps) => {
     return (
       <div className="c__left-panel__footer__drive">
         <HelpMenuButton />
+        <HeaderLanguagePicker />
         <UserProfile />
       </div>
     );

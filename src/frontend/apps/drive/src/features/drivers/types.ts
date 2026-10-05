@@ -185,6 +185,8 @@ export type User = {
   full_name: string;
   short_name: string;
   language: string;
+  language_confirmed_by_idp?: boolean | null;
+  picture?: string | null;
   last_release_note_seen?: string | null;
   column_preferences?: ColumnPreferences | null;
 };

@@ -40,7 +40,12 @@ i18n
 i18n.on("languageChanged", (lng) => {
   if (typeof window !== "undefined") {
     document.documentElement.setAttribute("lang", capitalizeRegion(lng));
-    localStorage.setItem(LANGUAGE_LOCAL_STORAGE, lng);
+    try {
+      localStorage.setItem(LANGUAGE_LOCAL_STORAGE, lng);
+    } catch (err) {
+      // Storage can be unavailable (private mode); the language still applies.
+      console.warn("Could not remember the language", err);
+    }
   }
 });
 

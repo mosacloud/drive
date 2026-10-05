@@ -10,6 +10,8 @@ from lasuite.oidc_login.backends import (
 )
 
 from core.authentication.exceptions import UserCannotAccessApp
+from core.authentication.language import compute_stored_language
+from core.authentication.profile import compute_full_name
 from core.entitlements import get_entitlements_backend
 from core.models import DuplicateEmailError
 
@@ -22,6 +24,10 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
     This class overrides the default OIDC Authentication Backend to accommodate differences
     in the User and Identity models, and handles signed and/or encrypted UserInfo response.
     """
+
+    def compute_full_name(self, user_info):
+        """Pick one given and one family name candidate (see ``profile``)."""
+        return compute_full_name(user_info, settings.OIDC_USERINFO_FULLNAME_FIELDS)
 
     def get_extra_claims(self, user_info):
         """
@@ -37,11 +43,15 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
         # We need to add the claims that we want to store so that they are
         # available in the post_get_or_create_user method.
         claims_to_store = {claim: user_info.get(claim) for claim in settings.OIDC_STORE_CLAIMS}
-        return {
+        extra = {
             "full_name": self.compute_full_name(user_info),
             "short_name": user_info.get(settings.OIDC_USERINFO_SHORTNAME_FIELD),
             "claims": claims_to_store,
         }
+        language = compute_stored_language(user_info)
+        if language:
+            extra["language"] = language
+        return extra
 
     def get_existing_user(self, sub, email):
         """Fetch existing user by sub or email."""

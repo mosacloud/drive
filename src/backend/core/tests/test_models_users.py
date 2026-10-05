@@ -132,13 +132,26 @@ def test_models_users_picture_invalid(picture):
 
 
 def test_models_users_language_confirmed_by_idp_true():
-    """language_confirmed_by_idp should be True for a supported locale claim."""
-    user = factories.UserFactory(claims={"locale": "nl-NL"})
+    """language_confirmed_by_idp should be True when language matches the locale claim."""
+    user = factories.UserFactory(language="nl-nl", claims={"locale": "nl-NL"})
     assert user.language_confirmed_by_idp is True
 
 
-@pytest.mark.parametrize("claims", [{}, {"locale": "ja-JP"}, {"locale": 123}])
+def test_models_users_language_confirmed_by_idp_false_after_language_change():
+    """A language changed afterwards (e.g. through the API) is no longer IdP-confirmed."""
+    user = factories.UserFactory(language="fr-fr", claims={"locale": "nl-NL"})
+    assert user.language_confirmed_by_idp is False
+
+
+@pytest.mark.parametrize("claims", [{}, {"locale": "ja-JP"}, {"locale": 123}, []])
 def test_models_users_language_confirmed_by_idp_false(claims):
     """language_confirmed_by_idp should be False without a supported locale claim."""
-    user = factories.UserFactory(claims=claims)
+    user = factories.UserFactory(language="nl-nl", claims=claims)
     assert user.language_confirmed_by_idp is False
+
+
+@pytest.mark.parametrize("claims", [[], ["picture"], "picture"])
+def test_models_users_picture_tolerates_non_dict_claims(claims):
+    """Non-dict stored claims give None instead of an AttributeError (a 500 on users/me)."""
+    user = factories.UserFactory(claims=claims)
+    assert user.picture is None

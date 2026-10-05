@@ -700,7 +700,7 @@ def test_authentication_getter_language_missing_locale_claim(monkeypatch):
 
 
 def test_authentication_getter_language_unsupported_locale_claim(monkeypatch):
-    """An unsupported 'locale' claim leaves the user's language untouched."""
+    """An unsupported 'locale' claim stores the default language, not the stale one."""
     klass = OIDCAuthenticationBackend()
     user = UserFactory(email="drive@example.com", sub="123", language="fr-fr")
 
@@ -718,7 +718,7 @@ def test_authentication_getter_language_unsupported_locale_claim(monkeypatch):
     user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
 
     user.refresh_from_db()
-    assert user.language == "fr-fr"
+    assert user.language == "en-us"
     assert user.language_confirmed_by_idp is False
 
 

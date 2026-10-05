@@ -49,6 +49,7 @@ $mosa-ease:          popup.$mosa-ease;
   padding: 14px 0;
   z-index: 2000;
   animation: mosa-panel-in 150ms $mosa-ease both;
+  @include popup.reduced-motion;
 
   @media (max-width: 480px) {
     position: fixed;
@@ -60,6 +61,7 @@ $mosa-ease:          popup.$mosa-ease;
     width: auto;
     max-width: 312px;
     max-height: calc(100vh - 76px);
+    max-height: calc(100dvh - 76px);
     overflow-y: auto;
     box-sizing: border-box;
 
@@ -67,6 +69,7 @@ $mosa-ease:          popup.$mosa-ease;
       top: auto;
       bottom: 68px;
       max-height: calc(100vh - 84px);
+      max-height: calc(100dvh - 84px);
     }
   }
 }
@@ -138,6 +141,7 @@ $mosa-ease:          popup.$mosa-ease;
   border-radius: 8px;
   text-decoration: none;
   transition: background 150ms $mosa-ease;
+  @include popup.reduced-motion;
   min-width: 0;
 
   &:hover {

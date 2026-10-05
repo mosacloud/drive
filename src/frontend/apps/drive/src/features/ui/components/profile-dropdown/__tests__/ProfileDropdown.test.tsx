@@ -41,6 +41,27 @@ describe("ProfileDropdownButton", () => {
       />
     );
     expect(markup).toContain("https://example.com/avatar.png");
+    expect(markup).toContain('referrerPolicy="no-referrer"');
+  });
+
+  it("keeps an emoji initial whole instead of splitting its surrogate pair", () => {
+    const markup = renderToStaticMarkup(
+      <ProfileDropdownButton
+        user={{ ...baseUser, full_name: "😀 Smith" }}
+        onLogout={() => {}}
+      />
+    );
+    expect(markup).toContain("😀S");
+  });
+
+  it("shows a question mark when there is no name and no email", () => {
+    const markup = renderToStaticMarkup(
+      <ProfileDropdownButton
+        user={{ ...baseUser, full_name: null, email: "" }}
+        onLogout={() => {}}
+      />
+    );
+    expect(markup).toContain(">?<");
   });
 
   it("falls back to the email for initials when full_name is missing", () => {

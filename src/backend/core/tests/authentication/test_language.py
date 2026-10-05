@@ -5,7 +5,11 @@ from django.test.utils import override_settings
 import pytest
 
 from core.authentication.backends import OIDCAuthenticationBackend
-from core.authentication.language import compute_language
+from core.authentication.language import (
+    compute_language,
+    compute_stored_language,
+    is_language_confirmed,
+)
 from core.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
@@ -16,6 +20,8 @@ pytestmark = pytest.mark.django_db
     [
         ("nl", "nl-nl"),
         ("nl-NL", "nl-nl"),
+        ("nl_NL", "nl-nl"),  # some IdPs send an underscore tag
+        (" NL ", "nl-nl"),
         ("en-US", "en-us"),
         ("fr", "fr-fr"),
         ("ja", None),  # not a supported language
@@ -110,8 +116,8 @@ def test_authentication_updates_language_from_locale_claim(monkeypatch):
     assert user.language == "nl-nl"
 
 
-def test_authentication_keeps_language_when_locale_claim_unsupported(monkeypatch):
-    """An unsupported/missing "locale" claim must not overwrite the existing language."""
+def test_authentication_stores_default_language_when_locale_claim_unsupported(monkeypatch):
+    """A well-formed but unsupported "locale" must not leave the old language in place."""
     db_user = UserFactory(language="fr-fr")
     klass = OIDCAuthenticationBackend()
 
@@ -123,4 +129,78 @@ def test_authentication_keeps_language_when_locale_claim_unsupported(monkeypatch
     user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
 
     user.refresh_from_db()
+    assert user.language == "en-us"
+    assert user.language_confirmed_by_idp is False
+
+
+@pytest.mark.parametrize("locale", ["und", "*", "   ", 5, ["nl"]])
+def test_authentication_keeps_language_when_locale_claim_malformed(monkeypatch, locale):
+    """A blank or malformed "locale" leaves the existing language alone."""
+    db_user = UserFactory(language="fr-fr")
+    klass = OIDCAuthenticationBackend()
+
+    def get_userinfo_mocked(*args):
+        return {"sub": db_user.sub, "email": db_user.email, "locale": locale}
+
+    monkeypatch.setattr(OIDCAuthenticationBackend, "get_userinfo", get_userinfo_mocked)
+
+    user = klass.get_or_create_user(access_token="test-token", id_token=None, payload=None)
+
+    user.refresh_from_db()
     assert user.language == "fr-fr"
+
+
+@pytest.mark.parametrize(
+    "locale,expected",
+    [
+        ("nl", "nl-nl"),
+        ("nl_NL", "nl-nl"),
+        ("es", "en-us"),  # well-formed but unsupported: default language
+        ("pt-BR", "en-us"),
+        ("und", None),
+        ("*", None),
+        ("x-foo", None),
+        ("", None),
+        ("   ", None),
+        (None, None),
+        (5, None),
+        (["nl"], None),
+    ],
+)
+def test_compute_stored_language(locale, expected):
+    """Unsupported locales fall back to the default; malformed ones return None."""
+    assert compute_stored_language({"sub": "abc", "locale": locale}) == expected
+
+
+def test_compute_stored_language_missing_claim():
+    """No "locale" claim at all leaves the stored language untouched."""
+    assert compute_stored_language({"sub": "abc"}) is None
+
+
+@override_settings(LANGUAGE_CODE="en")
+def test_compute_stored_language_default_is_a_supported_code():
+    """A bare LANGUAGE_CODE is mapped onto the matching settings.LANGUAGES code."""
+    assert compute_stored_language({"locale": "es"}) == "en-us"
+
+
+def test_malformed_locale_warning_names_sub_and_truncates(caplog):
+    """The warning identifies the user and caps the logged value."""
+    compute_stored_language({"sub": "abc-123", "locale": "*" + "x" * 500})
+    assert "abc-123" in caplog.text
+    assert "x" * 100 not in caplog.text
+
+
+@pytest.mark.parametrize(
+    "claims,language,expected",
+    [
+        ({"locale": "nl-NL"}, "nl-nl", True),
+        ({"locale": "nl-NL"}, "fr-fr", False),  # changed afterwards, no longer the IdP's
+        ({"locale": "es"}, "en-us", False),  # unsupported: stored default is not "confirmed"
+        ({}, "nl-nl", False),
+        (None, "nl-nl", False),
+        (["locale"], "nl-nl", False),
+    ],
+)
+def test_is_language_confirmed(claims, language, expected):
+    """Confirmed only when the language equals the one the stored claim maps to."""
+    assert is_language_confirmed(claims, language) is expected

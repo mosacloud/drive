@@ -328,7 +328,7 @@ def test_api_users_retrieve_me_authenticated_with_column_preferences():
 def test_api_users_retrieve_me_authenticated_with_picture_and_language_confirmed():
     """The "/users/me" path should expose the OIDC-derived picture and language_confirmed_by_idp."""
     user = factories.UserFactory(
-        claims={"picture": "https://example.com/avatar.png", "locale": "nl-NL"}
+        language="nl-nl", claims={"picture": "https://example.com/avatar.png", "locale": "nl-NL"}
     )
 
     client = APIClient()

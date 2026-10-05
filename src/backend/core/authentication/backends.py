@@ -10,7 +10,8 @@ from lasuite.oidc_login.backends import (
 )
 
 from core.authentication.exceptions import UserCannotAccessApp
-from core.authentication.language import compute_language
+from core.authentication.language import compute_stored_language
+from core.authentication.profile import compute_full_name
 from core.entitlements import get_entitlements_backend
 from core.models import DuplicateEmailError
 
@@ -25,31 +26,8 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
     """
 
     def compute_full_name(self, user_info):
-        """
-        Compute the user's full name from OIDC fields in settings.
-
-        `OIDC_USERINFO_FULLNAME_FIELDS` lists first- and last-name field
-        candidates for different IdP naming conventions (e.g. Keycloak's
-        `first_name`/`last_name` vs. standard OIDC `given_name`/`family_name`).
-        Some IdPs populate more than one convention for the same person, so
-        pick the first non-empty candidate per slot instead of joining every
-        truthy field, to avoid duplicating the name (e.g. "John Doe John Doe").
-
-        The list must alternate given,family,given,family,... — fields are
-        matched positionally (even indices are given-name candidates, odd
-        indices family-name candidates), not by field name. A misconfigured,
-        non-alternating list silently pairs the wrong fields.
-        """
-        name_fields = settings.OIDC_USERINFO_FULLNAME_FIELDS
-        given_name_fields = name_fields[0::2]
-        family_name_fields = name_fields[1::2]
-
-        def first_present(fields):
-            return next((user_info[field] for field in fields if user_info.get(field)), None)
-
-        parts = [first_present(given_name_fields), first_present(family_name_fields)]
-        full_name = " ".join(part for part in parts if part)
-        return full_name or None
+        """Pick one given and one family name candidate (see ``profile``)."""
+        return compute_full_name(user_info, settings.OIDC_USERINFO_FULLNAME_FIELDS)
 
     def get_extra_claims(self, user_info):
         """
@@ -70,7 +48,7 @@ class OIDCAuthenticationBackend(LaSuiteOIDCAuthenticationBackend):
             "short_name": user_info.get(settings.OIDC_USERINFO_SHORTNAME_FIELD),
             "claims": claims_to_store,
         }
-        language = compute_language(user_info)
+        language = compute_stored_language(user_info)
         if language:
             extra["language"] = language
         return extra

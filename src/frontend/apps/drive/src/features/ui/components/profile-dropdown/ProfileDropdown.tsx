@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AVATAR_COLORS } from "@gouvfr-lasuite/ui-components";
 import { User } from "@/features/auth/types";
 import { useDismissablePopup } from "@/hooks/useDismissablePopup";
 import { usePopupPosition } from "@/hooks/usePopupPosition";
@@ -23,31 +22,23 @@ const LogoutIcon = () => (
   </svg>
 );
 
-// Same hash and palette as ui-kit's UserAvatar, so one person keeps one
-// colour everywhere in the app.
-const getAvatarColor = (name: string) => {
-  let sum = 0;
-  for (let i = 0; i < name.length; i++) sum += name.charCodeAt(i);
-  return AVATAR_COLORS[sum % AVATAR_COLORS.length];
-};
-
+// Array.from keeps emoji and other astral characters whole, unlike part[0].
 const getInitials = (name: string) =>
   name
     .split(/[\s\-_]+/)
+    .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part[0])
+    .map((part) => Array.from(part)[0])
     .join("")
-    .toUpperCase();
+    .toUpperCase() || "?";
 
 const Avatar = ({
   picture,
   initials,
-  color,
   size,
 }: {
   picture?: string | null;
   initials: string;
-  color: string;
   size: number;
 }) => {
   // Callers pass `key={picture}` so a new URL remounts this component and
@@ -57,16 +48,23 @@ const Avatar = ({
 
   return (
     <span
-      className="profile-dropdown__avatar"
+      className={`profile-dropdown__avatar${showImage ? "" : " profile-dropdown__avatar--initials"}`}
       style={{
         width: size,
         height: size,
         fontSize: size <= 28 ? "0.6875rem" : "0.875rem",
-        backgroundColor: showImage ? undefined : color,
       }}
     >
       {showImage ? (
-        <img src={picture ?? undefined} alt="" onError={() => setImageFailed(true)} />
+        <img
+          src={picture ?? undefined}
+          alt=""
+          referrerPolicy="no-referrer"
+          onError={() => {
+            console.warn("Could not load the profile picture, showing initials instead");
+            setImageFailed(true);
+          }}
+        />
       ) : (
         initials
       )}
@@ -99,7 +97,6 @@ const Panel = ({
           key={user.picture}
           picture={user.picture}
           initials={getInitials(displayName)}
-          color={getAvatarColor(displayName)}
           size={36}
         />
         <div className="profile-dropdown__identity">
@@ -167,7 +164,6 @@ export const ProfileDropdownButton = ({
           key={user.picture}
           picture={user.picture}
           initials={getInitials(displayName)}
-          color={getAvatarColor(displayName)}
           size={28}
         />
       </button>

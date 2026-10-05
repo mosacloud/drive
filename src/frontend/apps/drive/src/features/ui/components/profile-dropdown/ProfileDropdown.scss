@@ -29,7 +29,8 @@ $mosa-danger-tint: #fef2f2;
   justify-content: center;
   border-radius: 50%;
   color: #ffffff;
-  font-weight: 700;
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-weight: 600;
   flex-shrink: 0;
   overflow: hidden;
 
@@ -38,6 +39,12 @@ $mosa-danger-tint: #fef2f2;
     height: 100%;
     object-fit: cover;
   }
+}
+
+/* The gradient only backs the initials, so a transparent or still-loading
+   picture doesn't show it through. */
+.profile-dropdown__avatar--initials {
+  background: popup.$mosa-gradient;
 }
 
 /* ── Panel ───────────────────────────────────────────────── */
@@ -60,6 +67,7 @@ $mosa-danger-tint: #fef2f2;
   padding: 14px 0 8px;
   z-index: 2000;
   animation: mosa-panel-in 150ms $mosa-ease both;
+  @include popup.reduced-motion;
 
   @media (max-width: 1024px) {
     position: fixed;
@@ -71,6 +79,7 @@ $mosa-danger-tint: #fef2f2;
     width: auto;
     max-width: 420px;
     max-height: calc(100vh - 76px);
+    max-height: calc(100dvh - 76px);
     overflow-y: auto;
     box-sizing: border-box;
 
@@ -78,6 +87,7 @@ $mosa-danger-tint: #fef2f2;
       top: auto;
       bottom: 68px;
       max-height: calc(100vh - 84px);
+      max-height: calc(100dvh - 84px);
     }
   }
 }
@@ -139,6 +149,7 @@ $mosa-danger-tint: #fef2f2;
   cursor: pointer;
   text-align: left;
   transition: background 150ms $mosa-ease;
+  @include popup.reduced-motion;
 
   &:hover {
     background: $mosa-danger-tint;

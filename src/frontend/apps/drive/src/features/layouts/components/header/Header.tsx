@@ -55,7 +55,7 @@ export const HeaderRight = ({
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <AppSwitcherButton />
           <Gaufre />
-          {/* Logged-in users manage their language via Epicentre/Hub, not
+          {/* Logged-in users get their language from the identity provider, not
               in-app — but an anonymous visitor (e.g. viewing a shared item
               without an account) has no other way to set it, so this stays
               for them. */}

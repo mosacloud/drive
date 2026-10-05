@@ -31,6 +31,31 @@ def test_compute_full_name(user_info, expected):
 
 
 @pytest.mark.parametrize(
+    "fields,user_info,expected",
+    [
+        # A non-alternating (odd-length) list can't be paired: join all values.
+        (
+            ["first_name", "middle_name", "last_name"],
+            {"first_name": "John", "middle_name": "M", "last_name": "Doe"},
+            "John M Doe",
+        ),
+        (["name"], {"name": " John Doe "}, "John Doe"),
+        # No value is repeated, and blank/non-string values are skipped.
+        (
+            ["name", "first_name", "last_name"],
+            {"name": "John Doe", "first_name": "John Doe", "last_name": 5},
+            "John Doe",
+        ),
+        (["name"], {}, None),
+        ([], {"first_name": "John"}, None),
+    ],
+)
+def test_compute_full_name_odd_length_fields(fields, user_info, expected):
+    """An odd-length field list joins every non-empty value instead of dropping some."""
+    assert compute_full_name(user_info, fields) == expected
+
+
+@pytest.mark.parametrize(
     "claims,expected",
     [
         ({"picture": "https://example.com/a.png"}, "https://example.com/a.png"),

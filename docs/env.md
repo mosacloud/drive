@@ -102,7 +102,7 @@ This document lists all configurable environment variables for the Drive applica
 | `OIDC_USE_NONCE` | Use nonce for OIDC requests | `True` |
 | `OIDC_USE_PKCE` | Use PKCE when interacting with OIDC server | `False` |
 | `OIDC_USER_INFO` | List of OIDC user info claims | `[]` |
-| `OIDC_USERINFO_FULLNAME_FIELDS` | Fields to use for full name; covers both the dev Keycloak spelling and the standard OIDC one. Must alternate given,family,given,family,... — fields are paired positionally, not by name | `["first_name", "last_name", "given_name", "family_name"]` |
+| `OIDC_USERINFO_FULLNAME_FIELDS` | Fields to use for full name; covers both the dev Keycloak spelling and the standard OIDC one. Should alternate given,family,given,family,... — fields are paired positionally, not by name; an odd-length list can't be paired, so all non-empty values are joined instead | `["first_name", "last_name", "given_name", "family_name"]` |
 | `OIDC_USERINFO_SHORTNAME_FIELD` | Field to use for short name | `first_name` |
 | `PERMISSIONS_BACKEND` | Permissions backend class for items | `core.permissions.backends.role.RolePermissionsBackend` |
 | `PERMISSIONS_BACKEND_PARAMETERS` | Dictionary of parameters for the permissions backend | `{}` |

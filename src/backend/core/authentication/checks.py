@@ -35,8 +35,9 @@ def check_oidc_profile_settings(app_configs, **kwargs):  # pylint: disable=unuse
     if len(settings.OIDC_USERINFO_FULLNAME_FIELDS) % 2:
         messages.append(
             checks.Warning(
-                "OIDC_USERINFO_FULLNAME_FIELDS must alternate given,family,... "
-                f"(even length); got {settings.OIDC_USERINFO_FULLNAME_FIELDS}.",
+                "OIDC_USERINFO_FULLNAME_FIELDS should alternate given,family,... "
+                "(even length); an odd-length list can't be paired, so all "
+                f"non-empty values are joined instead: {settings.OIDC_USERINFO_FULLNAME_FIELDS}.",
                 id="core.W003",
             )
         )

@@ -20,19 +20,27 @@ def compute_full_name(user_info, name_fields):
     convention, so one candidate is picked per slot instead of joining every
     truthy field ("John Doe John Doe").
 
-    The list must alternate given,family,given,family,...: fields are paired
-    by position (even indices are given names), not by field name.
+    An even-length list alternates given,family,given,family,...: fields are
+    paired by position (even indices are given names), not by field name. An
+    odd-length list can't be paired (e.g. ``first_name,middle_name,last_name``
+    or a single ``name``), so every non-empty value is joined in order instead,
+    without repeating a value, rather than silently dropping part of the name.
     Non-string and blank values are ignored.
     """
 
-    def first_present(fields):
+    def present(fields):
         for field in fields:
             value = user_info.get(field)
             if isinstance(value, str) and value.strip():
-                return value.strip()
-        return None
+                yield value.strip()
 
-    parts = [first_present(name_fields[0::2]), first_present(name_fields[1::2])]
+    if len(name_fields) % 2:
+        parts = list(dict.fromkeys(present(name_fields)))
+    else:
+        parts = [
+            next(present(name_fields[0::2]), None),
+            next(present(name_fields[1::2]), None),
+        ]
     return " ".join(part for part in parts if part) or None
 
 

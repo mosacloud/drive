@@ -1,6 +1,6 @@
 import type { InitOptions } from "i18next";
 
-import { DEFAULT_LANGUAGE, LANGUAGES_ALLOWED } from "./conf";
+import { DEFAULT_LANGUAGE, LANGUAGE_COOKIE, LANGUAGES_ALLOWED } from "./conf";
 import resources from "./translations.json";
 
 /**
@@ -24,7 +24,7 @@ export const i18nOptions: InitOptions = {
   detection: {
     order: ["cookie", "navigator"],
     caches: ["cookie"],
-    lookupCookie: "drive_language",
+    lookupCookie: LANGUAGE_COOKIE,
     cookieMinutes: 525600,
     cookieOptions: {
       path: "/",

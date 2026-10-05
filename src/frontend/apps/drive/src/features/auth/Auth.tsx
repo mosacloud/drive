@@ -9,7 +9,7 @@ import { SpinnerPage } from "@/features/ui/components/spinner/SpinnerPage";
 import { attemptSilentLogin, canAttemptSilentLogin } from "./silentLogin";
 import { authUrl } from "./authUrl";
 import { useConfig } from "../config/ConfigProvider";
-import { LANGUAGE_LOCAL_STORAGE } from "@/features/i18n/conf";
+import { LANGUAGE_COOKIE, LANGUAGE_LOCAL_STORAGE } from "@/features/i18n/conf";
 
 export const logout = () => {
   // Drop the remembered interface language: it's shared by every visitor of
@@ -18,7 +18,7 @@ export const logout = () => {
   // language. Each side is cleared on its own so one failing (private mode,
   // blocked storage) can't leave the other behind or stop the sign-out.
   try {
-    document.cookie = "drive_language=; path=/; max-age=0";
+    document.cookie = `${LANGUAGE_COOKIE}=; path=/; max-age=0`;
   } catch (err) {
     console.warn("Could not clear the remembered language cookie", err);
   }
@@ -79,7 +79,7 @@ export const Auth = ({
   }, [config.FRONTEND_SILENT_LOGIN_ENABLED]);
 
   const refreshUser = useCallback(async () => {
-    void init();
+    await init();
   }, [init]);
 
   useEffect(() => {

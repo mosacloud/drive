@@ -39,7 +39,9 @@ ENV NEXT_PUBLIC_API_ORIGIN=${API_ORIGIN}
 RUN yarn build
 
 # ---- Front-end image ----
-FROM nginxinc/nginx-unprivileged:alpine3.24 AS frontend-production
+# nginxinc/nginx-unprivileged is no longer maintained (no nginx2root fix); the
+# stable tag follows nginx's security releases (1.30.7+).
+FROM nginx/nginx-unprivileged:stable-alpine3.24 AS frontend-production
 
 # Builds that reuse a layer cache never re-run the upgrade below. Pass a new
 # value (e.g. the date) with --build-arg CACHEBUST=... to force it.

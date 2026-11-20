@@ -22,7 +22,8 @@ export const UserProfile = () => {
         <UserMenu
           user={user}
           logout={logout}
-          termOfServiceUrl="https://docs.numerique.gouv.fr/docs/8e298e03-c95f-44c7-be4a-ffb618af1854/"
+          // mosa.cloud's terms aren't published yet; until then, its website.
+          termOfServiceUrl="https://mosa.cloud"
           actions={<LanguagePickerUserMenu />}
         />
       ) : (

@@ -7,15 +7,17 @@ const themesImages = {
     logo: "/assets/anct_logo_beta.svg",
     "logo-icon": "/assets/anct_logo-icon.svg",
   },
+  // mosa.cloud runs FRONTEND_THEME=default (dsfr-light): keep our Drive logo
+  // instead of upstream's DSFR "Fichiers" logo.
   "dsfr-dark": {
     favicon: "/assets/favicon.png",
-    logo: "/assets/dsfr_logo.svg",
-    "logo-icon": "/assets/dsfr_logo_icon.svg",
+    logo: "/assets/logo_beta.svg",
+    "logo-icon": "/assets/logo-icon_beta.svg",
   },
   "dsfr-light": {
     favicon: "/assets/favicon.png",
-    logo: "/assets/dsfr_logo.svg",
-    "logo-icon": "/assets/dsfr_logo_icon.svg",
+    logo: "/assets/logo_beta.svg",
+    "logo-icon": "/assets/logo-icon_beta.svg",
   },
   mosa: {
     favicon: "/assets/favicon-light.png",

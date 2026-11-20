@@ -18,6 +18,8 @@
     "yarn": "1.22.22"
   },
   "dependencies": {
+    "@fontsource/open-sans": "5.2.7",
+    "@fontsource/poppins": "5.2.7",
     "@gouvfr-lasuite/ui-components": "2.0.0",
     "@tanstack/react-query": "5.90.10",
     "@tanstack/react-table": "8.21.3",

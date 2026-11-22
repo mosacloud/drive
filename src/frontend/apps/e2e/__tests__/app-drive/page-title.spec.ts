@@ -12,6 +12,8 @@ import {
 } from "./utils-navigate";
 
 const FOLDER_NAME = "Title folder";
+// mosa.cloud names the app "Mosa Drive" in every language (app_title).
+const APP = "Mosa Drive";
 
 test("The tab title names the current page and the application", async ({
   page,
@@ -21,24 +23,24 @@ test("The tab title names the current page and the application", async ({
   await page.goto("/");
 
   await clickToRecent(page);
-  await expect(page).toHaveTitle("Recents | Drive");
+  await expect(page).toHaveTitle(`Recents | ${APP}`);
 
   await clickToSharedWithMe(page);
-  await expect(page).toHaveTitle("Shared with me | Drive");
+  await expect(page).toHaveTitle(`Shared with me | ${APP}`);
 
   await clickToFavorites(page);
-  await expect(page).toHaveTitle("Starred | Drive");
+  await expect(page).toHaveTitle(`Starred | ${APP}`);
 
   await clickToTrash(page);
-  await expect(page).toHaveTitle("Trash | Drive");
+  await expect(page).toHaveTitle(`Trash | ${APP}`);
 
   await clickToMyFiles(page);
-  await expect(page).toHaveTitle("My files | Drive");
+  await expect(page).toHaveTitle(`My files | ${APP}`);
 
   // A folder uses its own name.
   await createFolderInCurrentFolder(page, FOLDER_NAME);
   await navigateToFolder(page, FOLDER_NAME, ["My files", FOLDER_NAME]);
-  await expect(page).toHaveTitle(`${FOLDER_NAME} | Drive`);
+  await expect(page).toHaveTitle(`${FOLDER_NAME} | ${APP}`);
 });
 
 test("The error pages name their message and the application", async ({
@@ -46,25 +48,25 @@ test("The error pages name their message and the application", async ({
 }) => {
   await page.goto("/401");
   await expect(page).toHaveTitle(
-    "You need to be logged in to access the documents. | Drive",
+    `You need to be logged in to access the documents. | ${APP}`,
   );
 
   await page.goto("/403");
   await expect(page).toHaveTitle(
-    "You don't have the necessary permissions to access this page. | Drive",
+    `You don't have the necessary permissions to access this page. | ${APP}`,
   );
 });
 
 test.describe("in French", () => {
   test.use({ locale: "fr-FR" });
 
-  test("My files is titled Mes fichiers | Fichiers", async ({ page }) => {
+  test("My files is titled Mes fichiers | Mosa Drive", async ({ page }) => {
     await clearDb();
     await login(page, "drive-fr@example.com");
     await page.goto("/explorer/items/my-files");
     await expect(page.getByText("Cet onglet est vide")).toBeVisible({
       timeout: 10000,
     });
-    await expect(page).toHaveTitle("Mes fichiers | Fichiers");
+    await expect(page).toHaveTitle(`Mes fichiers | ${APP}`);
   });
 });

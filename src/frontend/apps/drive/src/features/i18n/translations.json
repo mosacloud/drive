@@ -110,7 +110,7 @@
         "success": "Copied to clipboard",
         "error": "Failed to copy to clipboard"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Files management",
       "welcome": "Welcome",
       "logout": "Logout",
@@ -731,7 +731,7 @@
             },
             "3": {
               "title": "PDF viewer",
-              "description": "Open your PDFs right in Fichiers, with a new built-in viewer."
+              "description": "Open your PDFs right in Drive, with a new built-in viewer."
             }
           }
         },
@@ -740,7 +740,7 @@
           "steps": {
             "0": {
               "title": "Share folders",
-              "description": "You can now share an entire folder. People you invite also get access to everything inside it. If you already use Fichiers, you can find your previous spaces as shared folders."
+              "description": "You can now share an entire folder. People you invite also get access to everything inside it. If you already use Drive, you can find your previous spaces as shared folders."
             },
             "1": {
               "title": "Advanced roles and access management",
@@ -921,7 +921,7 @@
         "success": "Copié dans le presse-papiers",
         "error": "Échec de la copie dans le presse-papiers"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Gestion de fichiers",
       "welcome": "Bienvenue",
       "logout": "Déconnexion",
@@ -954,7 +954,7 @@
         "button": "Faire un retour",
         "modal": {
           "title": "Nouveau retour",
-          "description": "Fichiers est en cours de développement : vos retours comptent ! Choisissez comment partager vos idées :",
+          "description": "Drive est en cours de développement : vos retours comptent ! Choisissez comment partager vos idées :",
           "buttons": {
             "form": {
               "title": "Donner un avis rapide",
@@ -1522,7 +1522,7 @@
       },
       "release_notes": {
         "labels": {
-          "app_name": "Mise à jour de Fichiers",
+          "app_name": "Mise à jour de Drive",
           "see_whats_new": "Voir les nouveautés"
         },
         "v0_16_0": {
@@ -1542,7 +1542,7 @@
             },
             "3": {
               "title": "Lecteur PDF",
-              "description": "Ouvrez vos PDF directement dans Fichiers, grâce à un nouveau lecteur intégré."
+              "description": "Ouvrez vos PDF directement dans Drive, grâce à un nouveau lecteur intégré."
             }
           }
         },
@@ -1551,7 +1551,7 @@
           "steps": {
             "0": {
               "title": "Partager des dossiers",
-              "description": "Vous pouvez désormais partager un dossier entier. Les personnes que vous invitez ont accès à tout ce qu'il contient, selon les rôles que vous leur attribuez. Si vous utilisiez déjà Fichiers, vous retrouverez vos anciens espaces partagés sous forme de dossiers partagés."
+              "description": "Vous pouvez désormais partager un dossier entier. Les personnes que vous invitez ont accès à tout ce qu'il contient, selon les rôles que vous leur attribuez. Si vous utilisiez déjà Drive, vous retrouverez vos anciens espaces partagés sous forme de dossiers partagés."
             },
             "1": {
               "title": "Gestion avancée des rôles et des accès",
@@ -1732,7 +1732,7 @@
         "success": "Gekopieërd naar klembord",
         "error": "Kopiëren naar klembord mislukt"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Bestandsbeheer",
       "welcome": "Welkom",
       "logout": "Uitloggen",
@@ -2353,7 +2353,7 @@
             },
             "3": {
               "title": "PDF-lezer",
-              "description": "Open uw PDF's rechtstreeks in Fichiers, met een nieuwe ingebouwde lezer."
+              "description": "Open uw PDF's rechtstreeks in Drive, met een nieuwe ingebouwde lezer."
             }
           }
         },
@@ -2362,7 +2362,7 @@
           "steps": {
             "0": {
               "title": "Mappen delen",
-              "description": "U kunt nu een hele map delen. Mensen die u uitnodigt krijgen ook toegang tot alles wat erin zit. Als u Fichiers al gebruikt, kunt u uw vorige werkruimten terugvinden als gedeelde mappen."
+              "description": "U kunt nu een hele map delen. Mensen die u uitnodigt krijgen ook toegang tot alles wat erin zit. Als u Drive al gebruikt, kunt u uw vorige werkruimten terugvinden als gedeelde mappen."
             },
             "1": {
               "title": "Geavanceerd rollen- en toegangsbeheer",

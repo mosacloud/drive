@@ -38,10 +38,8 @@ export const ReleaseNoteAuto = () => {
       appName={t("release_notes.labels.app_name")}
       mainTitle={mainTitle}
       steps={steps}
-      footerLink={{
-        label: t("release_notes.labels.see_whats_new"),
-        href: "https://docs.numerique.gouv.fr/docs/46085eec-8fd9-4466-98db-b8a40fb545fd/",
-      }}
+      // No "See what's new" link: upstream's points to La Suite's release notes
+      // on docs.numerique.gouv.fr, and mosa.cloud has no such page.
       onClose={handleClose}
       onComplete={handleClose}
     />

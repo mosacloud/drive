@@ -110,7 +110,7 @@
         "success": "Copied to clipboard",
         "error": "Failed to copy to clipboard"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Files management",
       "welcome": "Welcome",
       "logout": "Logout",
@@ -921,7 +921,7 @@
         "success": "Copié dans le presse-papiers",
         "error": "Échec de la copie dans le presse-papiers"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Gestion de fichiers",
       "welcome": "Bienvenue",
       "logout": "Déconnexion",
@@ -1732,7 +1732,7 @@
         "success": "Gekopieërd naar klembord",
         "error": "Kopiëren naar klembord mislukt"
       },
-      "app_title": "Mosa Drive",
+      "app_title": "Drive",
       "app_description": "Bestandsbeheer",
       "welcome": "Welkom",
       "logout": "Uitloggen",
